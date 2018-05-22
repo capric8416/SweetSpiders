@@ -5,6 +5,8 @@ import hashlib
 import inspect
 import json
 import logging
+import random
+import time
 from urllib.parse import urlparse, parse_qsl
 
 import redis
@@ -13,7 +15,6 @@ import urllib3
 from fire import Fire
 from pymongo import *
 from pyquery import PyQuery
-import time
 
 urllib3.disable_warnings()
 
@@ -23,7 +24,7 @@ class EttingerCrawler(object):
 
     """
 
-    def __init__(self, timeout=10):
+    def __init__(self, timeout=10, wait=None):
         # 爬虫名字与类名相同
         self.spider = self.__class__.__name__
 
@@ -51,7 +52,6 @@ class EttingerCrawler(object):
         self.session.verify = False
         self.session.timeout = timeout
 
-
         # redis客服端
         self.redis = redis.from_url('redis://127.0.0.1:6379')
         # set: url去重
@@ -64,6 +64,9 @@ class EttingerCrawler(object):
         # mongo客户端
         self.mongo = MongoClient('127.0.0.1', 27017)
 
+        # 爬取等待
+        self.wait = wait
+
     def get_index(self):
         """首页爬虫"""
 
@@ -75,8 +78,7 @@ class EttingerCrawler(object):
 
     def parse_index(self, resp):
         """首页解析器"""
-        if not resp:
-            return
+
         pq = PyQuery(resp.text)
 
         cat1 = pq('.navmenu__parent-item')
@@ -108,15 +110,24 @@ class EttingerCrawler(object):
 
         while True:
             info = self.pop_category_info()
-            self._get_product_list(*json.loads(info))
+            try:
+                self._get_product_list(*json.loads(info))
+            except Exception as e:
+                print(info, e)
+                raise e
 
     def _get_product_list(self, url, headers, categories):
         """列表页面爬虫"""
 
         page, params = 1, None
         while True:
-            resp = self.request(url=url, headers=headers, params=params)
-            time.sleep(5)
+            resp = self.request(
+                url=url, headers=headers, params=params,
+                meta={'rollback': self.push_category_info, 'categories': categories}
+            )
+            if not resp:
+                return
+
             pq = PyQuery(resp.text)
 
             for info in self.parse_product_list(pq=pq, resp=resp, headers=headers, categories=categories):
@@ -130,8 +141,6 @@ class EttingerCrawler(object):
 
     def parse_product_list(self, pq, resp, headers, categories):
         """列表页解析器"""
-        if not resp:
-            return
         headers = copy.copy(headers)
         headers['Referer'] = resp.url
 
@@ -154,16 +163,19 @@ class EttingerCrawler(object):
     def _get_product_detail(self, url, headers, product_id, categories):
         """详情页爬虫"""
 
-        resp = self.request(url=url, headers=headers)
-        time.sleep(5)
+        resp = self.request(
+            url=url, headers=headers,
+            meta={'rollback': self.push_product_info, 'product_id': product_id, 'categories': categories}
+        )
+        if not resp:
+            return
+
         return self.parse_product_detail(resp=resp, url=url, product_id=product_id, categories=categories)
 
     def parse_product_detail(self, resp, url, product_id, categories):
         """详情页解析器"""
 
         _ = self
-        if not resp:
-            return
         pq = PyQuery(resp.text)
 
         images = []
@@ -192,18 +204,37 @@ class EttingerCrawler(object):
             'title': title.text(), 'style': style, 'name': name, 'price': price,
             'color': color, 'item_code': item_code, 'description': description,
             'thumbnails': thumbnails, 'images': images
-            }
+        }
 
     def request(self, method='get', **kwargs):
+        self.sleep()
+
+        url = kwargs['url']
+        headers = kwargs['headers']
+
+        # 附加信息
+        meta = kwargs.pop('meta', {})
+        # 处理爬取异常的函数
+        rollback = meta.pop('rollback', None)
+
         try:
-            url = kwargs['url']
             resp = getattr(self.session, method)(**kwargs)
             self.logger.info(f'[{resp.status_code} {resp.reason}] {method.upper()}: {url}')
             return resp
         except Exception as e:
+            # 如果提供了异常回滚方法，则回滚，否则抛出异常
+            if not rollback:
+                raise e
+            self.rollback(func=rollback, url=url, headers=headers, meta=meta)
             self.logger.warning(e)
-            time.sleep(1)
-            return None
+
+    def rollback(self, func, url, headers, meta):
+        """异常爬取回滚"""
+
+        _ = self
+        info = copy.copy(meta)
+        info.update({'url': url, 'headers': headers})
+        func(json.dumps(info))
 
     def get_logger(self, name, level='INFO'):
         _ = self
@@ -301,6 +332,22 @@ class EttingerCrawler(object):
         if path.startswith('//'):
             return f'{p.scheme}:{path}'
         return f'{p.scheme}://{p.netloc}{path}'
+
+    def sleep(self):
+        """爬取等待方法"""
+
+        # 如果配置的是准确的秒数，则等待指定秒数
+        if isinstance(self.wait, (int, float)):
+            seconds = self.wait
+        # 如果配置的是区间，则等待指定区间内的随机数
+        elif isinstance(self.wait, (tuple, list)):
+            seconds = random.randrange(*self.wait[:2])
+        else:
+            seconds = 0
+
+        self.logger.info(f'[SLEEP] {seconds}s')
+
+        time.sleep(seconds)
 
 
 if __name__ == '__main__':

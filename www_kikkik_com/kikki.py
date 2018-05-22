@@ -18,7 +18,7 @@ import time
 urllib3.disable_warnings()
 
 
-class EttingerCrawler(object):
+class KikkiCrawler(object):
     """
 
     """
@@ -31,7 +31,7 @@ class EttingerCrawler(object):
         self.logger = self.get_logger(name=self.spider)
 
         # 起始链接
-        self.start_url = 'https://kentbrushes.com/'
+        self.start_url = 'https://www.kikki-k.com/'
 
         # 代理
         # self.proxyMeta = 'http://HUM073044244ZN3D:E4A60516DD135BCF@http-dyn.abuyun.com:9020'
@@ -67,25 +67,27 @@ class EttingerCrawler(object):
 
     def get_index(self):
         """首页爬虫"""
-        '''
-        self.logger.info(f'[RUN] spider: {self.spider}.{inspect.currentframe().f_code.co_name}')
-
-        resp = self.request(url=self.start_url, headers=self.headers)
-        for info in self.parse_index(resp=resp):
-            self.push_category_info(info)
-        '''
         resp = self.session.get(url=self.start_url, headers=self.headers)
         self.parse_index(resp=resp)
-
+        # self.logger.info(f'[RUN] spider: {self.spider}.{inspect.currentframe().f_code.co_name}')
+        # resp = self.request(url=self.start_url, headers=self.headers)
+        # for info in self.parse_index(resp=resp):
+        #     self.push_category_info(info)
 
     def parse_index(self, resp):
         """首页解析器"""
         if not resp:
             return
         pq = PyQuery(resp.text)
-        cat1_node = pq('.wrapper .clearfix .main-menu .has-child')
+
+        cat1_node = pq('.inner-container .opt-fx-fade-inout ul li')
         for cat1 in cat1_node.items():
-            pass
+            cat1_url = cat1('a').attr('href')
+            cat1_name = cat1('a').text()
+            if not cat1_url:
+                continue
+
+
 
 
     def get_product_list(self):
@@ -177,7 +179,7 @@ class EttingerCrawler(object):
             'title': title.text(), 'style': style, 'name': name, 'price': price,
             'color': color, 'item_code': item_code, 'description': description,
             'thumbnails': thumbnails, 'images': images
-            }
+        }
 
     def request(self, method='get', **kwargs):
         try:
@@ -289,4 +291,7 @@ class EttingerCrawler(object):
 
 
 if __name__ == '__main__':
-    Fire(EttingerCrawler)
+    # Fire(EttingerCrawler)
+    ki = KikkiCrawler()
+    ki.get_index()
+
