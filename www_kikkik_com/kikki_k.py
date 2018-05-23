@@ -1,22 +1,23 @@
 # -*- coding: utf-8 -*-
 # !/usr/bin/env python
+import base64
 import copy
 import hashlib
 import json
 import time
 from urllib.parse import urlparse, parse_qsl
 
+import execjs
 import redis
 import requests
 import urllib3
-from fire import Fire
 from pymongo import *
 from pyquery import PyQuery
 
 urllib3.disable_warnings()
 
 
-class KjslaundryCrawler(object):
+class KikkiCrawler(object):
     """
 
     """
@@ -29,13 +30,13 @@ class KjslaundryCrawler(object):
         # self.logger = self.get_logger(name=self.spider)
 
         # 起始链接
-        self.start_url = 'http://www.kjslaundry.com/'
+        self.start_url = 'https://www.kikki-k.com/'
 
         # 商品店铺
-        self.store = "Kj's Laundry"
+        self.store = "kikki-k"
 
         # 商品品牌
-        self.brand = "Kj's Laundry"
+        self.brand = "kikki-k"
 
         # 店铺ID
         self.store_id = 412
@@ -88,41 +89,64 @@ class KjslaundryCrawler(object):
         headers = copy.copy(self.headers)
         headers['referer'] = resp.url
         pq = PyQuery(resp.text)
-        first_category_node = pq('#mainNav-menu .mainNav-dropdown a')
-        first_category_name = first_category_node[0].text.strip()
+        url_categories = []
+        start = end = False
+        for nav_item in pq('#header-nav .nav-item').items():
+            top_category = nav_item('a.level-top span').text().strip()
+            if top_category == 'Diaries & Calendars':
+                start = True
+            elif top_category == 'Wedding':
+                end = True
 
-        category_node = pq('#mainNav-menu .mainNav-dropdown ul li')
-        for category in category_node.items():
-            category_name = category('a').text().strip()
-            if category_name == 'END OF LINE SALE':
+            if start:
+                for a in nav_item('.nav-submenu .nav-item a').items():
+                    child_category = a.text().strip()
+                    if child_category in ('All Diaries & Calendars' or 'All Planners & Accessories'):
+                        continue
+                    url_categories.append((a.attr('href'), (top_category, child_category)))
+
+            if end:
                 break
-            category_url = self.full_it(resp_url=resp.url, path=category('a').attr('href'))
-            categories = (category_name, first_category_name)
 
-            yield category_url, headers, categories
+            # yield category_url, headers, categories
 
     def get_product_list(self):
-        while True:
-            info = self.pop_category_info()
-            for info in self._get_product_list(*info):
-                self.push_product_info(info)
+        self._get_product_list()
 
-    def _get_product_list(self, category_url, headers, categories):
-        while True:
-            resp = self.session.get(url=category_url, headers=headers)
-            print('正在爬取列表页', category_url)
-            time.sleep(2)
+    def _get_product_list(self):
+        detail_urls = []
+        category_url = 'https://www.kikki-k.com/stationery/pens-pencils'
+        resp = self.session.get(url=category_url, headers=self.headers)
+        print('正在爬取列表页', category_url)
+        time.sleep(2)
+        pq = PyQuery(resp.text)
+        category_node = pq('.category-products .product-image-wrapper')
+        for div in category_node.items():
+            detail_url = div('.product-image').attr('href')
+            detail_urls.append(detail_url)
+        script = pq("script:contains('_ajaxCatalog')").text().strip()
+        script = script.partition('AWAjaxCatalog')[-1].strip().strip('();')
+        script = script.replace('buttonType', '"scroll"')
+        res = execjs.eval('(function(){ var value=' + script + ';return value; })()')
+        params = res.get('params')
+        params['p'] = res.get('next_page')
+        next_url = res.get('next_url').format('').format(page=base64.b64encode(json.dumps(params).encode()).decode())
+        while next_url:
+            resp = self.session.get(url=next_url, headers=self.headers)
             pq = PyQuery(resp.text)
-            next_url = pq('[rel="next"]').attr('href')
-            if not next_url:
-                break
-            else:
-                category_url = next_url
-            headers = copy.copy(headers)
-            headers['referer'] = resp.url
-            for img in pq('#ctl00_PageContentPlaceHolder_PTagBorder .list-item').items():
-                detail_url = self.full_it(resp_url=resp.url, path=img('a').attr('href'))
-                yield detail_url, headers, categories
+            script = pq("script:contains('_ajaxCatalog')").text().strip()
+            script = script.partition('AWAjaxCatalog')[-1].strip().strip('();')
+            script = script.replace('buttonType', '"scroll"')
+            res = execjs.eval('(function(){ var value=' + script + ';return value; })()')
+            params = res.get('params')
+            params['p'] = res.get('next_page')
+            next_url = res.get('next_url').format('').format(page=base64.b64encode(json.dumps(params).encode()).decode())
+            category_node = pq('.category-products .product-image-wrapper')
+            for div in category_node.items():
+                detail_url = div('.product-image').attr('href')
+                detail_urls.append(detail_url)
+
+
 
     def get_product_detail(self):
         while True:
@@ -260,4 +284,7 @@ class KjslaundryCrawler(object):
 
 
 if __name__ == '__main__':
-    Fire(KjslaundryCrawler)
+    # Fire(KikkiCrawler)
+    k = KikkiCrawler()
+    # k.get_index()
+    k._get_product_list()
