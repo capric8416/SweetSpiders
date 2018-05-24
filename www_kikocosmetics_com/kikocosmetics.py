@@ -12,7 +12,7 @@ from pyquery import PyQuery
 urllib3.disable_warnings()
 
 
-class KikoCrawler(object):
+class KikocosmeticsCrawler(object):
     """
 
     """
@@ -117,7 +117,7 @@ class KikoCrawler(object):
 
 if __name__ == '__main__':
     # Fire(KikkiCrawler)
-    k = KikoCrawler()
+    k = KikocosmeticsCrawler()
     k.get_index()
     # k._get_product_list()
 

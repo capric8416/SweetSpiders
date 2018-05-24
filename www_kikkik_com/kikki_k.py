@@ -17,7 +17,7 @@ from pyquery import PyQuery
 urllib3.disable_warnings()
 
 
-class KikkiCrawler(object):
+class KikkiKCrawler(object):
     """
 
     """
@@ -78,8 +78,7 @@ class KikkiCrawler(object):
         """首页爬虫"""
         print('正在爬取首页', self.start_url)
         resp = self.session.get(url=self.start_url, headers=self.headers)
-        for info in self.parse_index(resp=resp):
-            self.push_category_info(info)
+        return self.parse_index(resp=resp)
 
     def parse_index(self, resp):
         """首页解析器"""
@@ -90,8 +89,31 @@ class KikkiCrawler(object):
         headers['referer'] = resp.url
         pq = PyQuery(resp.text)
         url_categories = []
-        start = end = False
-        for nav_item in pq('#header-nav .nav-item').items():
+        node = pq('#nav .nav-item .level-top')
+        for span in node.items():
+            top_category = span.text().strip()
+            if top_category == 'Shop By':
+                continue
+            elif top_category == ('Diaries & Calendars' or 'Notebooks & Journals' or 'Stationery' or 'Bags & Travel' or 'Organising' or 'Wedding'):
+                child_category_node = pq('.menu-mobile-desktop ul.nav-submenu')
+                for child in child_category_node.items():
+                    child_category = [a.text().strip() for a in child('a').items()]
+                    child_url = [a.attr('href') for a in child('a').items()]
+                    url_categories.append(zip(child_category, child_url))
+
+            # elif top_category == ('Notebooks & Journals' or 'Stationery' or 'Bags & Travel' or 'Organising' or 'Wedding'):
+            #     child_category_node = pq('.nav-panel--dropdown .nav-panel-inner .nav-block--center .nav-item')
+            #     for child in child_category_node.items():
+            #         child_category = [span.text() for span in child('a').items()]
+            #         child_url = [a.attr('href') for a in child('a').items()]
+            elif top_category == 'Home':
+                break
+
+                pass
+
+        '''
+        node = pq('#header-nav .nav-item')
+        for nav_item in node.items():
             top_category = nav_item('a.level-top span').text().strip()
             if top_category == 'Diaries & Calendars':
                 start = True
@@ -103,48 +125,51 @@ class KikkiCrawler(object):
                     child_category = a.text().strip()
                     if child_category in ('All Diaries & Calendars' or 'All Planners & Accessories'):
                         continue
-                    url_categories.append((a.attr('href'), (top_category, child_category)))
-
+                    # url_categories.append((a.attr('href'), (top_category, child_category)))
+                    url_categories.append(a.attr('href'))
             if end:
                 break
-
-            # yield category_url, headers, categories
+        '''
+        return url_categories
 
     def get_product_list(self):
-        self._get_product_list()
+        url_categories = self.get_index()
+        self._get_product_list(url_categories=url_categories)
 
-    def _get_product_list(self):
+    def _get_product_list(self, url_categories):
         detail_urls = []
-        category_url = 'https://www.kikki-k.com/stationery/pens-pencils'
-        resp = self.session.get(url=category_url, headers=self.headers)
-        print('正在爬取列表页', category_url)
-        time.sleep(2)
-        pq = PyQuery(resp.text)
-        category_node = pq('.category-products .product-image-wrapper')
-        for div in category_node.items():
-            detail_url = div('.product-image').attr('href')
-            detail_urls.append(detail_url)
-        script = pq("script:contains('_ajaxCatalog')").text().strip()
-        script = script.partition('AWAjaxCatalog')[-1].strip().strip('();')
-        script = script.replace('buttonType', '"scroll"')
-        res = execjs.eval('(function(){ var value=' + script + ';return value; })()')
-        params = res.get('params')
-        params['p'] = res.get('next_page')
-        next_url = res.get('next_url').format('').format(page=base64.b64encode(json.dumps(params).encode()).decode())
-        while next_url:
-            resp = self.session.get(url=next_url, headers=self.headers)
+        for category_url in url_categories:
+            resp = self.session.get(url=category_url, headers=self.headers)
+            print('正在爬取列表页', category_url)
+            time.sleep(2)
             pq = PyQuery(resp.text)
+            category_node = pq('.category-products .product-image-wrapper')
+            for div in category_node.items():
+                detail_url = div('.product-image').attr('href')
+                detail_urls.append(detail_url)
             script = pq("script:contains('_ajaxCatalog')").text().strip()
             script = script.partition('AWAjaxCatalog')[-1].strip().strip('();')
             script = script.replace('buttonType', '"scroll"')
             res = execjs.eval('(function(){ var value=' + script + ';return value; })()')
             params = res.get('params')
             params['p'] = res.get('next_page')
-            next_url = res.get('next_url').format('').format(page=base64.b64encode(json.dumps(params).encode()).decode())
-            category_node = pq('.category-products .product-image-wrapper')
-            for div in category_node.items():
-                detail_url = div('.product-image').attr('href')
-                detail_urls.append(detail_url)
+            count = int(params['p'])
+            while True:
+                params['p'] = count
+                next_url = res.get('next_url').format('').format(page=base64.b64encode(json.dumps(params).encode()).decode())
+                resp = self.session.get(url=next_url, headers=self.headers)
+                pq = PyQuery(resp.text)
+                node = pq('a')
+                for a in node.items():
+                    detail_url = self.start_url + a.attr('href').split('/')[3].strip('\\"')
+                    detail_urls.append(detail_url)
+                count += 1
+                params['p'] = count
+                if len(node) < 32:
+                    break
+
+        detail_urls = set(detail_urls)
+        print(detail_urls)
 
 
 
@@ -284,7 +309,7 @@ class KikkiCrawler(object):
 
 
 if __name__ == '__main__':
-    # Fire(KikkiCrawler)
-    k = KikkiCrawler()
-    # k.get_index()
-    k._get_product_list()
+    # Fire(KikkiCrawler
+    k = KikkiKCrawler()
+    url_categories = k.get_index()
+    # k.get_product_list()

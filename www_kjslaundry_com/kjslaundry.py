@@ -12,6 +12,7 @@ import urllib3
 from fire import Fire
 from pymongo import *
 from pyquery import PyQuery
+import datetime
 
 urllib3.disable_warnings()
 
@@ -138,7 +139,11 @@ class KjslaundryCrawler(object):
             return
         pq = PyQuery(resp.text)
         # 商品图片
-        b_img_url = self.full_it(resp_url=resp.url, path=pq('.product-left-box #productImages .slides a').attr('href'))
+        img_urls = []
+        img_node = pq('.product-left-box #productImages .slides a')
+        for img in img_node.items():
+            img_url = self.full_it(resp_url=resp.url, path=img.attr('href'))
+            img_urls.append(img_url)
 
         # 商品源地址
         product_source_url = detail_url
@@ -166,10 +171,13 @@ class KjslaundryCrawler(object):
             size = size.text().strip()
             size_list.append(size)
 
-        info = {'source': product_source_url, 'categories': categories, 'img': b_img_url, 'was_price': was_price,
+        # 数据更新时间
+        update = str(datetime.date.today())
+
+        info = {'source': product_source_url, 'categories': categories, 'img': img_urls, 'was_price': was_price,
                 'now_price': now_price, 'description': description, 'size': size_list, 'store': self.store,
                 'brand': self.brand, 'store_id': self.store_id, 'coin_id': self.coin_id, 'product_id': product_id,
-                'name': name,
+                'name': name, 'update': update,
                 }
 
         return info
