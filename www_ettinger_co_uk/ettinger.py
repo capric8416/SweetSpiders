@@ -47,15 +47,15 @@ class EttingerCrawler(IndexListDetailCrawler):
                     cat3_url = self.full_url(url_from=resp.url, path=cat3.attr('href'))
                     categories = (cat1_name, cat2_name, cat3_name)
 
-                    yield cat3_url, headers, {'categories': categories}
+                    yield cat3_url, headers, resp.cookies.get_dict(), {'categories': categories}
 
-    def _get_product_list(self, url, headers, meta):
+    def _get_product_list(self, url, headers, cookies, meta):
         """列表页面爬虫"""
 
         page, params = 1, None
         while True:
             resp = self.request(
-                url=url, headers=headers, params=params,
+                url=url, headers=headers, cookies=cookies, params=params,
                 rollback=self.push_category_info, meta=meta
             )
             if not resp:
@@ -85,7 +85,7 @@ class EttingerCrawler(IndexListDetailCrawler):
                 for a in product_card('.product-color-swatches a').items()
             ]:
                 meta['product_id'] = product_id
-                yield url, headers, meta
+                yield url, headers, resp.cookies.get_dict(), meta
 
     def parse_product_detail(self, resp, url, meta):
         """详情页解析器"""

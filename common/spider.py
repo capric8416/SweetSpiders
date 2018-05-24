@@ -59,10 +59,7 @@ class IndexListDetailCrawler(object):
         # Headers
         self.headers = self.HEADERS
 
-        # requests配置
-        self.session = requests.session()
-        self.session.verify = False
-        self.session.timeout = self.TIMEOUT
+        self.timeout = self.TIMEOUT
 
         # redis客服端
         self.redis = redis.from_url(self.REDIS_URL)
@@ -91,7 +88,7 @@ class IndexListDetailCrawler(object):
     def parse_index(self, resp):
         """
         首页解析器，提取分类信息
-        yield url, headers, meta
+        yield url, headers, cookies, meta
         """
 
         raise NotImplementedError
@@ -107,7 +104,7 @@ class IndexListDetailCrawler(object):
                 print(info, e)
                 raise e
 
-    def _get_product_list(self, url, headers, meta):
+    def _get_product_list(self, url, headers, cookies, meta):
         """
         列表页面爬虫，实现翻页请求，拿到详情链接
         """
@@ -130,10 +127,10 @@ class IndexListDetailCrawler(object):
             info = self._get_product_detail(*json.loads(info.decode()))
             self.push_product_detail(info=info)
 
-    def _get_product_detail(self, url, headers, meta):
+    def _get_product_detail(self, url, headers, cookies, meta):
         """详情页爬虫"""
 
-        resp = self.request(url=url, headers=headers, meta=meta, rollback=self.push_product_info)
+        resp = self.request(url=url, headers=headers, cookies=cookies, meta=meta, rollback=self.push_product_info)
         if not resp:
             return
 
@@ -149,6 +146,9 @@ class IndexListDetailCrawler(object):
     def request(self, method='get', rollback=None, **kwargs):
         self.sleep()
 
+        kwargs = dict(kwargs)
+        kwargs.update({'verify': False, 'timeout': self.timeout})
+
         url = kwargs['url']
         headers = kwargs['headers']
 
@@ -156,7 +156,7 @@ class IndexListDetailCrawler(object):
         meta = kwargs.pop('meta', {})
 
         try:
-            resp = getattr(self.session, method)(**kwargs)
+            resp = requests.request(method=method, **kwargs)
             self.logger.info(f'[{resp.status_code} {resp.reason}] {method.upper()}: {url}')
             return resp
         except Exception as e:
