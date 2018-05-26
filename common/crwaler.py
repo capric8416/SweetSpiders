@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 # !/usr/bin/env python
-import copy
 import functools
 import hashlib
 import inspect
@@ -18,7 +17,7 @@ from pymongo import *
 urllib3.disable_warnings()
 
 
-class IndexListDetailCrawler(object):
+class IndexListDetailCrawler:
     """
     首页-列表页-详情页爬虫框架
     """
@@ -51,7 +50,7 @@ class IndexListDetailCrawler(object):
         self.spider = self.__class__.__name__
 
         # 日志记录器
-        self.logger = self.get_logger(name=self.spider)
+        self.logger = self._get_logger(name=self.spider)
 
         # 首页链接
         self.index_url = self.INDEX_URL
@@ -79,13 +78,13 @@ class IndexListDetailCrawler(object):
     def get_index(self):
         """首页爬虫"""
 
-        self.logger.info(f'[RUN] spider: {self.spider}.{inspect.currentframe().f_code.co_name}')
+        self.logger.info(f'[RUN] {self.spider}.{inspect.currentframe().f_code.co_name}')
 
         resp = self.request(url=self.index_url, headers=self.headers)
-        for info in self.parse_index(resp=resp):
+        for info in self._parse_index(resp=resp):
             self.push_category_info(info)
 
-    def parse_index(self, resp):
+    def _parse_index(self, resp):
         """
         首页解析器，提取分类信息
         yield url, headers, cookies, meta
@@ -94,7 +93,7 @@ class IndexListDetailCrawler(object):
         raise NotImplementedError
 
     def get_product_list(self):
-        self.logger.info(f'[RUN] spider: {self.spider}.{inspect.currentframe().f_code.co_name}')
+        self.logger.info(f'[RUN] {self.spider}.{inspect.currentframe().f_code.co_name}')
 
         while True:
             info = self.pop_category_info()[-1]
@@ -111,7 +110,7 @@ class IndexListDetailCrawler(object):
 
         raise NotImplementedError
 
-    def parse_product_list(self, pq, resp, headers, meta):
+    def _parse_product_list(self, pq, resp, headers, meta):
         """
         列表页解析器，提取详情链接
         yield url, headers, meta
@@ -120,12 +119,12 @@ class IndexListDetailCrawler(object):
         raise NotImplementedError
 
     def get_product_detail(self):
-        self.logger.info(f'[RUN] spider: {self.spider}.{inspect.currentframe().f_code.co_name}')
+        self.logger.info(f'[RUN] {self.spider}.{inspect.currentframe().f_code.co_name}')
 
         while True:
             info = self.pop_product_info()[-1]
             info = self._get_product_detail(*json.loads(info.decode()))
-            self.push_product_detail(info=info)
+            self._push_product_detail(info=info)
 
     def _get_product_detail(self, url, headers, cookies, meta):
         """详情页爬虫"""
@@ -134,9 +133,9 @@ class IndexListDetailCrawler(object):
         if not resp:
             return
 
-        return self.parse_product_detail(resp=resp, url=url, meta=meta)
+        return self._parse_product_detail(url=url, resp=resp, meta=meta)
 
-    def parse_product_detail(self, resp, url, meta):
+    def _parse_product_detail(self, url, resp, meta):
         """
         详情页解析器，提取详情页信息
         """
@@ -144,7 +143,7 @@ class IndexListDetailCrawler(object):
         raise NotImplementedError
 
     def request(self, method='get', rollback=None, **kwargs):
-        self.sleep()
+        self._sleep()
 
         kwargs = dict(kwargs)
         kwargs.update({'verify': False, 'timeout': self.timeout})
@@ -163,18 +162,16 @@ class IndexListDetailCrawler(object):
             # 如果提供了异常回滚方法，则回滚，否则抛出异常
             if not rollback:
                 raise e
-            self.rollback(func=rollback, url=url, headers=headers, meta=meta)
+            self._rollback(func=rollback, url=url, headers=headers, cookies=kwargs.get('cookies', {}), meta=meta)
             self.logger.warning(e)
 
-    def rollback(self, func, url, headers, meta):
+    def _rollback(self, func, url, headers, cookies, meta):
         """异常爬取回滚"""
 
         _ = self
-        info = copy.copy(meta)
-        info.update({'url': url, 'headers': headers})
-        func(json.dumps(info))
+        func((url, headers, cookies, meta), force=True)
 
-    def get_logger(self, name, level='INFO'):
+    def _get_logger(self, name, level='INFO'):
         _ = self
 
         level = getattr(logging, level)
@@ -209,7 +206,7 @@ class IndexListDetailCrawler(object):
 
         return super().__getattribute__(item)
 
-    def push_product_detail(self, info):
+    def _push_product_detail(self, info):
         """
         商品详情信息存储到MongoDB
         :param info: dict, 商品详情
@@ -218,18 +215,22 @@ class IndexListDetailCrawler(object):
 
         self.mongo[self.spider][self.collection].insert_one(info)
 
-    def _push_info(self, name, *info):
+    def _push_info(self, name, *info, force=False):
         """
         添加url到对应的redis list
         :param name: str, redis key
         :param info: tuple, 链接及信息
+        :param force, bool, 跳过去重检查
         :return: None
         """
 
         for item in info:
-            self._parse_info(name=name, item=item)
+            self._parse_info(name=name, item=item, force=force)
 
-    def _parse_info(self, name, item):
+    def _parse_info(self, name, item, force=False):
+        if force:
+            return self.redis.rpush(name, json.dumps(item))
+
         # 链接
         url = item[0]
         # 解析
@@ -242,12 +243,12 @@ class IndexListDetailCrawler(object):
         sha1 = hashlib.sha1(text.encode()).hexdigest()
         # 如果不在已经爬取过的set里面，就将其放到list里面
         if self.redis.sadd(self.key_duplicated, sha1):
-            self.logger.info(f'[PUSH]: {url}')
+            self.logger.info(f'[PUSH] {url}')
             self.redis.rpush(name, json.dumps(item))
         else:
-            self.logger.info(f'[SKIP]: {url}')
+            self.logger.info(f'[SKIP] {url}')
 
-    def full_url(self, url_from, path):
+    def _full_url(self, url_from, path):
         """补全链接"""
 
         _ = self
@@ -258,11 +259,14 @@ class IndexListDetailCrawler(object):
         p = urlparse(url_from)
         if '://' in path:
             return path
-        if path.startswith('//'):
+        elif path.startswith('//'):
             return f'{p.scheme}:{path}'
-        return f'{p.scheme}://{p.netloc}{path}'
+        elif path.startswith('/'):
+            return f'{p.scheme}://{p.netloc}{path}'
+        else:
+            return f'{p.scheme}://{p.netloc}{p.path.rpartition("/")[0]}/{path}'
 
-    def sleep(self):
+    def _sleep(self):
         """爬取等待"""
 
         # 如果配置的是准确的秒数，则等待指定秒数
@@ -278,8 +282,43 @@ class IndexListDetailCrawler(object):
 
         time.sleep(seconds)
 
+    def monitor(self, wait=5):
+        names = []
 
-if __name__ == '__main__':
-    c = IndexListDetailCrawler()
-    c.test()
-    c.push_category_info('s')
+        def scan_names():
+            nonlocal names
+            for n in self.redis.keys(f'{self.spider}:*'):
+                n = n.decode()
+                if n not in names:
+                    names.append(n)
+
+        def redis_count():
+            scan_names()
+
+            msgs = []
+            for name in names:
+                t = self.redis.type(name).decode()
+
+                length = 'n/a'
+                if t == 'list':
+                    length = self.redis.llen(name)
+                elif t == 'set':
+                    length = self.redis.scard(name)
+                elif t == 'hash':
+                    length = self.redis.hlen(name)
+
+                msgs.append(f'\t{length}: {name}')
+
+            return f'===== Redis ==== \n' + '\n'.join(msgs)
+
+        def mongo_count():
+            return f'===== MongoDB =====\n' + \
+                   f'\t{self.mongo[self.spider][self.collection].count()}: {self.spider}.{self.collection}'
+
+        while True:
+            self.logger.info('\n'.join(['', redis_count(), mongo_count(), '']))
+            time.sleep(wait)
+
+    def reset(self):
+        self.redis.delete(*self.redis.keys(f'{self.spider}:*'))
+        self.mongo[self.spider][self.collection].remove({})

@@ -3,12 +3,10 @@
 import copy
 
 import urllib3
-from fire import Fire
+from SweetSpiders.common import IndexListDetailCrawler
 from pyquery import PyQuery
 
 urllib3.disable_warnings()
-
-from common import IndexListDetailCrawler
 
 
 class EttingerCrawler(IndexListDetailCrawler):
@@ -20,7 +18,7 @@ class EttingerCrawler(IndexListDetailCrawler):
 
     WAIT = [0, 5]
 
-    def parse_index(self, resp):
+    def _parse_index(self, resp):
         """首页解析器"""
 
         pq = PyQuery(resp.text)
@@ -44,7 +42,7 @@ class EttingerCrawler(IndexListDetailCrawler):
                     headers = copy.copy(self.headers)
                     headers['Referer'] = resp.url
 
-                    cat3_url = self.full_url(url_from=resp.url, path=cat3.attr('href'))
+                    cat3_url = self._full_url(url_from=resp.url, path=cat3.attr('href'))
                     categories = (cat1_name, cat2_name, cat3_name)
 
                     yield cat3_url, headers, resp.cookies.get_dict(), {'categories': categories}
@@ -72,7 +70,7 @@ class EttingerCrawler(IndexListDetailCrawler):
             page += 1
             params = {'page': page}
 
-    def parse_product_list(self, pq, resp, headers, meta):
+    def _parse_product_list(self, pq, resp, headers, meta):
         """列表页解析器"""
 
         headers = copy.copy(headers)
@@ -81,13 +79,13 @@ class EttingerCrawler(IndexListDetailCrawler):
         for product_card in pq('.category .container .category__grid .product-card').items():
             product_id = product_card('.product-color-swatches a:eq(0)').attr('href').strip('/').split('/')[-2]
             for url in [
-                self.full_url(url_from=resp.url, path=a.attr('href'))
+                self._full_url(url_from=resp.url, path=a.attr('href'))
                 for a in product_card('.product-color-swatches a').items()
             ]:
                 meta['product_id'] = product_id
                 yield url, headers, resp.cookies.get_dict(), meta
 
-    def parse_product_detail(self, resp, url, meta):
+    def _parse_product_detail(self, url, resp, meta):
         """详情页解析器"""
 
         _ = self
@@ -120,7 +118,3 @@ class EttingerCrawler(IndexListDetailCrawler):
             'color': color, 'item_code': item_code, 'description': description,
             'thumbnails': thumbnails, 'images': images
         }
-
-
-if __name__ == '__main__':
-    Fire(EttingerCrawler)

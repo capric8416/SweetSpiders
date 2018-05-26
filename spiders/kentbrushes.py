@@ -5,15 +5,12 @@ import hashlib
 import inspect
 import json
 import logging
+import time
 from urllib.parse import urlparse, parse_qsl
 
-import redis
 import requests
 import urllib3
-from fire import Fire
-from pymongo import *
 from pyquery import PyQuery
-import time
 
 urllib3.disable_warnings()
 
@@ -77,7 +74,6 @@ class EttingerCrawler(object):
         resp = self.session.get(url=self.start_url, headers=self.headers)
         self.parse_index(resp=resp)
 
-
     def parse_index(self, resp):
         """首页解析器"""
         if not resp:
@@ -86,7 +82,6 @@ class EttingerCrawler(object):
         cat1_node = pq('.wrapper .clearfix .main-menu .has-child')
         for cat1 in cat1_node.items():
             pass
-
 
     def get_product_list(self):
         self.logger.info(f'[RUN] spider: {self.spider}.{inspect.currentframe().f_code.co_name}')
@@ -177,7 +172,7 @@ class EttingerCrawler(object):
             'title': title.text(), 'style': style, 'name': name, 'price': price,
             'color': color, 'item_code': item_code, 'description': description,
             'thumbnails': thumbnails, 'images': images
-            }
+        }
 
     def request(self, method='get', **kwargs):
         try:
@@ -286,7 +281,3 @@ class EttingerCrawler(object):
         if path.startswith('//'):
             return f'{p.scheme}:{path}'
         return f'{p.scheme}://{p.netloc}{path}'
-
-
-if __name__ == '__main__':
-    Fire(EttingerCrawler)
