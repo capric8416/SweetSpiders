@@ -2,11 +2,8 @@
 # !/usr/bin/env python
 import copy
 
-import urllib3
 from SweetSpiders.common import IndexListDetailCrawler
 from pyquery import PyQuery
-
-urllib3.disable_warnings()
 
 
 class EttingerCrawler(IndexListDetailCrawler):

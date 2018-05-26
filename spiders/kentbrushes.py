@@ -9,10 +9,7 @@ import time
 from urllib.parse import urlparse, parse_qsl
 
 import requests
-import urllib3
 from pyquery import PyQuery
-
-urllib3.disable_warnings()
 
 
 class EttingerCrawler(object):

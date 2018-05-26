@@ -9,11 +9,8 @@ from urllib.parse import urlparse, parse_qsl
 
 import execjs
 import requests
-import urllib3
 from pymongo import *
 from pyquery import PyQuery
-
-urllib3.disable_warnings()
 
 
 class KikkiKCrawler(object):
