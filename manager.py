@@ -3,6 +3,7 @@
 
 import inspect
 import os
+import string
 from urllib.parse import urlparse
 
 from SweetSpiders import spiders
@@ -51,6 +52,7 @@ class Manger:
         if not class_name.endswith(postfix):
             class_name += postfix
         class_name = class_name[0].upper() + class_name[1:]
+        assert class_name[0] in string.ascii_uppercase, '类名无效'
         assert not hasattr(spiders, class_name), '爬虫已存在'
 
         # 爬虫文件写入源码

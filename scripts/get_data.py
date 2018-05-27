@@ -2,6 +2,7 @@
 # !/usr/bin/env python
 
 import json
+
 with open('search.json', 'r') as f:
     data = json.load(f)
 
@@ -21,5 +22,3 @@ with open('search.json', 'r') as f:
         product_param['brand'] = product.get('brand')
 
         print(product_param)
-
-

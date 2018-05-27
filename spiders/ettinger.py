@@ -13,7 +13,7 @@ class EttingerCrawler(IndexListDetailCrawler):
 
     INDEX_URL = 'https://www.ettinger.co.uk/'
 
-    WAIT = [0, 5]
+    WAIT = [1, 5]
 
     def _parse_index(self, resp):
         """首页解析器"""
@@ -49,7 +49,7 @@ class EttingerCrawler(IndexListDetailCrawler):
 
         page, params = 1, None
         while True:
-            resp = self.request(
+            resp = self._request(
                 url=url, headers=headers, cookies=cookies, params=params,
                 rollback=self.push_category_info, meta=meta
             )
@@ -58,7 +58,7 @@ class EttingerCrawler(IndexListDetailCrawler):
 
             pq = PyQuery(resp.text)
 
-            for info in self.parse_product_list(pq=pq, resp=resp, headers=headers, meta=meta):
+            for info in self._parse_product_list(pq=pq, resp=resp, headers=headers, meta=meta):
                 self.push_product_info(info)
 
             if not pq('.container .col-sm-2 a').text().strip():

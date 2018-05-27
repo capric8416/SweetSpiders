@@ -80,9 +80,17 @@ class IndexListDetailCrawler:
 
         self.logger.info(f'[RUN] {self.spider}.{inspect.currentframe().f_code.co_name}')
 
-        resp = self.request(url=self.index_url, headers=self.headers)
-        for info in self._parse_index(resp=resp):
-            self.push_category_info(info)
+        while True:
+            try:
+                resp = self._request(url=self.index_url, headers=self.headers)
+            except Exception as e:
+                _ = e
+                self.logger.warning(f'[RETRY] {e}, {self.index_url}')
+            else:
+                for info in self._parse_index(resp=resp):
+                    self.push_category_info(info)
+
+                break
 
     def _parse_index(self, resp):
         """
@@ -129,7 +137,7 @@ class IndexListDetailCrawler:
     def _get_product_detail(self, url, headers, cookies, meta):
         """详情页爬虫"""
 
-        resp = self.request(url=url, headers=headers, cookies=cookies, meta=meta, rollback=self.push_product_info)
+        resp = self._request(url=url, headers=headers, cookies=cookies, meta=meta, rollback=self.push_product_info)
         if not resp:
             return
 
@@ -142,7 +150,7 @@ class IndexListDetailCrawler:
 
         raise NotImplementedError
 
-    def request(self, method='get', rollback=None, **kwargs):
+    def _request(self, method='get', rollback=None, **kwargs):
         self._sleep()
 
         kwargs = dict(kwargs)
@@ -212,7 +220,10 @@ class IndexListDetailCrawler:
         :param info: dict, 商品详情
         :return: None
         """
+        if not info:
+            return
 
+        info['created'] = time.time()
         self.mongo[self.spider][self.collection].insert_one(info)
 
     def _push_info(self, name, *info, force=False):
@@ -282,7 +293,9 @@ class IndexListDetailCrawler:
 
         time.sleep(seconds)
 
-    def monitor(self, wait=5):
+    def monitor(self):
+        wait = self.wait[-1] if isinstance(self.wait, (tuple, list)) else self.wait
+
         names = []
 
         def scan_names():
@@ -320,5 +333,8 @@ class IndexListDetailCrawler:
             time.sleep(wait)
 
     def reset(self):
-        self.redis.delete(*self.redis.keys(f'{self.spider}:*'))
+        names = self.redis.keys(f'{self.spider}:*')
+        if names:
+            self.redis.delete(*names)
+
         self.mongo[self.spider][self.collection].remove({})

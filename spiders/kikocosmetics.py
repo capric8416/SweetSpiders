@@ -12,7 +12,7 @@ class KikocosmeticsCrawler(IndexListDetailCrawler):
     """
 
     INDEX_URL = 'https://www.kikocosmetics.com/en-gb/'
-    WAIT = [1, 6]
+    WAIT = [1, 5]
 
     def __init__(self):
         super(KikocosmeticsCrawler, self).__init__()
@@ -64,8 +64,7 @@ class KikocosmeticsCrawler(IndexListDetailCrawler):
 
     def _get_product_list(self, url, headers, cookies, meta):
         while True:
-            resp = self.request(url=url, headers=headers, cookies=cookies,
-                                rollback=self.push_category_info, meta=meta)
+            resp = self._request(url=url, headers=headers, cookies=cookies, rollback=self.push_category_info, meta=meta)
             if not resp:
                 return
 

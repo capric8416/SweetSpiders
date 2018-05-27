@@ -1,49 +1,1456 @@
 [
- {"images":[{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[2]/li[1]/a[1]/img[1]","naturalHeight":310,"width":142,"diffbotUri":"image|3|-1325660386","url":"http://www.kjslaundry.com/content/images/products/xirena/paige-pant-freedom-stripe-love/paige-pant-freedom-stripe-love_10685-category.jpg","naturalWidth":236,"primary":true,"height":187},{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[1]/a[1]/img[1]","naturalHeight":1000,"width":623,"diffbotUri":"image|3|-715384333","url":"http://www.kjslaundry.com/content/images/products/xirena/paige-pant-freedom-stripe-love/paige-pant-freedom-stripe-love_10685-zoom.jpg","naturalWidth":760,"height":820},{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[2]/a[1]/img[1]","naturalHeight":1000,"width":623,"diffbotUri":"image|3|-911897838","url":"http://www.kjslaundry.com/content/images/products/xirena/paige-pant-freedom-stripe-love/paige-pant-freedom-stripe-love_10686-zoom.jpg","naturalWidth":760,"height":820}],"offerPrice":"£200.00","diffbotUri":"product|3|-464408315","multipleProducts":true,"availability":true,"type":"product","title":"Paige Pant - Freedom Stripe Love","offerPriceDetails":{"symbol":"£","amount":200,"text":"£200.00"},"breadcrumb":[{"link":"http://www.kjslaundry.com/","name":"Home"},{"link":"http://www.kjslaundry.com/womens/new/","name":"New"}],"humanLanguage":"en","pageUrl":"http://www.kjslaundry.com/xirena/paige-pant-freedom-stripe-love.aspx","text":"The Paige Pant from Xirena in a super cool summer stripe. We love the textured cotton with subtle lurex thread. Team with a tee and sandals for a relaxed day look.\nFabric: 100% Cotton\nCare: Gentle machine wash","category":"Clothing","brand":"Xirena","docId":653899678,"seedUrlHash32":2887304554,"parentUrlDocId":200455813034,"gburl":"http://www.kjslaundry.com/xirena/paige-pant-freedom-stripe-love.aspx-diffbotxyz3475438825","lastCrawlTimeUTC":1527058006,"timestamp":"Wed, 23 May 2018 06:46:46 GMT"}
-,
- {"images":[{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[2]/li[1]/a[1]/img[1]","naturalHeight":310,"width":142,"diffbotUri":"image|3|-1973536034","title":"V10 Nautico Pekin - Extra White Image","url":"http://www.kjslaundry.com/content/images/products/veja/v10-nautico-pekin-extra-white/v10-nautico-pekin-extra-white_10640-category.jpg","naturalWidth":236,"primary":true,"height":187},{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[1]/a[1]/img[1]","naturalHeight":1000,"width":623,"diffbotUri":"image|3|-244437581","title":"V10 Nautico Pekin - Extra White Image","url":"http://www.kjslaundry.com/content/images/products/veja/v10-nautico-pekin-extra-white/v10-nautico-pekin-extra-white_10640-zoom.jpg","naturalWidth":760,"height":820},{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[2]/a[1]/img[1]","naturalHeight":1000,"width":623,"diffbotUri":"image|3|-440951086","title":"V10 Nautico Pekin - Extra White Image","url":"http://www.kjslaundry.com/content/images/products/veja/v10-nautico-pekin-extra-white/v10-nautico-pekin-extra-white_10641-zoom.jpg","naturalWidth":760,"height":820}],"offerPrice":"£120.00","diffbotUri":"product|3|369067709","multipleProducts":true,"availability":true,"type":"product","title":"V10 Nautico Pekin - Extra White","offerPriceDetails":{"symbol":"£","amount":120,"text":"£120.00"},"breadcrumb":[{"link":"http://www.kjslaundry.com/","name":"Home"},{"link":"http://www.kjslaundry.com/womens/new/","name":"New"}],"humanLanguage":"en","pageUrl":"http://www.kjslaundry.com/veja/v10-nautico-pekin-extra-white.aspx","text":"Veja's V-10 sneakers have been designed to celebrate the French label's 10 year anniversary. The navy and red colour pops give the shoe a retro feel making it perfect to wear with all things.","category":"Clothing","brand":"VEJA","docId":2454321032,"seedUrlHash32":610045121,"parentUrlDocId":206768486273,"gburl":"http://www.kjslaundry.com/veja/v10-nautico-pekin-extra-white.aspx-diffbotxyz686409697","lastCrawlTimeUTC":1527058016,"timestamp":"Wed, 23 May 2018 06:46:56 GMT"}
-,
- {"images":[{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[2]/li[1]/a[1]/img[1]","naturalHeight":310,"width":142,"diffbotUri":"image|3|-92566317","url":"http://www.kjslaundry.com/content/images/products/soeur/dakota-skirt-noisette/dakota-skirt-noisette_10580-category.jpg","naturalWidth":236,"primary":true,"height":187},{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[1]/a[1]/img[1]","naturalHeight":1000,"width":623,"diffbotUri":"image|3|-1333476824","url":"http://www.kjslaundry.com/content/images/products/soeur/dakota-skirt-noisette/dakota-skirt-noisette_10580-zoom.jpg","naturalWidth":760,"height":820},{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[2]/a[1]/img[1]","naturalHeight":1000,"width":623,"diffbotUri":"image|3|-1529990329","url":"http://www.kjslaundry.com/content/images/products/soeur/dakota-skirt-noisette/dakota-skirt-noisette_10581-zoom.jpg","naturalWidth":760,"height":820}],"offerPrice":"£220.00","diffbotUri":"product|3|-325394623","multipleProducts":true,"availability":true,"type":"product","title":"Dakota Skirt - Noisette","offerPriceDetails":{"symbol":"£","amount":220,"text":"£220.00"},"breadcrumb":[{"link":"http://www.kjslaundry.com/","name":"Home"},{"link":"http://www.kjslaundry.com/womens/new/","name":"New"}],"humanLanguage":"en","pageUrl":"http://www.kjslaundry.com/soeur/dakota-skirt-noisette.aspx","text":"With a scalloped hem and button through popper fastenings. Tuck in a tee or short sleeved skirt for a chic day to night look.\nFabric: 100% Calf Leather\nCare: Dry Clean by leather experts only.","category":"Clothing","brand":"Soeur","docId":3663230905,"seedUrlHash32":178481290,"parentUrlDocId":176272144266,"gburl":"http://www.kjslaundry.com/soeur/dakota-skirt-noisette.aspx-diffbotxyz1381877720","lastCrawlTimeUTC":1527058002,"timestamp":"Wed, 23 May 2018 06:46:42 GMT"}
-,
- {"images":[{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[2]/li[1]/a[1]/img[1]","naturalHeight":310,"width":142,"diffbotUri":"image|3|447454887","url":"http://www.kjslaundry.com/content/images/products/veja/wata-canvas-white-pierre/wata-canvas-white-pierre_10605-category.jpg","naturalWidth":236,"primary":true,"height":187},{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[1]/a[1]/img[1]","naturalHeight":1000,"width":623,"diffbotUri":"image|3|-577839620","url":"http://www.kjslaundry.com/content/images/products/veja/wata-canvas-white-pierre/wata-canvas-white-pierre_10605-zoom.jpg","naturalWidth":760,"height":820},{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[2]/a[1]/img[1]","naturalHeight":1000,"width":623,"diffbotUri":"image|3|-774353125","url":"http://www.kjslaundry.com/content/images/products/veja/wata-canvas-white-pierre/wata-canvas-white-pierre_10606-zoom.jpg","naturalWidth":760,"height":820}],"offerPrice":"£75.00","diffbotUri":"product|3|2036294859","multipleProducts":true,"availability":true,"type":"product","title":"Wata Canvas White Pierre","offerPriceDetails":{"symbol":"£","amount":75,"text":"£75.00"},"breadcrumb":[{"link":"http://www.kjslaundry.com/","name":"Home"},{"link":"http://www.kjslaundry.com/womens/new/","name":"New"}],"humanLanguage":"en","pageUrl":"http://www.kjslaundry.com/veja/wata-canvas-white-pierre.aspx","text":"A cool low-top trainer from environmentally conscious label Veja. Organic cotton with canvas upper, lining and insole. Rounded rubber toe and a six eyelet fastening.","category":"Indoor Living","brand":"VEJA","docId":19264059282,"seedUrlHash32":3088104724,"parentUrlDocId":157706925972,"gburl":"http://www.kjslaundry.com/veja/wata-canvas-white-pierre.aspx-diffbotxyz4095776856","lastCrawlTimeUTC":1527058033,"timestamp":"Wed, 23 May 2018 06:47:13 GMT"}
-,
- {"images":[{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[2]/li[1]/a[1]/img[1]","naturalHeight":310,"width":142,"diffbotUri":"image|3|-1170702743","url":"http://www.kjslaundry.com/content/images/products/ulla-johnson/sigrid-top-porcelain/sigrid-top-porcelain_10625-category.jpg","naturalWidth":236,"primary":true,"height":187},{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[1]/a[1]/img[1]","naturalHeight":1000,"width":623,"diffbotUri":"image|3|1551232702","url":"http://www.kjslaundry.com/content/images/products/ulla-johnson/sigrid-top-porcelain/sigrid-top-porcelain_10625-zoom.jpg","naturalWidth":760,"height":820},{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[2]/a[1]/img[1]","naturalHeight":1000,"width":623,"diffbotUri":"image|3|1354719197","url":"http://www.kjslaundry.com/content/images/products/ulla-johnson/sigrid-top-porcelain/sigrid-top-porcelain_10626-zoom.jpg","naturalWidth":760,"height":820}],"offerPrice":"£240.00","diffbotUri":"product|3|-729255972","multipleProducts":true,"availability":true,"type":"product","title":"Sigrid Top Porcelain","offerPriceDetails":{"symbol":"£","amount":240,"text":"£240.00"},"breadcrumb":[{"link":"http://www.kjslaundry.com/","name":"Home"},{"link":"http://www.kjslaundry.com/womens/new/","name":"New"}],"humanLanguage":"en","pageUrl":"http://www.kjslaundry.com/ulla-johnson/sigrid-top-porcelain.aspx","text":"Vine floral printed cotton top. Crinkled cotton with intricate picot edging, flutter sleeve, ruffle detailing, split neck with handmade tassels.\nFabric: 100% Cotton\nCare: Dry Clean\nVine floral printed cotton top. Crinkled cotton with intricate picot edging, flutter sleeve, ruffle detailing, split neck with handmade tassels.\nVine floral printed cotton top. Crinkled cotton with intricate picot edging, flutter sleeve, ruffle detailing, split neck with handmade tassels.\nVine floral printed cotton top. Crinkled cotton with intricate picot edging, flutter sleeve, ruffle detailing, split neck with handmade tassels.","category":"Indoor Living","docId":25867122580,"seedUrlHash32":2240098297,"parentUrlDocId":62369642425,"gburl":"http://www.kjslaundry.com/ulla-johnson/sigrid-top-porcelain.aspx-diffbotxyz4177114401","lastCrawlTimeUTC":1527058014,"timestamp":"Wed, 23 May 2018 06:46:54 GMT"}
-,
- {"images":[{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[2]/li[1]/a[1]/img[1]","naturalHeight":310,"width":142,"diffbotUri":"image|3|-1809777009","url":"http://www.kjslaundry.com/content/images/products/bellerose/heysel-dress-navy/heysel-dress-navy_10613-category.jpg","naturalWidth":236,"primary":true,"height":187},{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[1]/a[1]/img[1]","naturalHeight":1000,"width":623,"diffbotUri":"image|3|1933603300","url":"http://www.kjslaundry.com/content/images/products/bellerose/heysel-dress-navy/heysel-dress-navy_10613-zoom.jpg","naturalWidth":760,"height":820},{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[2]/a[1]/img[1]","naturalHeight":1000,"width":623,"diffbotUri":"image|3|1737089795","url":"http://www.kjslaundry.com/content/images/products/bellerose/heysel-dress-navy/heysel-dress-navy_10614-zoom.jpg","naturalWidth":760,"height":820}],"offerPrice":"£185.00","diffbotUri":"product|3|2019484888","multipleProducts":true,"availability":true,"type":"product","title":"Heysel Dress - Navy","offerPriceDetails":{"symbol":"£","amount":185,"text":"£185.00"},"humanLanguage":"en","pageUrl":"http://www.kjslaundry.com/bellerose/heysel-dress-navy.aspx","text":"Vintage inspired cotton dress from Bellerose with ever so pretty eyelet embroidery. elasticated waist with Peter Pan collar and tear drop neckline. Falls to just below the knee.\nFabric: Shell - 50% Viscose, 50% Rayon Contrast - 100% Viscose. Embroidery tread - 100% Cotton\nCare: Handwash 30.","category":"Clothing","brand":"Bellerose","docId":42093721480,"seedUrlHash32":4006987659,"parentUrlDocId":180100659083,"gburl":"http://www.kjslaundry.com/bellerose/heysel-dress-navy.aspx-diffbotxyz1714967079","lastCrawlTimeUTC":1527058010,"timestamp":"Wed, 23 May 2018 06:46:50 GMT"}
-,
- {"images":[{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[2]/li[1]/a[1]/img[1]","naturalHeight":310,"width":142,"diffbotUri":"image|3|-1869774888","url":"http://www.kjslaundry.com/content/images/products/apieceapart/papyrus-shirt-metallic-stripe/papyrus-shirt-metallic-stripe_10654-category.jpg","naturalWidth":236,"primary":true,"height":187},{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[1]/a[1]/img[1]","naturalHeight":1000,"width":623,"diffbotUri":"image|3|1722482605","url":"http://www.kjslaundry.com/content/images/products/apieceapart/papyrus-shirt-metallic-stripe/papyrus-shirt-metallic-stripe_10654-zoom.jpg","naturalWidth":760,"height":820},{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[2]/a[1]/img[1]","naturalHeight":1000,"width":623,"diffbotUri":"image|3|1525969100","url":"http://www.kjslaundry.com/content/images/products/apieceapart/papyrus-shirt-metallic-stripe/papyrus-shirt-metallic-stripe_10655-zoom.jpg","naturalWidth":760,"height":820}],"offerPrice":"£225.00","diffbotUri":"product|3|-1829600821","multipleProducts":true,"availability":true,"type":"product","title":"Papyrus Shirt - Metallic Stripe","offerPriceDetails":{"symbol":"£","amount":225,"text":"£225.00"},"breadcrumb":[{"link":"http://www.kjslaundry.com/","name":"Home"},{"link":"http://www.kjslaundry.com/womens/new/","name":"New"}],"humanLanguage":"en","pageUrl":"http://www.kjslaundry.com/apieceapart/papyrus-shirt-metallic-stripe.aspx","text":"Cut in a lightweight cotton blend with a multi-coloured metallic stripe, this super cool shirt has a high collar, half button placket and elasticated cuffs. We love the curved hem detail. Tuck into high-waisted denim for a chic day look.\nFabric: 90% Cotton 10% Lurex. Lining 100% Cotton.\nCare: Dry clean recommended\n90% cotton, 10% lurex. Lining: 100% cotton.","category":"Clothing","brand":"ApieceApart","docId":60876699558,"seedUrlHash32":1575039277,"parentUrlDocId":267863013293,"gburl":"http://www.kjslaundry.com/apieceapart/papyrus-shirt-metallic-stripe.aspx-diffbotxyz1291986223","lastCrawlTimeUTC":1527058028,"timestamp":"Wed, 23 May 2018 06:47:08 GMT"}
-,
- {"images":[{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[2]/li[1]/a[1]/img[1]","naturalHeight":310,"width":142,"diffbotUri":"image|3|1968386796","title":"V-10 Trainer - Extra White Image","url":"http://www.kjslaundry.com/content/images/products/veja/v-10-trainer-extra-white/v-10-trainer-extra-white_10644-category.jpg","naturalWidth":236,"primary":true,"height":187},{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[1]/a[1]/img[1]","naturalHeight":1000,"width":623,"diffbotUri":"image|3|214785217","title":"V-10 Trainer - Extra White Image","url":"http://www.kjslaundry.com/content/images/products/veja/v-10-trainer-extra-white/v-10-trainer-extra-white_10644-zoom.jpg","naturalWidth":760,"height":820},{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[2]/a[1]/img[1]","naturalHeight":1000,"width":623,"diffbotUri":"image|3|18271712","title":"V-10 Trainer - Extra White Image","url":"http://www.kjslaundry.com/content/images/products/veja/v-10-trainer-extra-white/v-10-trainer-extra-white_10645-zoom.jpg","naturalWidth":760,"height":820}],"offerPrice":"£120.00","diffbotUri":"product|3|1613809709","multipleProducts":true,"availability":true,"type":"product","title":"V-10 Trainer - Extra White","offerPriceDetails":{"symbol":"£","amount":120,"text":"£120.00"},"breadcrumb":[{"link":"http://www.kjslaundry.com/","name":"Home"},{"link":"http://www.kjslaundry.com/womens/new/","name":"New"}],"humanLanguage":"en","pageUrl":"http://www.kjslaundry.com/veja/v-10-trainer-extra-white.aspx","text":"A pair of ecological trainers from Veja made from vegetable-tanned leather with a perforated toe, sitting on top of an Amazonian wild rubber sole with a herringbone tread.\n016, Veja introduces the V-10 model to celebrate our 10th anniversary. The V-10 model made out of ecological and sustainable materials stands for 10 ans d\u2019amour. The style comes up a little large.","category":"Clothing","brand":"VEJA","docId":78741469111,"seedUrlHash32":1353352281,"parentUrlDocId":198921861017,"gburl":"http://www.kjslaundry.com/veja/v-10-trainer-extra-white.aspx-diffbotxyz3745628825","lastCrawlTimeUTC":1527058016,"timestamp":"Wed, 23 May 2018 06:46:56 GMT"}
-,
- {"images":[{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[2]/li[1]/a[1]/img[1]","naturalHeight":310,"width":142,"diffbotUri":"image|3|-77791100","url":"http://www.kjslaundry.com/content/images/products/sessun/kimitomo-blouse-indigo/kimitomo-blouse-indigo_10647-category.jpg","naturalWidth":236,"primary":true,"height":187},{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[1]/a[1]/img[1]","naturalHeight":1000,"width":623,"diffbotUri":"image|3|1682814553","url":"http://www.kjslaundry.com/content/images/products/sessun/kimitomo-blouse-indigo/kimitomo-blouse-indigo_10647-zoom.jpg","naturalWidth":760,"height":820},{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[2]/a[1]/img[1]","naturalHeight":1000,"width":623,"diffbotUri":"image|3|1486301048","url":"http://www.kjslaundry.com/content/images/products/sessun/kimitomo-blouse-indigo/kimitomo-blouse-indigo_10648-zoom.jpg","naturalWidth":760,"height":820}],"offerPrice":"£135.00","diffbotUri":"product|3|1757790486","multipleProducts":true,"availability":true,"type":"product","title":"Kimitomo Blouse - Indigo","offerPriceDetails":{"symbol":"£","amount":135,"text":"£135.00"},"breadcrumb":[{"link":"http://www.kjslaundry.com/","name":"Home"},{"link":"http://www.kjslaundry.com/womens/new/","name":"New"}],"humanLanguage":"en","pageUrl":"http://www.kjslaundry.com/sessun/kimitomo-blouse-indigo.aspx","text":"The Kimitomo blouse a best selling Sessun style crafted here in a super wearable navy. With voluminous short sleeves and chiffon trims this top will work well with denim, shorts or tucked into a skirt. We love the lace inserts on the shoulders and the 3-button detailing.\nFabric: 100% Cotton\nCare: 30 delicate wash recommended","category":"Clothing","brand":"Sessun","docId":93400315803,"seedUrlHash32":4211872516,"parentUrlDocId":171715606404,"gburl":"http://www.kjslaundry.com/sessun/kimitomo-blouse-indigo.aspx-diffbotxyz3043126250","lastCrawlTimeUTC":1527058007,"timestamp":"Wed, 23 May 2018 06:46:47 GMT"}
-,
- {"offerPriceDetails":{"symbol":"£","amount":180,"text":"£180.00"},"images":[{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[1]/a[1]/img[1]","naturalHeight":1000,"width":623,"diffbotUri":"image|3|594456466","url":"http://www.kjslaundry.com/content/images/products/pared-eyewear/puss-boots/puss-boots_10682-zoom.jpg","naturalWidth":760,"primary":true,"height":820}],"offerPrice":"£180.00","humanLanguage":"en","diffbotUri":"product|3|1638599316","pageUrl":"http://www.kjslaundry.com/pared-eyewear/puss-boots.aspx","multipleProducts":true,"text":"This is the first frame ever created for the Pared label. The cat eye with a black handmade acetate frame. Gold deco details at the corners and dark tortoise arms. Solid brown with Cr39 lenses. Gold 'p' temple. German rubber dipped screws. Comes with custom Pared case, lens cloth and warranty card.","availability":true,"type":"product","title":"Pared Eyewear","category":"Jewelry & Watches","docId":114091407245,"seedUrlHash32":1229090665,"parentUrlDocId":35588831145,"gburl":"http://www.kjslaundry.com/pared-eyewear/puss-boots.aspx-diffbotxyz2977769891","lastCrawlTimeUTC":1527058009,"timestamp":"Wed, 23 May 2018 06:46:49 GMT"}
-,
- {"images":[{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[2]/li[1]/a[1]/img[1]","naturalHeight":310,"width":142,"diffbotUri":"image|3|222760797","url":"http://www.kjslaundry.com/content/images/products/xirena/poppy-top-seaside-stripe/poppy-top-seaside-stripe_10664-category.jpg","naturalWidth":236,"primary":true,"height":187},{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[1]/a[1]/img[1]","naturalHeight":1000,"width":623,"diffbotUri":"image|3|-54847054","url":"http://www.kjslaundry.com/content/images/products/xirena/poppy-top-seaside-stripe/poppy-top-seaside-stripe_10664-zoom.jpg","naturalWidth":760,"height":820},{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[2]/a[1]/img[1]","naturalHeight":1000,"width":623,"diffbotUri":"image|3|-251360559","url":"http://www.kjslaundry.com/content/images/products/xirena/poppy-top-seaside-stripe/poppy-top-seaside-stripe_10665-zoom.jpg","naturalWidth":760,"height":820}],"offerPrice":"£165.00","diffbotUri":"product|3|-430077497","multipleProducts":true,"availability":true,"type":"product","title":"Poppy Top - Seaside Stripe","offerPriceDetails":{"symbol":"£","amount":165,"text":"£165.00"},"breadcrumb":[{"link":"http://www.kjslaundry.com/","name":"Home"},{"link":"http://www.kjslaundry.com/womens/new/","name":"New"}],"humanLanguage":"en","pageUrl":"http://www.kjslaundry.com/xirena/poppy-top-seaside-stripe.aspx","text":"A new style from Xirena, the Poppy Top in this cool blue stripe has a tiered hem and v-neck line. Works perfectly teamed with denim or shorts for a easy chic look\nFabric: 100% Cotton\nCare: Gentle machine wash","category":"Clothing","brand":"Xirena","docId":121292257195,"seedUrlHash32":999911733,"parentUrlDocId":22474749877,"gburl":"http://www.kjslaundry.com/xirena/poppy-top-seaside-stripe.aspx-diffbotxyz655845484","lastCrawlTimeUTC":1527058025,"timestamp":"Wed, 23 May 2018 06:47:05 GMT"}
-,
- {"images":[{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[2]/li[1]/a[1]/img[1]","naturalHeight":310,"width":142,"diffbotUri":"image|3|-689977250","url":"http://www.kjslaundry.com/content/images/products/xirena/channing-shirt-seaside-stripe/channing-shirt-seaside-stripe_10690-category.jpg","naturalWidth":236,"primary":true,"height":187},{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[1]/a[1]/img[1]","naturalHeight":1000,"width":623,"diffbotUri":"image|3|-875398349","url":"http://www.kjslaundry.com/content/images/products/xirena/channing-shirt-seaside-stripe/channing-shirt-seaside-stripe_10690-zoom.jpg","naturalWidth":760,"height":820},{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[2]/a[1]/img[1]","naturalHeight":1000,"width":623,"diffbotUri":"image|3|-1071911854","url":"http://www.kjslaundry.com/content/images/products/xirena/channing-shirt-seaside-stripe/channing-shirt-seaside-stripe_10691-zoom.jpg","naturalWidth":760,"height":820}],"offerPrice":"£170.00","diffbotUri":"product|3|-832576734","multipleProducts":true,"availability":true,"type":"product","title":"Channing Shirt - Seaside Stripe","offerPriceDetails":{"symbol":"£","amount":170,"text":"£170.00"},"breadcrumb":[{"link":"http://www.kjslaundry.com/","name":"Home"},{"link":"http://www.kjslaundry.com/womens/new/","name":"New"}],"humanLanguage":"en","pageUrl":"http://www.kjslaundry.com/xirena/channing-shirt-seaside-stripe.aspx","text":"A fresh take on the Channing, we love the cool stripe. Tuck into the Paige Pant or denim for simple day dressing.\nFabric: 100% Cotton\nCare: Gentle machine wash","category":"Clothing","brand":"Xirena","docId":148786755509,"seedUrlHash32":3050867705,"parentUrlDocId":243569047481,"gburl":"http://www.kjslaundry.com/xirena/channing-shirt-seaside-stripe.aspx-diffbotxyz1754386165","lastCrawlTimeUTC":1527057999,"timestamp":"Wed, 23 May 2018 06:46:39 GMT"}
-,
- {"images":[{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[2]/li[1]/a[1]/img[1]","naturalHeight":310,"width":142,"diffbotUri":"image|3|-504941514","url":"http://www.kjslaundry.com/content/images/products/mercules/greyhound-bag-black/greyhound-bag-black_10608-category.jpg","naturalWidth":236,"primary":true,"height":187},{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[1]/a[1]/img[1]","naturalHeight":1000,"width":623,"diffbotUri":"image|3|576295691","url":"http://www.kjslaundry.com/content/images/products/mercules/greyhound-bag-black/greyhound-bag-black_10608-zoom.jpg","naturalWidth":760,"height":820},{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[2]/a[1]/img[1]","naturalHeight":1000,"width":623,"diffbotUri":"image|3|379782186","url":"http://www.kjslaundry.com/content/images/products/mercules/greyhound-bag-black/greyhound-bag-black_10609-zoom.jpg","naturalWidth":760,"height":820}],"offerPrice":"£250.00","diffbotUri":"product|3|82575869","multipleProducts":true,"availability":true,"type":"product","title":"Greyhound Bag - Black","offerPriceDetails":{"symbol":"£","amount":250,"text":"£250.00"},"breadcrumb":[{"link":"http://www.kjslaundry.com/","name":"Home"},{"link":"http://www.kjslaundry.com/womens/new/","name":"New"}],"humanLanguage":"en","pageUrl":"http://www.kjslaundry.com/mercules/greyhound-bag-black.aspx","text":"The Greyhound shoulder bag from Mercules is designed and handmade in a black soft to the touch leather Metal star studs detailing on the front flap, fold over front flap with a magnetic press stud fastening. Adjustable buckle fastened shoulder strap.\nFabric: 100% Leather","category":"Indoor Living","brand":"Mercules","docId":164833720231,"seedUrlHash32":2810286881,"parentUrlDocId":7105263521,"gburl":"http://www.kjslaundry.com/mercules/greyhound-bag-black.aspx-diffbotxyz3214696562","lastCrawlTimeUTC":1527058030,"timestamp":"Wed, 23 May 2018 06:47:10 GMT"}
-,
- {"images":[{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[2]/li[1]/a[1]/img[1]","naturalHeight":310,"width":142,"diffbotUri":"image|3|1220699618","url":"http://www.kjslaundry.com/content/images/products/trovata-birds-of-paradis/nina-shift-dress-natural/nina-shift-dress-natural_10612-category.jpg","naturalWidth":236,"primary":true,"height":187},{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[1]/a[1]/img[1]","naturalHeight":1000,"width":623,"diffbotUri":"image|3|260602551","url":"http://www.kjslaundry.com/content/images/products/trovata-birds-of-paradis/nina-shift-dress-natural/nina-shift-dress-natural_10612-zoom.jpg","naturalWidth":760,"height":820}],"offerPrice":"£305.00","diffbotUri":"product|3|1879243897","multipleProducts":true,"availability":true,"type":"product","title":"Nina Shift Dress - Natural","offerPriceDetails":{"symbol":"£","amount":305,"text":"£305.00"},"breadcrumb":[{"link":"http://www.kjslaundry.com/","name":"Home"},{"link":"http://www.kjslaundry.com/womens/new/","name":"New"}],"humanLanguage":"en","pageUrl":"http://www.kjslaundry.com/trovata-birds-of-paradis/nina-shift-dress-natural.aspx","text":"The Nina shift dress is a perfect summer dress, easy and effortless, cut in a soft cotton with navy embroidery. Team with sandals for a chic day look.\nFabric: 100% Cotton\nCare: Dry Clean only","category":"Clothing","brand":"Nina","docId":173368129424,"seedUrlHash32":2807175239,"parentUrlDocId":247620319111,"gburl":"http://www.kjslaundry.com/trovata-birds-of-paradis/nina-shift-dress-natural.aspx-diffbotxyz4028522896","lastCrawlTimeUTC":1527058013,"timestamp":"Wed, 23 May 2018 06:46:53 GMT"}
-,
- {"images":[{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[1]/a[1]/img[1]","naturalHeight":1000,"width":623,"diffbotUri":"image|3|694135931","url":"http://www.kjslaundry.com/content/images/products/ulla-johnson/anja-dress/anja-dress_10617-zoom.jpg","naturalWidth":760,"primary":true,"height":820}],"offerPrice":"£388.00","diffbotUri":"product|3|-1345224305","multipleProducts":true,"availability":true,"type":"product","title":"Ulla Johnson","offerPriceDetails":{"symbol":"£","amount":388,"text":"£388.00"},"humanLanguage":"en","pageUrl":"http://www.kjslaundry.com/ulla-johnson/anja-dress.aspx","text":"Another stunning piece from Ulla Johnson hits the store this season. The Anja Dress is a pretty floral printed cotton midi dress. Crinkle cotton detailing with intricate picot edging and ruffle detailing. Split neck with handmade tassels, flutter sleeves, cinching sides and prairie skirt.\nFabric: 100% Cotton\nCare: Hand wash","category":"Jewelry & Watches","brand":"Ulla Johnson","docId":174262335386,"seedUrlHash32":513714038,"parentUrlDocId":202377181110,"gburl":"http://www.kjslaundry.com/ulla-johnson/anja-dress.aspx-diffbotxyz1333770777","lastCrawlTimeUTC":1527058019,"timestamp":"Wed, 23 May 2018 06:46:59 GMT"}
-,
- {"images":[{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[2]/li[1]/a[1]/img[1]","naturalHeight":310,"width":142,"diffbotUri":"image|3|91785398","title":"Sole and Mare Sunglasses Image","url":"http://www.kjslaundry.com/content/images/products/pared-eyewear/sole-and-mare-sunglasses/sole-and-mare-sunglasses_10667-category.jpg","naturalWidth":236,"primary":true,"height":187},{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[1]/a[1]/img[1]","naturalHeight":1000,"width":623,"diffbotUri":"image|3|-389470325","title":"Sole and Mare Sunglasses Image","url":"http://www.kjslaundry.com/content/images/products/pared-eyewear/sole-and-mare-sunglasses/sole-and-mare-sunglasses_10667-zoom.jpg","naturalWidth":760,"height":820},{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[2]/a[1]/img[1]","naturalHeight":1000,"width":623,"diffbotUri":"image|3|-782497335","title":"Sole and Mare Sunglasses Image","url":"http://www.kjslaundry.com/content/images/products/pared-eyewear/sole-and-mare-sunglasses/sole-and-mare-sunglasses_10669-zoom.jpg","naturalWidth":760,"height":820}],"offerPrice":"£180.00","diffbotUri":"product|3|-524700385","multipleProducts":true,"availability":true,"type":"product","title":"Sole and Mare Sunglasses","offerPriceDetails":{"symbol":"£","amount":180,"text":"£180.00"},"breadcrumb":[{"link":"http://www.kjslaundry.com/","name":"Home"},{"link":"http://www.kjslaundry.com/womens/new/","name":"New"}],"humanLanguage":"en","pageUrl":"http://www.kjslaundry.com/pared-eyewear/sole-and-mare-sunglasses.aspx","text":"With a directional hexagonal shape and inspired by Italian design, the Sole and Mare (Sun and Sea) has a contrast laminated design with cut out details on the temple. Handmade tortoise acetate with dark tortoise arms. Brown gradient lenses, CAT 3 Gold P inlay, hinge and printing.\nFabric: German OBE rubber dipped straws, Custom pared packaging feauturing box, pouch and microfibre pouch. One year warranty with proof of purchase.\nFrame Measurements:\nLens Height 48mm\nLens Width 52mm\nNosebridge 21mm\nTemple 141mm","category":"Clothing","docId":193228863367,"seedUrlHash32":2272011350,"parentUrlDocId":23746852758,"gburl":"http://www.kjslaundry.com/pared-eyewear/sole-and-mare-sunglasses.aspx-diffbotxyz1581083026","lastCrawlTimeUTC":1527058001,"timestamp":"Wed, 23 May 2018 06:46:41 GMT"}
-,
- {"images":[{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[2]/li[1]/a[1]/img[1]","naturalHeight":310,"width":142,"diffbotUri":"image|3|-1472477540","url":"http://www.kjslaundry.com/content/images/products/xirena/avery-top/avery-top_10687-category.jpg","naturalWidth":236,"primary":true,"height":187},{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[1]/a[1]/img[1]","naturalHeight":1000,"width":623,"diffbotUri":"image|3|-520927119","url":"http://www.kjslaundry.com/content/images/products/xirena/avery-top/avery-top_10687-zoom.jpg","naturalWidth":760,"height":820},{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[2]/a[1]/img[1]","naturalHeight":1000,"width":623,"diffbotUri":"image|3|-717440624","url":"http://www.kjslaundry.com/content/images/products/xirena/avery-top/avery-top_10688-zoom.jpg","naturalWidth":760,"height":820}],"offerPrice":"£160.00","diffbotUri":"product|3|-37581488","multipleProducts":true,"availability":true,"type":"product","title":"Avery Top","offerPriceDetails":{"symbol":"£","amount":160,"text":"£160.00"},"humanLanguage":"en","pageUrl":"http://www.kjslaundry.com/xirena/avery-top.aspx","text":"A new style popover top from Xirena, cut in the labels iconic Chelsea Gauze cotton, perfect paired with the Paige Pant (and equally well with denim)","category":"Clothing","brand":"Avery","docId":202605033369,"seedUrlHash32":925495565,"parentUrlDocId":39580202893,"gburl":"http://www.kjslaundry.com/xirena/avery-top.aspx-diffbotxyz2367245559","lastCrawlTimeUTC":1527058024,"timestamp":"Wed, 23 May 2018 06:47:04 GMT"}
-,
- {"images":[{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[2]/li[1]/a[1]/img[1]","naturalHeight":310,"width":142,"diffbotUri":"image|3|1914979532","url":"http://www.kjslaundry.com/content/images/products/ulla-johnson/lillian-blouse-porcelain/lillian-blouse-porcelain_10622-category.jpg","naturalWidth":236,"primary":true,"height":187},{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[1]/a[1]/img[1]","naturalHeight":1000,"width":623,"diffbotUri":"image|3|-374186335","url":"http://www.kjslaundry.com/content/images/products/ulla-johnson/lillian-blouse-porcelain/lillian-blouse-porcelain_10622-zoom.jpg","naturalWidth":760,"height":820},{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[2]/a[1]/img[1]","naturalHeight":1000,"width":623,"diffbotUri":"image|3|-570699840","url":"http://www.kjslaundry.com/content/images/products/ulla-johnson/lillian-blouse-porcelain/lillian-blouse-porcelain_10623-zoom.jpg","naturalWidth":760,"height":820}],"offerPrice":"£260.00","diffbotUri":"product|3|1204498644","multipleProducts":true,"availability":true,"type":"product","title":"Lillian Blouse Porcelain","offerPriceDetails":{"symbol":"£","amount":260,"text":"£260.00"},"breadcrumb":[{"link":"http://www.kjslaundry.com/","name":"Home"},{"link":"http://www.kjslaundry.com/womens/new/","name":"New"}],"humanLanguage":"en","pageUrl":"http://www.kjslaundry.com/ulla-johnson/lillian-blouse-porcelain.aspx","text":"Pretty vine floral printed cotton peasant blouse. Crinkled cotton with intricate picot edging and diagonal ruffle detailing. Flattering split neck with handmade tassels. Perfect to pair with denim.\nFabric: 100% cotton\nCare: Cool hand wash","category":"Clothing","docId":202771249029,"seedUrlHash32":1074126248,"parentUrlDocId":129923151784,"gburl":"http://www.kjslaundry.com/ulla-johnson/lillian-blouse-porcelain.aspx-diffbotxyz3819037177","lastCrawlTimeUTC":1527058034,"timestamp":"Wed, 23 May 2018 06:47:14 GMT"}
-,
- {"images":[{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[2]/li[1]/a[1]/img[1]","naturalHeight":310,"width":142,"diffbotUri":"image|3|-83595285","title":"Kimitomo Blouse - Fleur de Sel Image","url":"http://www.kjslaundry.com/content/images/products/sessun/kimitomo-blouse-fleur-de-sel/kimitomo-blouse-fleur-de-sel_10651-category.jpg","naturalWidth":236,"primary":true,"height":187},{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[1]/a[1]/img[1]","naturalHeight":1000,"width":623,"diffbotUri":"image|3|2087383360","title":"Kimitomo Blouse - Fleur de Sel Image","url":"http://www.kjslaundry.com/content/images/products/sessun/kimitomo-blouse-fleur-de-sel/kimitomo-blouse-fleur-de-sel_10651-zoom.jpg","naturalWidth":760,"height":820},{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[2]/a[1]/img[1]","naturalHeight":1000,"width":623,"diffbotUri":"image|3|1890869855","title":"Kimitomo Blouse - Fleur de Sel Image","url":"http://www.kjslaundry.com/content/images/products/sessun/kimitomo-blouse-fleur-de-sel/kimitomo-blouse-fleur-de-sel_10652-zoom.jpg","naturalWidth":760,"height":820}],"offerPrice":"£135.00","diffbotUri":"product|3|-1711357757","multipleProducts":true,"availability":true,"type":"product","title":"Kimitomo Blouse - Fleur de Sel","offerPriceDetails":{"symbol":"£","amount":135,"text":"£135.00"},"breadcrumb":[{"link":"http://www.kjslaundry.com/","name":"Home"},{"link":"http://www.kjslaundry.com/womens/new/","name":"New"}],"humanLanguage":"en","pageUrl":"http://www.kjslaundry.com/sessun/kimitomo-blouse-fleur-de-sel.aspx","text":"The Kimitomo blouse a best selling Sessun style crafted here in a super wearable cream. With voluminous short sleeves and chiffon trims this top will work well with denim, shorts or tucked into a skirt. We love the lace inserts on the shoulders and the 3-button detailing.\nFabric: 100% Cotton\nCare: 30 delicate wash recommended","category":"Clothing","brand":"Sessun","docId":214991976328,"seedUrlHash32":545774879,"parentUrlDocId":99330029471,"gburl":"http://www.kjslaundry.com/sessun/kimitomo-blouse-fleur-de-sel.aspx-diffbotxyz2105940347","lastCrawlTimeUTC":1527058005,"timestamp":"Wed, 23 May 2018 06:46:45 GMT"}
-,
- {"images":[{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[2]/li[1]/a[1]/img[1]","naturalHeight":310,"width":142,"diffbotUri":"image|3|1156545693","title":"Cat and Mouse Sunglasses - Tawny Image","url":"http://www.kjslaundry.com/content/images/products/pared-eyewear/cat-and-mouse-sunglasses-tawny/cat-and-mouse-sunglasses-tawny_10671-category.jpg","naturalWidth":236,"primary":true,"height":187},{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[1]/a[1]/img[1]","naturalHeight":1000,"width":623,"diffbotUri":"image|3|-1708382478","title":"Cat and Mouse Sunglasses - Tawny Image","url":"http://www.kjslaundry.com/content/images/products/pared-eyewear/cat-and-mouse-sunglasses-tawny/cat-and-mouse-sunglasses-tawny_10671-zoom.jpg","naturalWidth":760,"height":820},{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[2]/a[1]/img[1]","naturalHeight":1000,"width":623,"diffbotUri":"image|3|-1904895983","title":"Cat and Mouse Sunglasses - Tawny Image","url":"http://www.kjslaundry.com/content/images/products/pared-eyewear/cat-and-mouse-sunglasses-tawny/cat-and-mouse-sunglasses-tawny_10672-zoom.jpg","naturalWidth":760,"height":820}],"offerPrice":"£180.00","diffbotUri":"product|3|-1033259254","multipleProducts":true,"availability":true,"type":"product","title":"Cat and Mouse Sunglasses - Tawny","offerPriceDetails":{"symbol":"£","amount":180,"text":"£180.00"},"breadcrumb":[{"link":"http://www.kjslaundry.com/","name":"Home"},{"link":"http://www.kjslaundry.com/womens/new/","name":"New"}],"humanLanguage":"en","pageUrl":"http://www.kjslaundry.com/pared-eyewear/cat-and-mouse-sunglasses-tawny.aspx","text":"We love the on trend shape of Cat and Mouse. With a small cut frame and contrasting cat-eye corners. Taupe acetate handmade frame and temple with laminated blush accents.\nSolid brown lenses CAT 3. Silver P inlay, German rubber dipped screws. Includes custom pared case, lens cloth, warranty card and box.\nDimensions:\nLens Height - 46.5mm\nLens Width - 51mm\nNosebridge - 17.5mm\nTemple - 140mm","category":"Indoor Living","docId":227011245960,"seedUrlHash32":1701620607,"parentUrlDocId":164910380991,"gburl":"http://www.kjslaundry.com/pared-eyewear/cat-and-mouse-sunglasses-tawny.aspx-diffbotxyz2498711405","lastCrawlTimeUTC":1527058004,"timestamp":"Wed, 23 May 2018 06:46:44 GMT"}
-,
- {"images":[{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[2]/li[1]/a[1]/img[1]","naturalHeight":310,"width":142,"diffbotUri":"image|3|-1566382463","url":"http://www.kjslaundry.com/content/images/products/xirena/kendall-dress-red-hot/kendall-dress-red-hot_10660-category.jpg","naturalWidth":236,"primary":true,"height":187},{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[1]/a[1]/img[1]","naturalHeight":1000,"width":623,"diffbotUri":"image|3|1606951638","url":"http://www.kjslaundry.com/content/images/products/xirena/kendall-dress-red-hot/kendall-dress-red-hot_10660-zoom.jpg","naturalWidth":760,"height":820},{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[2]/a[1]/img[1]","naturalHeight":1000,"width":623,"diffbotUri":"image|3|1213924628","url":"http://www.kjslaundry.com/content/images/products/xirena/kendall-dress-red-hot/kendall-dress-red-hot_10662-zoom.jpg","naturalWidth":760,"height":820}],"offerPrice":"£280.00","diffbotUri":"product|3|1115359447","multipleProducts":true,"availability":true,"type":"product","title":"Kendall Dress - Red Hot","offerPriceDetails":{"symbol":"£","amount":280,"text":"£280.00"},"breadcrumb":[{"link":"http://www.kjslaundry.com/","name":"Home"},{"link":"http://www.kjslaundry.com/womens/new/","name":"New"}],"humanLanguage":"en","pageUrl":"http://www.kjslaundry.com/xirena/kendall-dress-red-hot.aspx","text":"New dress shape from Xirena, the Kendall cut in the iconic Chelsea Gauze fabric. With an on-trend flutter sleeve and tiered skirt this dress is the ultimate through on and go style. Team with trainer or flat sandals for the day and dress up with a heel for cool summer nights.\nFabric: 100% Cotton\nCare: Gentle wash","category":"Clothing","brand":"Kendall","docId":243837892537,"seedUrlHash32":84984075,"parentUrlDocId":30149769099,"gburl":"http://www.kjslaundry.com/xirena/kendall-dress-red-hot.aspx-diffbotxyz3451053081","lastCrawlTimeUTC":1527058027,"timestamp":"Wed, 23 May 2018 06:47:07 GMT"}
-,
- {"images":[{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[2]/li[1]/a[1]/img[1]","naturalHeight":310,"width":142,"diffbotUri":"image|3|788245330","url":"http://www.kjslaundry.com/content/images/products/xirena/jagger-shirt-seaport-blue/jagger-shirt-seaport-blue_10692-category.jpg","naturalWidth":236,"primary":true,"height":187},{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[1]/a[1]/img[1]","naturalHeight":1000,"width":623,"diffbotUri":"image|3|-1600260057","url":"http://www.kjslaundry.com/content/images/products/xirena/jagger-shirt-seaport-blue/jagger-shirt-seaport-blue_10692-zoom.jpg","naturalWidth":760,"height":820}],"offerPrice":"£195.00","diffbotUri":"product|3|-2055383289","multipleProducts":true,"availability":true,"type":"product","title":"Jagger Shirt - Seaport Blue","offerPriceDetails":{"symbol":"£","amount":195,"text":"£195.00"},"breadcrumb":[{"link":"http://www.kjslaundry.com/","name":"Home"},{"link":"http://www.kjslaundry.com/womens/new/","name":"New"}],"humanLanguage":"en","pageUrl":"http://www.kjslaundry.com/xirena/jagger-shirt-seaport-blue.aspx","text":"The newest shirt to the Xirena collection. WIth cool pintuck details this is a classic menswear inspired shape. You'll be wearing it with everything. Cut in a cool blue shade.\nFabric: 100% Cotton\nCare: Gentle machine wash\n.","category":"Clothing","brand":"Xirena","docId":245591472004,"seedUrlHash32":671932077,"parentUrlDocId":671938477,"gburl":"http://www.kjslaundry.com/xirena/jagger-shirt-seaport-blue.aspx-diffbotxyz2456166115","lastCrawlTimeUTC":1527057999,"timestamp":"Wed, 23 May 2018 06:46:39 GMT"}
-,
- {"images":[{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[2]/li[1]/a[1]/img[1]","naturalHeight":310,"width":142,"diffbotUri":"image|3|2130429515","url":"http://www.kjslaundry.com/content/images/products/sessun/charles-harper-dress-blue-celeste/charles-harper-dress-blue-celeste_10657-category.jpg","naturalWidth":236,"primary":true,"height":187},{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[1]/a[1]/img[1]","naturalHeight":1000,"width":623,"diffbotUri":"image|3|-213092448","url":"http://www.kjslaundry.com/content/images/products/sessun/charles-harper-dress-blue-celeste/charles-harper-dress-blue-celeste_10657-zoom.jpg","naturalWidth":760,"height":820},{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[2]/a[1]/img[1]","naturalHeight":1000,"width":623,"diffbotUri":"image|3|-409605953","url":"http://www.kjslaundry.com/content/images/products/sessun/charles-harper-dress-blue-celeste/charles-harper-dress-blue-celeste_10658-zoom.jpg","naturalWidth":760,"height":820}],"offerPrice":"£159.00","diffbotUri":"product|3|-1154082199","multipleProducts":true,"availability":true,"type":"product","title":"Charles Harper Dress- Blue Celeste","offerPriceDetails":{"symbol":"£","amount":159,"text":"£159.00"},"breadcrumb":[{"link":"http://www.kjslaundry.com/","name":"Home"},{"link":"http://www.kjslaundry.com/womens/new/","name":"New"}],"humanLanguage":"en","pageUrl":"http://www.kjslaundry.com/sessun/charles-harper-dress-blue-celeste.aspx","text":"Super easy viscose twill dress from Sessun, With voluminous sleeves and a removable belt. Button fastening to the waist with same fabric buttons. team thiis dress with trainers for a relaxed day look or a sandal for a smarter more feminine take.\nFabric: 85% Viscose 15% Polyamide\nCare: Delicate machine wash","category":"Clothing","brand":"Sessun","docId":262017496998,"seedUrlHash32":2707334522,"parentUrlDocId":273290278842,"gburl":"http://www.kjslaundry.com/sessun/charles-harper-dress-blue-celeste.aspx-diffbotxyz1692423542","lastCrawlTimeUTC":1527058022,"timestamp":"Wed, 23 May 2018 06:47:02 GMT"}
-,
- {"images":[{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[2]/li[1]/a[1]/img[1]","naturalHeight":310,"width":142,"diffbotUri":"image|3|-1065575181","title":"Lime and The Coconut Sunglasses Image","url":"http://www.kjslaundry.com/content/images/products/pared-eyewear/lime-and-the-coconut-sunglasses/lime-and-the-coconut-sunglasses_10679-category.jpg","naturalWidth":236,"primary":true,"height":187},{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[1]/a[1]/img[1]","naturalHeight":1000,"width":623,"diffbotUri":"image|3|-1999445432","title":"Lime and The Coconut Sunglasses Image","url":"http://www.kjslaundry.com/content/images/products/pared-eyewear/lime-and-the-coconut-sunglasses/lime-and-the-coconut-sunglasses_10679-zoom.jpg","naturalWidth":760,"height":820},{"xpath":"/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[2]/a[1]/img[1]","naturalHeight":1000,"width":623,"diffbotUri":"image|3|-2027775246","title":"Lime and The Coconut Sunglasses Image","url":"http://www.kjslaundry.com/content/images/products/pared-eyewear/lime-and-the-coconut-sunglasses/lime-and-the-coconut-sunglasses_10680-zoom.jpg","naturalWidth":760,"height":820}],"offerPrice":"£180.00","diffbotUri":"product|3|-2101332144","multipleProducts":true,"availability":true,"type":"product","title":"Lime and The Coconut Sunglasses","offerPriceDetails":{"symbol":"£","amount":180,"text":"£180.00"},"breadcrumb":[{"link":"http://www.kjslaundry.com/","name":"Home"},{"link":"http://www.kjslaundry.com/womens/new/","name":"New"}],"humanLanguage":"en","pageUrl":"http://www.kjslaundry.com/pared-eyewear/lime-and-the-coconut-sunglasses.aspx","text":"Super cool Hipster inspired round frame sunglasses from Australian label Pared. A unisex style with medium round frames Handmade dark tortoise front featuring signature pared cutout detailing. Black temple. Brown gradient lenses - Cat 3. Gold \u201cp\u201d temple inlay, gold hinge & gold printing, German rubber dipped screws. Comes with Pared box and pouch.","category":"Clothing","docId":269774354324,"seedUrlHash32":2691430050,"parentUrlDocId":15576332194,"gburl":"http://www.kjslaundry.com/pared-eyewear/lime-and-the-coconut-sunglasses.aspx-diffbotxyz111113228","lastCrawlTimeUTC":1527058031,"timestamp":"Wed, 23 May 2018 06:47:11 GMT"}
+  {
+    "images": [
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[2]/li[1]/a[1]/img[1]",
+        "naturalHeight": 310,
+        "width": 142,
+        "diffbotUri": "image|3|-1325660386",
+        "url": "http://www.kjslaundry.com/content/images/products/xirena/paige-pant-freedom-stripe-love/paige-pant-freedom-stripe-love_10685-category.jpg",
+        "naturalWidth": 236,
+        "primary": true,
+        "height": 187
+      },
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[1]/a[1]/img[1]",
+        "naturalHeight": 1000,
+        "width": 623,
+        "diffbotUri": "image|3|-715384333",
+        "url": "http://www.kjslaundry.com/content/images/products/xirena/paige-pant-freedom-stripe-love/paige-pant-freedom-stripe-love_10685-zoom.jpg",
+        "naturalWidth": 760,
+        "height": 820
+      },
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[2]/a[1]/img[1]",
+        "naturalHeight": 1000,
+        "width": 623,
+        "diffbotUri": "image|3|-911897838",
+        "url": "http://www.kjslaundry.com/content/images/products/xirena/paige-pant-freedom-stripe-love/paige-pant-freedom-stripe-love_10686-zoom.jpg",
+        "naturalWidth": 760,
+        "height": 820
+      }
+    ],
+    "offerPrice": "£200.00",
+    "diffbotUri": "product|3|-464408315",
+    "multipleProducts": true,
+    "availability": true,
+    "type": "product",
+    "title": "Paige Pant - Freedom Stripe Love",
+    "offerPriceDetails": {
+      "symbol": "£",
+      "amount": 200,
+      "text": "£200.00"
+    },
+    "breadcrumb": [
+      {
+        "link": "http://www.kjslaundry.com/",
+        "name": "Home"
+      },
+      {
+        "link": "http://www.kjslaundry.com/womens/new/",
+        "name": "New"
+      }
+    ],
+    "humanLanguage": "en",
+    "pageUrl": "http://www.kjslaundry.com/xirena/paige-pant-freedom-stripe-love.aspx",
+    "text": "The Paige Pant from Xirena in a super cool summer stripe. We love the textured cotton with subtle lurex thread. Team with a tee and sandals for a relaxed day look.\nFabric: 100% Cotton\nCare: Gentle machine wash",
+    "category": "Clothing",
+    "brand": "Xirena",
+    "docId": 653899678,
+    "seedUrlHash32": 2887304554,
+    "parentUrlDocId": 200455813034,
+    "gburl": "http://www.kjslaundry.com/xirena/paige-pant-freedom-stripe-love.aspx-diffbotxyz3475438825",
+    "lastCrawlTimeUTC": 1527058006,
+    "timestamp": "Wed, 23 May 2018 06:46:46 GMT"
+  },
+  {
+    "images": [
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[2]/li[1]/a[1]/img[1]",
+        "naturalHeight": 310,
+        "width": 142,
+        "diffbotUri": "image|3|-1973536034",
+        "title": "V10 Nautico Pekin - Extra White Image",
+        "url": "http://www.kjslaundry.com/content/images/products/veja/v10-nautico-pekin-extra-white/v10-nautico-pekin-extra-white_10640-category.jpg",
+        "naturalWidth": 236,
+        "primary": true,
+        "height": 187
+      },
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[1]/a[1]/img[1]",
+        "naturalHeight": 1000,
+        "width": 623,
+        "diffbotUri": "image|3|-244437581",
+        "title": "V10 Nautico Pekin - Extra White Image",
+        "url": "http://www.kjslaundry.com/content/images/products/veja/v10-nautico-pekin-extra-white/v10-nautico-pekin-extra-white_10640-zoom.jpg",
+        "naturalWidth": 760,
+        "height": 820
+      },
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[2]/a[1]/img[1]",
+        "naturalHeight": 1000,
+        "width": 623,
+        "diffbotUri": "image|3|-440951086",
+        "title": "V10 Nautico Pekin - Extra White Image",
+        "url": "http://www.kjslaundry.com/content/images/products/veja/v10-nautico-pekin-extra-white/v10-nautico-pekin-extra-white_10641-zoom.jpg",
+        "naturalWidth": 760,
+        "height": 820
+      }
+    ],
+    "offerPrice": "£120.00",
+    "diffbotUri": "product|3|369067709",
+    "multipleProducts": true,
+    "availability": true,
+    "type": "product",
+    "title": "V10 Nautico Pekin - Extra White",
+    "offerPriceDetails": {
+      "symbol": "£",
+      "amount": 120,
+      "text": "£120.00"
+    },
+    "breadcrumb": [
+      {
+        "link": "http://www.kjslaundry.com/",
+        "name": "Home"
+      },
+      {
+        "link": "http://www.kjslaundry.com/womens/new/",
+        "name": "New"
+      }
+    ],
+    "humanLanguage": "en",
+    "pageUrl": "http://www.kjslaundry.com/veja/v10-nautico-pekin-extra-white.aspx",
+    "text": "Veja's V-10 sneakers have been designed to celebrate the French label's 10 year anniversary. The navy and red colour pops give the shoe a retro feel making it perfect to wear with all things.",
+    "category": "Clothing",
+    "brand": "VEJA",
+    "docId": 2454321032,
+    "seedUrlHash32": 610045121,
+    "parentUrlDocId": 206768486273,
+    "gburl": "http://www.kjslaundry.com/veja/v10-nautico-pekin-extra-white.aspx-diffbotxyz686409697",
+    "lastCrawlTimeUTC": 1527058016,
+    "timestamp": "Wed, 23 May 2018 06:46:56 GMT"
+  },
+  {
+    "images": [
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[2]/li[1]/a[1]/img[1]",
+        "naturalHeight": 310,
+        "width": 142,
+        "diffbotUri": "image|3|-92566317",
+        "url": "http://www.kjslaundry.com/content/images/products/soeur/dakota-skirt-noisette/dakota-skirt-noisette_10580-category.jpg",
+        "naturalWidth": 236,
+        "primary": true,
+        "height": 187
+      },
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[1]/a[1]/img[1]",
+        "naturalHeight": 1000,
+        "width": 623,
+        "diffbotUri": "image|3|-1333476824",
+        "url": "http://www.kjslaundry.com/content/images/products/soeur/dakota-skirt-noisette/dakota-skirt-noisette_10580-zoom.jpg",
+        "naturalWidth": 760,
+        "height": 820
+      },
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[2]/a[1]/img[1]",
+        "naturalHeight": 1000,
+        "width": 623,
+        "diffbotUri": "image|3|-1529990329",
+        "url": "http://www.kjslaundry.com/content/images/products/soeur/dakota-skirt-noisette/dakota-skirt-noisette_10581-zoom.jpg",
+        "naturalWidth": 760,
+        "height": 820
+      }
+    ],
+    "offerPrice": "£220.00",
+    "diffbotUri": "product|3|-325394623",
+    "multipleProducts": true,
+    "availability": true,
+    "type": "product",
+    "title": "Dakota Skirt - Noisette",
+    "offerPriceDetails": {
+      "symbol": "£",
+      "amount": 220,
+      "text": "£220.00"
+    },
+    "breadcrumb": [
+      {
+        "link": "http://www.kjslaundry.com/",
+        "name": "Home"
+      },
+      {
+        "link": "http://www.kjslaundry.com/womens/new/",
+        "name": "New"
+      }
+    ],
+    "humanLanguage": "en",
+    "pageUrl": "http://www.kjslaundry.com/soeur/dakota-skirt-noisette.aspx",
+    "text": "With a scalloped hem and button through popper fastenings. Tuck in a tee or short sleeved skirt for a chic day to night look.\nFabric: 100% Calf Leather\nCare: Dry Clean by leather experts only.",
+    "category": "Clothing",
+    "brand": "Soeur",
+    "docId": 3663230905,
+    "seedUrlHash32": 178481290,
+    "parentUrlDocId": 176272144266,
+    "gburl": "http://www.kjslaundry.com/soeur/dakota-skirt-noisette.aspx-diffbotxyz1381877720",
+    "lastCrawlTimeUTC": 1527058002,
+    "timestamp": "Wed, 23 May 2018 06:46:42 GMT"
+  },
+  {
+    "images": [
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[2]/li[1]/a[1]/img[1]",
+        "naturalHeight": 310,
+        "width": 142,
+        "diffbotUri": "image|3|447454887",
+        "url": "http://www.kjslaundry.com/content/images/products/veja/wata-canvas-white-pierre/wata-canvas-white-pierre_10605-category.jpg",
+        "naturalWidth": 236,
+        "primary": true,
+        "height": 187
+      },
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[1]/a[1]/img[1]",
+        "naturalHeight": 1000,
+        "width": 623,
+        "diffbotUri": "image|3|-577839620",
+        "url": "http://www.kjslaundry.com/content/images/products/veja/wata-canvas-white-pierre/wata-canvas-white-pierre_10605-zoom.jpg",
+        "naturalWidth": 760,
+        "height": 820
+      },
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[2]/a[1]/img[1]",
+        "naturalHeight": 1000,
+        "width": 623,
+        "diffbotUri": "image|3|-774353125",
+        "url": "http://www.kjslaundry.com/content/images/products/veja/wata-canvas-white-pierre/wata-canvas-white-pierre_10606-zoom.jpg",
+        "naturalWidth": 760,
+        "height": 820
+      }
+    ],
+    "offerPrice": "£75.00",
+    "diffbotUri": "product|3|2036294859",
+    "multipleProducts": true,
+    "availability": true,
+    "type": "product",
+    "title": "Wata Canvas White Pierre",
+    "offerPriceDetails": {
+      "symbol": "£",
+      "amount": 75,
+      "text": "£75.00"
+    },
+    "breadcrumb": [
+      {
+        "link": "http://www.kjslaundry.com/",
+        "name": "Home"
+      },
+      {
+        "link": "http://www.kjslaundry.com/womens/new/",
+        "name": "New"
+      }
+    ],
+    "humanLanguage": "en",
+    "pageUrl": "http://www.kjslaundry.com/veja/wata-canvas-white-pierre.aspx",
+    "text": "A cool low-top trainer from environmentally conscious label Veja. Organic cotton with canvas upper, lining and insole. Rounded rubber toe and a six eyelet fastening.",
+    "category": "Indoor Living",
+    "brand": "VEJA",
+    "docId": 19264059282,
+    "seedUrlHash32": 3088104724,
+    "parentUrlDocId": 157706925972,
+    "gburl": "http://www.kjslaundry.com/veja/wata-canvas-white-pierre.aspx-diffbotxyz4095776856",
+    "lastCrawlTimeUTC": 1527058033,
+    "timestamp": "Wed, 23 May 2018 06:47:13 GMT"
+  },
+  {
+    "images": [
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[2]/li[1]/a[1]/img[1]",
+        "naturalHeight": 310,
+        "width": 142,
+        "diffbotUri": "image|3|-1170702743",
+        "url": "http://www.kjslaundry.com/content/images/products/ulla-johnson/sigrid-top-porcelain/sigrid-top-porcelain_10625-category.jpg",
+        "naturalWidth": 236,
+        "primary": true,
+        "height": 187
+      },
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[1]/a[1]/img[1]",
+        "naturalHeight": 1000,
+        "width": 623,
+        "diffbotUri": "image|3|1551232702",
+        "url": "http://www.kjslaundry.com/content/images/products/ulla-johnson/sigrid-top-porcelain/sigrid-top-porcelain_10625-zoom.jpg",
+        "naturalWidth": 760,
+        "height": 820
+      },
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[2]/a[1]/img[1]",
+        "naturalHeight": 1000,
+        "width": 623,
+        "diffbotUri": "image|3|1354719197",
+        "url": "http://www.kjslaundry.com/content/images/products/ulla-johnson/sigrid-top-porcelain/sigrid-top-porcelain_10626-zoom.jpg",
+        "naturalWidth": 760,
+        "height": 820
+      }
+    ],
+    "offerPrice": "£240.00",
+    "diffbotUri": "product|3|-729255972",
+    "multipleProducts": true,
+    "availability": true,
+    "type": "product",
+    "title": "Sigrid Top Porcelain",
+    "offerPriceDetails": {
+      "symbol": "£",
+      "amount": 240,
+      "text": "£240.00"
+    },
+    "breadcrumb": [
+      {
+        "link": "http://www.kjslaundry.com/",
+        "name": "Home"
+      },
+      {
+        "link": "http://www.kjslaundry.com/womens/new/",
+        "name": "New"
+      }
+    ],
+    "humanLanguage": "en",
+    "pageUrl": "http://www.kjslaundry.com/ulla-johnson/sigrid-top-porcelain.aspx",
+    "text": "Vine floral printed cotton top. Crinkled cotton with intricate picot edging, flutter sleeve, ruffle detailing, split neck with handmade tassels.\nFabric: 100% Cotton\nCare: Dry Clean\nVine floral printed cotton top. Crinkled cotton with intricate picot edging, flutter sleeve, ruffle detailing, split neck with handmade tassels.\nVine floral printed cotton top. Crinkled cotton with intricate picot edging, flutter sleeve, ruffle detailing, split neck with handmade tassels.\nVine floral printed cotton top. Crinkled cotton with intricate picot edging, flutter sleeve, ruffle detailing, split neck with handmade tassels.",
+    "category": "Indoor Living",
+    "docId": 25867122580,
+    "seedUrlHash32": 2240098297,
+    "parentUrlDocId": 62369642425,
+    "gburl": "http://www.kjslaundry.com/ulla-johnson/sigrid-top-porcelain.aspx-diffbotxyz4177114401",
+    "lastCrawlTimeUTC": 1527058014,
+    "timestamp": "Wed, 23 May 2018 06:46:54 GMT"
+  },
+  {
+    "images": [
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[2]/li[1]/a[1]/img[1]",
+        "naturalHeight": 310,
+        "width": 142,
+        "diffbotUri": "image|3|-1809777009",
+        "url": "http://www.kjslaundry.com/content/images/products/bellerose/heysel-dress-navy/heysel-dress-navy_10613-category.jpg",
+        "naturalWidth": 236,
+        "primary": true,
+        "height": 187
+      },
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[1]/a[1]/img[1]",
+        "naturalHeight": 1000,
+        "width": 623,
+        "diffbotUri": "image|3|1933603300",
+        "url": "http://www.kjslaundry.com/content/images/products/bellerose/heysel-dress-navy/heysel-dress-navy_10613-zoom.jpg",
+        "naturalWidth": 760,
+        "height": 820
+      },
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[2]/a[1]/img[1]",
+        "naturalHeight": 1000,
+        "width": 623,
+        "diffbotUri": "image|3|1737089795",
+        "url": "http://www.kjslaundry.com/content/images/products/bellerose/heysel-dress-navy/heysel-dress-navy_10614-zoom.jpg",
+        "naturalWidth": 760,
+        "height": 820
+      }
+    ],
+    "offerPrice": "£185.00",
+    "diffbotUri": "product|3|2019484888",
+    "multipleProducts": true,
+    "availability": true,
+    "type": "product",
+    "title": "Heysel Dress - Navy",
+    "offerPriceDetails": {
+      "symbol": "£",
+      "amount": 185,
+      "text": "£185.00"
+    },
+    "humanLanguage": "en",
+    "pageUrl": "http://www.kjslaundry.com/bellerose/heysel-dress-navy.aspx",
+    "text": "Vintage inspired cotton dress from Bellerose with ever so pretty eyelet embroidery. elasticated waist with Peter Pan collar and tear drop neckline. Falls to just below the knee.\nFabric: Shell - 50% Viscose, 50% Rayon Contrast - 100% Viscose. Embroidery tread - 100% Cotton\nCare: Handwash 30.",
+    "category": "Clothing",
+    "brand": "Bellerose",
+    "docId": 42093721480,
+    "seedUrlHash32": 4006987659,
+    "parentUrlDocId": 180100659083,
+    "gburl": "http://www.kjslaundry.com/bellerose/heysel-dress-navy.aspx-diffbotxyz1714967079",
+    "lastCrawlTimeUTC": 1527058010,
+    "timestamp": "Wed, 23 May 2018 06:46:50 GMT"
+  },
+  {
+    "images": [
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[2]/li[1]/a[1]/img[1]",
+        "naturalHeight": 310,
+        "width": 142,
+        "diffbotUri": "image|3|-1869774888",
+        "url": "http://www.kjslaundry.com/content/images/products/apieceapart/papyrus-shirt-metallic-stripe/papyrus-shirt-metallic-stripe_10654-category.jpg",
+        "naturalWidth": 236,
+        "primary": true,
+        "height": 187
+      },
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[1]/a[1]/img[1]",
+        "naturalHeight": 1000,
+        "width": 623,
+        "diffbotUri": "image|3|1722482605",
+        "url": "http://www.kjslaundry.com/content/images/products/apieceapart/papyrus-shirt-metallic-stripe/papyrus-shirt-metallic-stripe_10654-zoom.jpg",
+        "naturalWidth": 760,
+        "height": 820
+      },
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[2]/a[1]/img[1]",
+        "naturalHeight": 1000,
+        "width": 623,
+        "diffbotUri": "image|3|1525969100",
+        "url": "http://www.kjslaundry.com/content/images/products/apieceapart/papyrus-shirt-metallic-stripe/papyrus-shirt-metallic-stripe_10655-zoom.jpg",
+        "naturalWidth": 760,
+        "height": 820
+      }
+    ],
+    "offerPrice": "£225.00",
+    "diffbotUri": "product|3|-1829600821",
+    "multipleProducts": true,
+    "availability": true,
+    "type": "product",
+    "title": "Papyrus Shirt - Metallic Stripe",
+    "offerPriceDetails": {
+      "symbol": "£",
+      "amount": 225,
+      "text": "£225.00"
+    },
+    "breadcrumb": [
+      {
+        "link": "http://www.kjslaundry.com/",
+        "name": "Home"
+      },
+      {
+        "link": "http://www.kjslaundry.com/womens/new/",
+        "name": "New"
+      }
+    ],
+    "humanLanguage": "en",
+    "pageUrl": "http://www.kjslaundry.com/apieceapart/papyrus-shirt-metallic-stripe.aspx",
+    "text": "Cut in a lightweight cotton blend with a multi-coloured metallic stripe, this super cool shirt has a high collar, half button placket and elasticated cuffs. We love the curved hem detail. Tuck into high-waisted denim for a chic day look.\nFabric: 90% Cotton 10% Lurex. Lining 100% Cotton.\nCare: Dry clean recommended\n90% cotton, 10% lurex. Lining: 100% cotton.",
+    "category": "Clothing",
+    "brand": "ApieceApart",
+    "docId": 60876699558,
+    "seedUrlHash32": 1575039277,
+    "parentUrlDocId": 267863013293,
+    "gburl": "http://www.kjslaundry.com/apieceapart/papyrus-shirt-metallic-stripe.aspx-diffbotxyz1291986223",
+    "lastCrawlTimeUTC": 1527058028,
+    "timestamp": "Wed, 23 May 2018 06:47:08 GMT"
+  },
+  {
+    "images": [
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[2]/li[1]/a[1]/img[1]",
+        "naturalHeight": 310,
+        "width": 142,
+        "diffbotUri": "image|3|1968386796",
+        "title": "V-10 Trainer - Extra White Image",
+        "url": "http://www.kjslaundry.com/content/images/products/veja/v-10-trainer-extra-white/v-10-trainer-extra-white_10644-category.jpg",
+        "naturalWidth": 236,
+        "primary": true,
+        "height": 187
+      },
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[1]/a[1]/img[1]",
+        "naturalHeight": 1000,
+        "width": 623,
+        "diffbotUri": "image|3|214785217",
+        "title": "V-10 Trainer - Extra White Image",
+        "url": "http://www.kjslaundry.com/content/images/products/veja/v-10-trainer-extra-white/v-10-trainer-extra-white_10644-zoom.jpg",
+        "naturalWidth": 760,
+        "height": 820
+      },
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[2]/a[1]/img[1]",
+        "naturalHeight": 1000,
+        "width": 623,
+        "diffbotUri": "image|3|18271712",
+        "title": "V-10 Trainer - Extra White Image",
+        "url": "http://www.kjslaundry.com/content/images/products/veja/v-10-trainer-extra-white/v-10-trainer-extra-white_10645-zoom.jpg",
+        "naturalWidth": 760,
+        "height": 820
+      }
+    ],
+    "offerPrice": "£120.00",
+    "diffbotUri": "product|3|1613809709",
+    "multipleProducts": true,
+    "availability": true,
+    "type": "product",
+    "title": "V-10 Trainer - Extra White",
+    "offerPriceDetails": {
+      "symbol": "£",
+      "amount": 120,
+      "text": "£120.00"
+    },
+    "breadcrumb": [
+      {
+        "link": "http://www.kjslaundry.com/",
+        "name": "Home"
+      },
+      {
+        "link": "http://www.kjslaundry.com/womens/new/",
+        "name": "New"
+      }
+    ],
+    "humanLanguage": "en",
+    "pageUrl": "http://www.kjslaundry.com/veja/v-10-trainer-extra-white.aspx",
+    "text": "A pair of ecological trainers from Veja made from vegetable-tanned leather with a perforated toe, sitting on top of an Amazonian wild rubber sole with a herringbone tread.\n016, Veja introduces the V-10 model to celebrate our 10th anniversary. The V-10 model made out of ecological and sustainable materials stands for 10 ans d\u2019amour. The style comes up a little large.",
+    "category": "Clothing",
+    "brand": "VEJA",
+    "docId": 78741469111,
+    "seedUrlHash32": 1353352281,
+    "parentUrlDocId": 198921861017,
+    "gburl": "http://www.kjslaundry.com/veja/v-10-trainer-extra-white.aspx-diffbotxyz3745628825",
+    "lastCrawlTimeUTC": 1527058016,
+    "timestamp": "Wed, 23 May 2018 06:46:56 GMT"
+  },
+  {
+    "images": [
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[2]/li[1]/a[1]/img[1]",
+        "naturalHeight": 310,
+        "width": 142,
+        "diffbotUri": "image|3|-77791100",
+        "url": "http://www.kjslaundry.com/content/images/products/sessun/kimitomo-blouse-indigo/kimitomo-blouse-indigo_10647-category.jpg",
+        "naturalWidth": 236,
+        "primary": true,
+        "height": 187
+      },
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[1]/a[1]/img[1]",
+        "naturalHeight": 1000,
+        "width": 623,
+        "diffbotUri": "image|3|1682814553",
+        "url": "http://www.kjslaundry.com/content/images/products/sessun/kimitomo-blouse-indigo/kimitomo-blouse-indigo_10647-zoom.jpg",
+        "naturalWidth": 760,
+        "height": 820
+      },
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[2]/a[1]/img[1]",
+        "naturalHeight": 1000,
+        "width": 623,
+        "diffbotUri": "image|3|1486301048",
+        "url": "http://www.kjslaundry.com/content/images/products/sessun/kimitomo-blouse-indigo/kimitomo-blouse-indigo_10648-zoom.jpg",
+        "naturalWidth": 760,
+        "height": 820
+      }
+    ],
+    "offerPrice": "£135.00",
+    "diffbotUri": "product|3|1757790486",
+    "multipleProducts": true,
+    "availability": true,
+    "type": "product",
+    "title": "Kimitomo Blouse - Indigo",
+    "offerPriceDetails": {
+      "symbol": "£",
+      "amount": 135,
+      "text": "£135.00"
+    },
+    "breadcrumb": [
+      {
+        "link": "http://www.kjslaundry.com/",
+        "name": "Home"
+      },
+      {
+        "link": "http://www.kjslaundry.com/womens/new/",
+        "name": "New"
+      }
+    ],
+    "humanLanguage": "en",
+    "pageUrl": "http://www.kjslaundry.com/sessun/kimitomo-blouse-indigo.aspx",
+    "text": "The Kimitomo blouse a best selling Sessun style crafted here in a super wearable navy. With voluminous short sleeves and chiffon trims this top will work well with denim, shorts or tucked into a skirt. We love the lace inserts on the shoulders and the 3-button detailing.\nFabric: 100% Cotton\nCare: 30 delicate wash recommended",
+    "category": "Clothing",
+    "brand": "Sessun",
+    "docId": 93400315803,
+    "seedUrlHash32": 4211872516,
+    "parentUrlDocId": 171715606404,
+    "gburl": "http://www.kjslaundry.com/sessun/kimitomo-blouse-indigo.aspx-diffbotxyz3043126250",
+    "lastCrawlTimeUTC": 1527058007,
+    "timestamp": "Wed, 23 May 2018 06:46:47 GMT"
+  },
+  {
+    "offerPriceDetails": {
+      "symbol": "£",
+      "amount": 180,
+      "text": "£180.00"
+    },
+    "images": [
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[1]/a[1]/img[1]",
+        "naturalHeight": 1000,
+        "width": 623,
+        "diffbotUri": "image|3|594456466",
+        "url": "http://www.kjslaundry.com/content/images/products/pared-eyewear/puss-boots/puss-boots_10682-zoom.jpg",
+        "naturalWidth": 760,
+        "primary": true,
+        "height": 820
+      }
+    ],
+    "offerPrice": "£180.00",
+    "humanLanguage": "en",
+    "diffbotUri": "product|3|1638599316",
+    "pageUrl": "http://www.kjslaundry.com/pared-eyewear/puss-boots.aspx",
+    "multipleProducts": true,
+    "text": "This is the first frame ever created for the Pared label. The cat eye with a black handmade acetate frame. Gold deco details at the corners and dark tortoise arms. Solid brown with Cr39 lenses. Gold 'p' temple. German rubber dipped screws. Comes with custom Pared case, lens cloth and warranty card.",
+    "availability": true,
+    "type": "product",
+    "title": "Pared Eyewear",
+    "category": "Jewelry & Watches",
+    "docId": 114091407245,
+    "seedUrlHash32": 1229090665,
+    "parentUrlDocId": 35588831145,
+    "gburl": "http://www.kjslaundry.com/pared-eyewear/puss-boots.aspx-diffbotxyz2977769891",
+    "lastCrawlTimeUTC": 1527058009,
+    "timestamp": "Wed, 23 May 2018 06:46:49 GMT"
+  },
+  {
+    "images": [
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[2]/li[1]/a[1]/img[1]",
+        "naturalHeight": 310,
+        "width": 142,
+        "diffbotUri": "image|3|222760797",
+        "url": "http://www.kjslaundry.com/content/images/products/xirena/poppy-top-seaside-stripe/poppy-top-seaside-stripe_10664-category.jpg",
+        "naturalWidth": 236,
+        "primary": true,
+        "height": 187
+      },
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[1]/a[1]/img[1]",
+        "naturalHeight": 1000,
+        "width": 623,
+        "diffbotUri": "image|3|-54847054",
+        "url": "http://www.kjslaundry.com/content/images/products/xirena/poppy-top-seaside-stripe/poppy-top-seaside-stripe_10664-zoom.jpg",
+        "naturalWidth": 760,
+        "height": 820
+      },
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[2]/a[1]/img[1]",
+        "naturalHeight": 1000,
+        "width": 623,
+        "diffbotUri": "image|3|-251360559",
+        "url": "http://www.kjslaundry.com/content/images/products/xirena/poppy-top-seaside-stripe/poppy-top-seaside-stripe_10665-zoom.jpg",
+        "naturalWidth": 760,
+        "height": 820
+      }
+    ],
+    "offerPrice": "£165.00",
+    "diffbotUri": "product|3|-430077497",
+    "multipleProducts": true,
+    "availability": true,
+    "type": "product",
+    "title": "Poppy Top - Seaside Stripe",
+    "offerPriceDetails": {
+      "symbol": "£",
+      "amount": 165,
+      "text": "£165.00"
+    },
+    "breadcrumb": [
+      {
+        "link": "http://www.kjslaundry.com/",
+        "name": "Home"
+      },
+      {
+        "link": "http://www.kjslaundry.com/womens/new/",
+        "name": "New"
+      }
+    ],
+    "humanLanguage": "en",
+    "pageUrl": "http://www.kjslaundry.com/xirena/poppy-top-seaside-stripe.aspx",
+    "text": "A new style from Xirena, the Poppy Top in this cool blue stripe has a tiered hem and v-neck line. Works perfectly teamed with denim or shorts for a easy chic look\nFabric: 100% Cotton\nCare: Gentle machine wash",
+    "category": "Clothing",
+    "brand": "Xirena",
+    "docId": 121292257195,
+    "seedUrlHash32": 999911733,
+    "parentUrlDocId": 22474749877,
+    "gburl": "http://www.kjslaundry.com/xirena/poppy-top-seaside-stripe.aspx-diffbotxyz655845484",
+    "lastCrawlTimeUTC": 1527058025,
+    "timestamp": "Wed, 23 May 2018 06:47:05 GMT"
+  },
+  {
+    "images": [
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[2]/li[1]/a[1]/img[1]",
+        "naturalHeight": 310,
+        "width": 142,
+        "diffbotUri": "image|3|-689977250",
+        "url": "http://www.kjslaundry.com/content/images/products/xirena/channing-shirt-seaside-stripe/channing-shirt-seaside-stripe_10690-category.jpg",
+        "naturalWidth": 236,
+        "primary": true,
+        "height": 187
+      },
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[1]/a[1]/img[1]",
+        "naturalHeight": 1000,
+        "width": 623,
+        "diffbotUri": "image|3|-875398349",
+        "url": "http://www.kjslaundry.com/content/images/products/xirena/channing-shirt-seaside-stripe/channing-shirt-seaside-stripe_10690-zoom.jpg",
+        "naturalWidth": 760,
+        "height": 820
+      },
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[2]/a[1]/img[1]",
+        "naturalHeight": 1000,
+        "width": 623,
+        "diffbotUri": "image|3|-1071911854",
+        "url": "http://www.kjslaundry.com/content/images/products/xirena/channing-shirt-seaside-stripe/channing-shirt-seaside-stripe_10691-zoom.jpg",
+        "naturalWidth": 760,
+        "height": 820
+      }
+    ],
+    "offerPrice": "£170.00",
+    "diffbotUri": "product|3|-832576734",
+    "multipleProducts": true,
+    "availability": true,
+    "type": "product",
+    "title": "Channing Shirt - Seaside Stripe",
+    "offerPriceDetails": {
+      "symbol": "£",
+      "amount": 170,
+      "text": "£170.00"
+    },
+    "breadcrumb": [
+      {
+        "link": "http://www.kjslaundry.com/",
+        "name": "Home"
+      },
+      {
+        "link": "http://www.kjslaundry.com/womens/new/",
+        "name": "New"
+      }
+    ],
+    "humanLanguage": "en",
+    "pageUrl": "http://www.kjslaundry.com/xirena/channing-shirt-seaside-stripe.aspx",
+    "text": "A fresh take on the Channing, we love the cool stripe. Tuck into the Paige Pant or denim for simple day dressing.\nFabric: 100% Cotton\nCare: Gentle machine wash",
+    "category": "Clothing",
+    "brand": "Xirena",
+    "docId": 148786755509,
+    "seedUrlHash32": 3050867705,
+    "parentUrlDocId": 243569047481,
+    "gburl": "http://www.kjslaundry.com/xirena/channing-shirt-seaside-stripe.aspx-diffbotxyz1754386165",
+    "lastCrawlTimeUTC": 1527057999,
+    "timestamp": "Wed, 23 May 2018 06:46:39 GMT"
+  },
+  {
+    "images": [
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[2]/li[1]/a[1]/img[1]",
+        "naturalHeight": 310,
+        "width": 142,
+        "diffbotUri": "image|3|-504941514",
+        "url": "http://www.kjslaundry.com/content/images/products/mercules/greyhound-bag-black/greyhound-bag-black_10608-category.jpg",
+        "naturalWidth": 236,
+        "primary": true,
+        "height": 187
+      },
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[1]/a[1]/img[1]",
+        "naturalHeight": 1000,
+        "width": 623,
+        "diffbotUri": "image|3|576295691",
+        "url": "http://www.kjslaundry.com/content/images/products/mercules/greyhound-bag-black/greyhound-bag-black_10608-zoom.jpg",
+        "naturalWidth": 760,
+        "height": 820
+      },
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[2]/a[1]/img[1]",
+        "naturalHeight": 1000,
+        "width": 623,
+        "diffbotUri": "image|3|379782186",
+        "url": "http://www.kjslaundry.com/content/images/products/mercules/greyhound-bag-black/greyhound-bag-black_10609-zoom.jpg",
+        "naturalWidth": 760,
+        "height": 820
+      }
+    ],
+    "offerPrice": "£250.00",
+    "diffbotUri": "product|3|82575869",
+    "multipleProducts": true,
+    "availability": true,
+    "type": "product",
+    "title": "Greyhound Bag - Black",
+    "offerPriceDetails": {
+      "symbol": "£",
+      "amount": 250,
+      "text": "£250.00"
+    },
+    "breadcrumb": [
+      {
+        "link": "http://www.kjslaundry.com/",
+        "name": "Home"
+      },
+      {
+        "link": "http://www.kjslaundry.com/womens/new/",
+        "name": "New"
+      }
+    ],
+    "humanLanguage": "en",
+    "pageUrl": "http://www.kjslaundry.com/mercules/greyhound-bag-black.aspx",
+    "text": "The Greyhound shoulder bag from Mercules is designed and handmade in a black soft to the touch leather Metal star studs detailing on the front flap, fold over front flap with a magnetic press stud fastening. Adjustable buckle fastened shoulder strap.\nFabric: 100% Leather",
+    "category": "Indoor Living",
+    "brand": "Mercules",
+    "docId": 164833720231,
+    "seedUrlHash32": 2810286881,
+    "parentUrlDocId": 7105263521,
+    "gburl": "http://www.kjslaundry.com/mercules/greyhound-bag-black.aspx-diffbotxyz3214696562",
+    "lastCrawlTimeUTC": 1527058030,
+    "timestamp": "Wed, 23 May 2018 06:47:10 GMT"
+  },
+  {
+    "images": [
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[2]/li[1]/a[1]/img[1]",
+        "naturalHeight": 310,
+        "width": 142,
+        "diffbotUri": "image|3|1220699618",
+        "url": "http://www.kjslaundry.com/content/images/products/trovata-birds-of-paradis/nina-shift-dress-natural/nina-shift-dress-natural_10612-category.jpg",
+        "naturalWidth": 236,
+        "primary": true,
+        "height": 187
+      },
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[1]/a[1]/img[1]",
+        "naturalHeight": 1000,
+        "width": 623,
+        "diffbotUri": "image|3|260602551",
+        "url": "http://www.kjslaundry.com/content/images/products/trovata-birds-of-paradis/nina-shift-dress-natural/nina-shift-dress-natural_10612-zoom.jpg",
+        "naturalWidth": 760,
+        "height": 820
+      }
+    ],
+    "offerPrice": "£305.00",
+    "diffbotUri": "product|3|1879243897",
+    "multipleProducts": true,
+    "availability": true,
+    "type": "product",
+    "title": "Nina Shift Dress - Natural",
+    "offerPriceDetails": {
+      "symbol": "£",
+      "amount": 305,
+      "text": "£305.00"
+    },
+    "breadcrumb": [
+      {
+        "link": "http://www.kjslaundry.com/",
+        "name": "Home"
+      },
+      {
+        "link": "http://www.kjslaundry.com/womens/new/",
+        "name": "New"
+      }
+    ],
+    "humanLanguage": "en",
+    "pageUrl": "http://www.kjslaundry.com/trovata-birds-of-paradis/nina-shift-dress-natural.aspx",
+    "text": "The Nina shift dress is a perfect summer dress, easy and effortless, cut in a soft cotton with navy embroidery. Team with sandals for a chic day look.\nFabric: 100% Cotton\nCare: Dry Clean only",
+    "category": "Clothing",
+    "brand": "Nina",
+    "docId": 173368129424,
+    "seedUrlHash32": 2807175239,
+    "parentUrlDocId": 247620319111,
+    "gburl": "http://www.kjslaundry.com/trovata-birds-of-paradis/nina-shift-dress-natural.aspx-diffbotxyz4028522896",
+    "lastCrawlTimeUTC": 1527058013,
+    "timestamp": "Wed, 23 May 2018 06:46:53 GMT"
+  },
+  {
+    "images": [
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[1]/a[1]/img[1]",
+        "naturalHeight": 1000,
+        "width": 623,
+        "diffbotUri": "image|3|694135931",
+        "url": "http://www.kjslaundry.com/content/images/products/ulla-johnson/anja-dress/anja-dress_10617-zoom.jpg",
+        "naturalWidth": 760,
+        "primary": true,
+        "height": 820
+      }
+    ],
+    "offerPrice": "£388.00",
+    "diffbotUri": "product|3|-1345224305",
+    "multipleProducts": true,
+    "availability": true,
+    "type": "product",
+    "title": "Ulla Johnson",
+    "offerPriceDetails": {
+      "symbol": "£",
+      "amount": 388,
+      "text": "£388.00"
+    },
+    "humanLanguage": "en",
+    "pageUrl": "http://www.kjslaundry.com/ulla-johnson/anja-dress.aspx",
+    "text": "Another stunning piece from Ulla Johnson hits the store this season. The Anja Dress is a pretty floral printed cotton midi dress. Crinkle cotton detailing with intricate picot edging and ruffle detailing. Split neck with handmade tassels, flutter sleeves, cinching sides and prairie skirt.\nFabric: 100% Cotton\nCare: Hand wash",
+    "category": "Jewelry & Watches",
+    "brand": "Ulla Johnson",
+    "docId": 174262335386,
+    "seedUrlHash32": 513714038,
+    "parentUrlDocId": 202377181110,
+    "gburl": "http://www.kjslaundry.com/ulla-johnson/anja-dress.aspx-diffbotxyz1333770777",
+    "lastCrawlTimeUTC": 1527058019,
+    "timestamp": "Wed, 23 May 2018 06:46:59 GMT"
+  },
+  {
+    "images": [
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[2]/li[1]/a[1]/img[1]",
+        "naturalHeight": 310,
+        "width": 142,
+        "diffbotUri": "image|3|91785398",
+        "title": "Sole and Mare Sunglasses Image",
+        "url": "http://www.kjslaundry.com/content/images/products/pared-eyewear/sole-and-mare-sunglasses/sole-and-mare-sunglasses_10667-category.jpg",
+        "naturalWidth": 236,
+        "primary": true,
+        "height": 187
+      },
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[1]/a[1]/img[1]",
+        "naturalHeight": 1000,
+        "width": 623,
+        "diffbotUri": "image|3|-389470325",
+        "title": "Sole and Mare Sunglasses Image",
+        "url": "http://www.kjslaundry.com/content/images/products/pared-eyewear/sole-and-mare-sunglasses/sole-and-mare-sunglasses_10667-zoom.jpg",
+        "naturalWidth": 760,
+        "height": 820
+      },
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[2]/a[1]/img[1]",
+        "naturalHeight": 1000,
+        "width": 623,
+        "diffbotUri": "image|3|-782497335",
+        "title": "Sole and Mare Sunglasses Image",
+        "url": "http://www.kjslaundry.com/content/images/products/pared-eyewear/sole-and-mare-sunglasses/sole-and-mare-sunglasses_10669-zoom.jpg",
+        "naturalWidth": 760,
+        "height": 820
+      }
+    ],
+    "offerPrice": "£180.00",
+    "diffbotUri": "product|3|-524700385",
+    "multipleProducts": true,
+    "availability": true,
+    "type": "product",
+    "title": "Sole and Mare Sunglasses",
+    "offerPriceDetails": {
+      "symbol": "£",
+      "amount": 180,
+      "text": "£180.00"
+    },
+    "breadcrumb": [
+      {
+        "link": "http://www.kjslaundry.com/",
+        "name": "Home"
+      },
+      {
+        "link": "http://www.kjslaundry.com/womens/new/",
+        "name": "New"
+      }
+    ],
+    "humanLanguage": "en",
+    "pageUrl": "http://www.kjslaundry.com/pared-eyewear/sole-and-mare-sunglasses.aspx",
+    "text": "With a directional hexagonal shape and inspired by Italian design, the Sole and Mare (Sun and Sea) has a contrast laminated design with cut out details on the temple. Handmade tortoise acetate with dark tortoise arms. Brown gradient lenses, CAT 3 Gold P inlay, hinge and printing.\nFabric: German OBE rubber dipped straws, Custom pared packaging feauturing box, pouch and microfibre pouch. One year warranty with proof of purchase.\nFrame Measurements:\nLens Height 48mm\nLens Width 52mm\nNosebridge 21mm\nTemple 141mm",
+    "category": "Clothing",
+    "docId": 193228863367,
+    "seedUrlHash32": 2272011350,
+    "parentUrlDocId": 23746852758,
+    "gburl": "http://www.kjslaundry.com/pared-eyewear/sole-and-mare-sunglasses.aspx-diffbotxyz1581083026",
+    "lastCrawlTimeUTC": 1527058001,
+    "timestamp": "Wed, 23 May 2018 06:46:41 GMT"
+  },
+  {
+    "images": [
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[2]/li[1]/a[1]/img[1]",
+        "naturalHeight": 310,
+        "width": 142,
+        "diffbotUri": "image|3|-1472477540",
+        "url": "http://www.kjslaundry.com/content/images/products/xirena/avery-top/avery-top_10687-category.jpg",
+        "naturalWidth": 236,
+        "primary": true,
+        "height": 187
+      },
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[1]/a[1]/img[1]",
+        "naturalHeight": 1000,
+        "width": 623,
+        "diffbotUri": "image|3|-520927119",
+        "url": "http://www.kjslaundry.com/content/images/products/xirena/avery-top/avery-top_10687-zoom.jpg",
+        "naturalWidth": 760,
+        "height": 820
+      },
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[2]/a[1]/img[1]",
+        "naturalHeight": 1000,
+        "width": 623,
+        "diffbotUri": "image|3|-717440624",
+        "url": "http://www.kjslaundry.com/content/images/products/xirena/avery-top/avery-top_10688-zoom.jpg",
+        "naturalWidth": 760,
+        "height": 820
+      }
+    ],
+    "offerPrice": "£160.00",
+    "diffbotUri": "product|3|-37581488",
+    "multipleProducts": true,
+    "availability": true,
+    "type": "product",
+    "title": "Avery Top",
+    "offerPriceDetails": {
+      "symbol": "£",
+      "amount": 160,
+      "text": "£160.00"
+    },
+    "humanLanguage": "en",
+    "pageUrl": "http://www.kjslaundry.com/xirena/avery-top.aspx",
+    "text": "A new style popover top from Xirena, cut in the labels iconic Chelsea Gauze cotton, perfect paired with the Paige Pant (and equally well with denim)",
+    "category": "Clothing",
+    "brand": "Avery",
+    "docId": 202605033369,
+    "seedUrlHash32": 925495565,
+    "parentUrlDocId": 39580202893,
+    "gburl": "http://www.kjslaundry.com/xirena/avery-top.aspx-diffbotxyz2367245559",
+    "lastCrawlTimeUTC": 1527058024,
+    "timestamp": "Wed, 23 May 2018 06:47:04 GMT"
+  },
+  {
+    "images": [
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[2]/li[1]/a[1]/img[1]",
+        "naturalHeight": 310,
+        "width": 142,
+        "diffbotUri": "image|3|1914979532",
+        "url": "http://www.kjslaundry.com/content/images/products/ulla-johnson/lillian-blouse-porcelain/lillian-blouse-porcelain_10622-category.jpg",
+        "naturalWidth": 236,
+        "primary": true,
+        "height": 187
+      },
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[1]/a[1]/img[1]",
+        "naturalHeight": 1000,
+        "width": 623,
+        "diffbotUri": "image|3|-374186335",
+        "url": "http://www.kjslaundry.com/content/images/products/ulla-johnson/lillian-blouse-porcelain/lillian-blouse-porcelain_10622-zoom.jpg",
+        "naturalWidth": 760,
+        "height": 820
+      },
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[2]/a[1]/img[1]",
+        "naturalHeight": 1000,
+        "width": 623,
+        "diffbotUri": "image|3|-570699840",
+        "url": "http://www.kjslaundry.com/content/images/products/ulla-johnson/lillian-blouse-porcelain/lillian-blouse-porcelain_10623-zoom.jpg",
+        "naturalWidth": 760,
+        "height": 820
+      }
+    ],
+    "offerPrice": "£260.00",
+    "diffbotUri": "product|3|1204498644",
+    "multipleProducts": true,
+    "availability": true,
+    "type": "product",
+    "title": "Lillian Blouse Porcelain",
+    "offerPriceDetails": {
+      "symbol": "£",
+      "amount": 260,
+      "text": "£260.00"
+    },
+    "breadcrumb": [
+      {
+        "link": "http://www.kjslaundry.com/",
+        "name": "Home"
+      },
+      {
+        "link": "http://www.kjslaundry.com/womens/new/",
+        "name": "New"
+      }
+    ],
+    "humanLanguage": "en",
+    "pageUrl": "http://www.kjslaundry.com/ulla-johnson/lillian-blouse-porcelain.aspx",
+    "text": "Pretty vine floral printed cotton peasant blouse. Crinkled cotton with intricate picot edging and diagonal ruffle detailing. Flattering split neck with handmade tassels. Perfect to pair with denim.\nFabric: 100% cotton\nCare: Cool hand wash",
+    "category": "Clothing",
+    "docId": 202771249029,
+    "seedUrlHash32": 1074126248,
+    "parentUrlDocId": 129923151784,
+    "gburl": "http://www.kjslaundry.com/ulla-johnson/lillian-blouse-porcelain.aspx-diffbotxyz3819037177",
+    "lastCrawlTimeUTC": 1527058034,
+    "timestamp": "Wed, 23 May 2018 06:47:14 GMT"
+  },
+  {
+    "images": [
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[2]/li[1]/a[1]/img[1]",
+        "naturalHeight": 310,
+        "width": 142,
+        "diffbotUri": "image|3|-83595285",
+        "title": "Kimitomo Blouse - Fleur de Sel Image",
+        "url": "http://www.kjslaundry.com/content/images/products/sessun/kimitomo-blouse-fleur-de-sel/kimitomo-blouse-fleur-de-sel_10651-category.jpg",
+        "naturalWidth": 236,
+        "primary": true,
+        "height": 187
+      },
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[1]/a[1]/img[1]",
+        "naturalHeight": 1000,
+        "width": 623,
+        "diffbotUri": "image|3|2087383360",
+        "title": "Kimitomo Blouse - Fleur de Sel Image",
+        "url": "http://www.kjslaundry.com/content/images/products/sessun/kimitomo-blouse-fleur-de-sel/kimitomo-blouse-fleur-de-sel_10651-zoom.jpg",
+        "naturalWidth": 760,
+        "height": 820
+      },
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[2]/a[1]/img[1]",
+        "naturalHeight": 1000,
+        "width": 623,
+        "diffbotUri": "image|3|1890869855",
+        "title": "Kimitomo Blouse - Fleur de Sel Image",
+        "url": "http://www.kjslaundry.com/content/images/products/sessun/kimitomo-blouse-fleur-de-sel/kimitomo-blouse-fleur-de-sel_10652-zoom.jpg",
+        "naturalWidth": 760,
+        "height": 820
+      }
+    ],
+    "offerPrice": "£135.00",
+    "diffbotUri": "product|3|-1711357757",
+    "multipleProducts": true,
+    "availability": true,
+    "type": "product",
+    "title": "Kimitomo Blouse - Fleur de Sel",
+    "offerPriceDetails": {
+      "symbol": "£",
+      "amount": 135,
+      "text": "£135.00"
+    },
+    "breadcrumb": [
+      {
+        "link": "http://www.kjslaundry.com/",
+        "name": "Home"
+      },
+      {
+        "link": "http://www.kjslaundry.com/womens/new/",
+        "name": "New"
+      }
+    ],
+    "humanLanguage": "en",
+    "pageUrl": "http://www.kjslaundry.com/sessun/kimitomo-blouse-fleur-de-sel.aspx",
+    "text": "The Kimitomo blouse a best selling Sessun style crafted here in a super wearable cream. With voluminous short sleeves and chiffon trims this top will work well with denim, shorts or tucked into a skirt. We love the lace inserts on the shoulders and the 3-button detailing.\nFabric: 100% Cotton\nCare: 30 delicate wash recommended",
+    "category": "Clothing",
+    "brand": "Sessun",
+    "docId": 214991976328,
+    "seedUrlHash32": 545774879,
+    "parentUrlDocId": 99330029471,
+    "gburl": "http://www.kjslaundry.com/sessun/kimitomo-blouse-fleur-de-sel.aspx-diffbotxyz2105940347",
+    "lastCrawlTimeUTC": 1527058005,
+    "timestamp": "Wed, 23 May 2018 06:46:45 GMT"
+  },
+  {
+    "images": [
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[2]/li[1]/a[1]/img[1]",
+        "naturalHeight": 310,
+        "width": 142,
+        "diffbotUri": "image|3|1156545693",
+        "title": "Cat and Mouse Sunglasses - Tawny Image",
+        "url": "http://www.kjslaundry.com/content/images/products/pared-eyewear/cat-and-mouse-sunglasses-tawny/cat-and-mouse-sunglasses-tawny_10671-category.jpg",
+        "naturalWidth": 236,
+        "primary": true,
+        "height": 187
+      },
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[1]/a[1]/img[1]",
+        "naturalHeight": 1000,
+        "width": 623,
+        "diffbotUri": "image|3|-1708382478",
+        "title": "Cat and Mouse Sunglasses - Tawny Image",
+        "url": "http://www.kjslaundry.com/content/images/products/pared-eyewear/cat-and-mouse-sunglasses-tawny/cat-and-mouse-sunglasses-tawny_10671-zoom.jpg",
+        "naturalWidth": 760,
+        "height": 820
+      },
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[2]/a[1]/img[1]",
+        "naturalHeight": 1000,
+        "width": 623,
+        "diffbotUri": "image|3|-1904895983",
+        "title": "Cat and Mouse Sunglasses - Tawny Image",
+        "url": "http://www.kjslaundry.com/content/images/products/pared-eyewear/cat-and-mouse-sunglasses-tawny/cat-and-mouse-sunglasses-tawny_10672-zoom.jpg",
+        "naturalWidth": 760,
+        "height": 820
+      }
+    ],
+    "offerPrice": "£180.00",
+    "diffbotUri": "product|3|-1033259254",
+    "multipleProducts": true,
+    "availability": true,
+    "type": "product",
+    "title": "Cat and Mouse Sunglasses - Tawny",
+    "offerPriceDetails": {
+      "symbol": "£",
+      "amount": 180,
+      "text": "£180.00"
+    },
+    "breadcrumb": [
+      {
+        "link": "http://www.kjslaundry.com/",
+        "name": "Home"
+      },
+      {
+        "link": "http://www.kjslaundry.com/womens/new/",
+        "name": "New"
+      }
+    ],
+    "humanLanguage": "en",
+    "pageUrl": "http://www.kjslaundry.com/pared-eyewear/cat-and-mouse-sunglasses-tawny.aspx",
+    "text": "We love the on trend shape of Cat and Mouse. With a small cut frame and contrasting cat-eye corners. Taupe acetate handmade frame and temple with laminated blush accents.\nSolid brown lenses CAT 3. Silver P inlay, German rubber dipped screws. Includes custom pared case, lens cloth, warranty card and box.\nDimensions:\nLens Height - 46.5mm\nLens Width - 51mm\nNosebridge - 17.5mm\nTemple - 140mm",
+    "category": "Indoor Living",
+    "docId": 227011245960,
+    "seedUrlHash32": 1701620607,
+    "parentUrlDocId": 164910380991,
+    "gburl": "http://www.kjslaundry.com/pared-eyewear/cat-and-mouse-sunglasses-tawny.aspx-diffbotxyz2498711405",
+    "lastCrawlTimeUTC": 1527058004,
+    "timestamp": "Wed, 23 May 2018 06:46:44 GMT"
+  },
+  {
+    "images": [
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[2]/li[1]/a[1]/img[1]",
+        "naturalHeight": 310,
+        "width": 142,
+        "diffbotUri": "image|3|-1566382463",
+        "url": "http://www.kjslaundry.com/content/images/products/xirena/kendall-dress-red-hot/kendall-dress-red-hot_10660-category.jpg",
+        "naturalWidth": 236,
+        "primary": true,
+        "height": 187
+      },
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[1]/a[1]/img[1]",
+        "naturalHeight": 1000,
+        "width": 623,
+        "diffbotUri": "image|3|1606951638",
+        "url": "http://www.kjslaundry.com/content/images/products/xirena/kendall-dress-red-hot/kendall-dress-red-hot_10660-zoom.jpg",
+        "naturalWidth": 760,
+        "height": 820
+      },
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[2]/a[1]/img[1]",
+        "naturalHeight": 1000,
+        "width": 623,
+        "diffbotUri": "image|3|1213924628",
+        "url": "http://www.kjslaundry.com/content/images/products/xirena/kendall-dress-red-hot/kendall-dress-red-hot_10662-zoom.jpg",
+        "naturalWidth": 760,
+        "height": 820
+      }
+    ],
+    "offerPrice": "£280.00",
+    "diffbotUri": "product|3|1115359447",
+    "multipleProducts": true,
+    "availability": true,
+    "type": "product",
+    "title": "Kendall Dress - Red Hot",
+    "offerPriceDetails": {
+      "symbol": "£",
+      "amount": 280,
+      "text": "£280.00"
+    },
+    "breadcrumb": [
+      {
+        "link": "http://www.kjslaundry.com/",
+        "name": "Home"
+      },
+      {
+        "link": "http://www.kjslaundry.com/womens/new/",
+        "name": "New"
+      }
+    ],
+    "humanLanguage": "en",
+    "pageUrl": "http://www.kjslaundry.com/xirena/kendall-dress-red-hot.aspx",
+    "text": "New dress shape from Xirena, the Kendall cut in the iconic Chelsea Gauze fabric. With an on-trend flutter sleeve and tiered skirt this dress is the ultimate through on and go style. Team with trainer or flat sandals for the day and dress up with a heel for cool summer nights.\nFabric: 100% Cotton\nCare: Gentle wash",
+    "category": "Clothing",
+    "brand": "Kendall",
+    "docId": 243837892537,
+    "seedUrlHash32": 84984075,
+    "parentUrlDocId": 30149769099,
+    "gburl": "http://www.kjslaundry.com/xirena/kendall-dress-red-hot.aspx-diffbotxyz3451053081",
+    "lastCrawlTimeUTC": 1527058027,
+    "timestamp": "Wed, 23 May 2018 06:47:07 GMT"
+  },
+  {
+    "images": [
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[2]/li[1]/a[1]/img[1]",
+        "naturalHeight": 310,
+        "width": 142,
+        "diffbotUri": "image|3|788245330",
+        "url": "http://www.kjslaundry.com/content/images/products/xirena/jagger-shirt-seaport-blue/jagger-shirt-seaport-blue_10692-category.jpg",
+        "naturalWidth": 236,
+        "primary": true,
+        "height": 187
+      },
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[1]/a[1]/img[1]",
+        "naturalHeight": 1000,
+        "width": 623,
+        "diffbotUri": "image|3|-1600260057",
+        "url": "http://www.kjslaundry.com/content/images/products/xirena/jagger-shirt-seaport-blue/jagger-shirt-seaport-blue_10692-zoom.jpg",
+        "naturalWidth": 760,
+        "height": 820
+      }
+    ],
+    "offerPrice": "£195.00",
+    "diffbotUri": "product|3|-2055383289",
+    "multipleProducts": true,
+    "availability": true,
+    "type": "product",
+    "title": "Jagger Shirt - Seaport Blue",
+    "offerPriceDetails": {
+      "symbol": "£",
+      "amount": 195,
+      "text": "£195.00"
+    },
+    "breadcrumb": [
+      {
+        "link": "http://www.kjslaundry.com/",
+        "name": "Home"
+      },
+      {
+        "link": "http://www.kjslaundry.com/womens/new/",
+        "name": "New"
+      }
+    ],
+    "humanLanguage": "en",
+    "pageUrl": "http://www.kjslaundry.com/xirena/jagger-shirt-seaport-blue.aspx",
+    "text": "The newest shirt to the Xirena collection. WIth cool pintuck details this is a classic menswear inspired shape. You'll be wearing it with everything. Cut in a cool blue shade.\nFabric: 100% Cotton\nCare: Gentle machine wash\n.",
+    "category": "Clothing",
+    "brand": "Xirena",
+    "docId": 245591472004,
+    "seedUrlHash32": 671932077,
+    "parentUrlDocId": 671938477,
+    "gburl": "http://www.kjslaundry.com/xirena/jagger-shirt-seaport-blue.aspx-diffbotxyz2456166115",
+    "lastCrawlTimeUTC": 1527057999,
+    "timestamp": "Wed, 23 May 2018 06:46:39 GMT"
+  },
+  {
+    "images": [
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[2]/li[1]/a[1]/img[1]",
+        "naturalHeight": 310,
+        "width": 142,
+        "diffbotUri": "image|3|2130429515",
+        "url": "http://www.kjslaundry.com/content/images/products/sessun/charles-harper-dress-blue-celeste/charles-harper-dress-blue-celeste_10657-category.jpg",
+        "naturalWidth": 236,
+        "primary": true,
+        "height": 187
+      },
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[1]/a[1]/img[1]",
+        "naturalHeight": 1000,
+        "width": 623,
+        "diffbotUri": "image|3|-213092448",
+        "url": "http://www.kjslaundry.com/content/images/products/sessun/charles-harper-dress-blue-celeste/charles-harper-dress-blue-celeste_10657-zoom.jpg",
+        "naturalWidth": 760,
+        "height": 820
+      },
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[2]/a[1]/img[1]",
+        "naturalHeight": 1000,
+        "width": 623,
+        "diffbotUri": "image|3|-409605953",
+        "url": "http://www.kjslaundry.com/content/images/products/sessun/charles-harper-dress-blue-celeste/charles-harper-dress-blue-celeste_10658-zoom.jpg",
+        "naturalWidth": 760,
+        "height": 820
+      }
+    ],
+    "offerPrice": "£159.00",
+    "diffbotUri": "product|3|-1154082199",
+    "multipleProducts": true,
+    "availability": true,
+    "type": "product",
+    "title": "Charles Harper Dress- Blue Celeste",
+    "offerPriceDetails": {
+      "symbol": "£",
+      "amount": 159,
+      "text": "£159.00"
+    },
+    "breadcrumb": [
+      {
+        "link": "http://www.kjslaundry.com/",
+        "name": "Home"
+      },
+      {
+        "link": "http://www.kjslaundry.com/womens/new/",
+        "name": "New"
+      }
+    ],
+    "humanLanguage": "en",
+    "pageUrl": "http://www.kjslaundry.com/sessun/charles-harper-dress-blue-celeste.aspx",
+    "text": "Super easy viscose twill dress from Sessun, With voluminous sleeves and a removable belt. Button fastening to the waist with same fabric buttons. team thiis dress with trainers for a relaxed day look or a sandal for a smarter more feminine take.\nFabric: 85% Viscose 15% Polyamide\nCare: Delicate machine wash",
+    "category": "Clothing",
+    "brand": "Sessun",
+    "docId": 262017496998,
+    "seedUrlHash32": 2707334522,
+    "parentUrlDocId": 273290278842,
+    "gburl": "http://www.kjslaundry.com/sessun/charles-harper-dress-blue-celeste.aspx-diffbotxyz1692423542",
+    "lastCrawlTimeUTC": 1527058022,
+    "timestamp": "Wed, 23 May 2018 06:47:02 GMT"
+  },
+  {
+    "images": [
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[2]/li[1]/a[1]/img[1]",
+        "naturalHeight": 310,
+        "width": 142,
+        "diffbotUri": "image|3|-1065575181",
+        "title": "Lime and The Coconut Sunglasses Image",
+        "url": "http://www.kjslaundry.com/content/images/products/pared-eyewear/lime-and-the-coconut-sunglasses/lime-and-the-coconut-sunglasses_10679-category.jpg",
+        "naturalWidth": 236,
+        "primary": true,
+        "height": 187
+      },
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[1]/a[1]/img[1]",
+        "naturalHeight": 1000,
+        "width": 623,
+        "diffbotUri": "image|3|-1999445432",
+        "title": "Lime and The Coconut Sunglasses Image",
+        "url": "http://www.kjslaundry.com/content/images/products/pared-eyewear/lime-and-the-coconut-sunglasses/lime-and-the-coconut-sunglasses_10679-zoom.jpg",
+        "naturalWidth": 760,
+        "height": 820
+      },
+      {
+        "xpath": "/html[1]/body[1]/form[1]/div[3]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/ul[1]/li[2]/a[1]/img[1]",
+        "naturalHeight": 1000,
+        "width": 623,
+        "diffbotUri": "image|3|-2027775246",
+        "title": "Lime and The Coconut Sunglasses Image",
+        "url": "http://www.kjslaundry.com/content/images/products/pared-eyewear/lime-and-the-coconut-sunglasses/lime-and-the-coconut-sunglasses_10680-zoom.jpg",
+        "naturalWidth": 760,
+        "height": 820
+      }
+    ],
+    "offerPrice": "£180.00",
+    "diffbotUri": "product|3|-2101332144",
+    "multipleProducts": true,
+    "availability": true,
+    "type": "product",
+    "title": "Lime and The Coconut Sunglasses",
+    "offerPriceDetails": {
+      "symbol": "£",
+      "amount": 180,
+      "text": "£180.00"
+    },
+    "breadcrumb": [
+      {
+        "link": "http://www.kjslaundry.com/",
+        "name": "Home"
+      },
+      {
+        "link": "http://www.kjslaundry.com/womens/new/",
+        "name": "New"
+      }
+    ],
+    "humanLanguage": "en",
+    "pageUrl": "http://www.kjslaundry.com/pared-eyewear/lime-and-the-coconut-sunglasses.aspx",
+    "text": "Super cool Hipster inspired round frame sunglasses from Australian label Pared. A unisex style with medium round frames Handmade dark tortoise front featuring signature pared cutout detailing. Black temple. Brown gradient lenses - Cat 3. Gold \u201cp\u201d temple inlay, gold hinge & gold printing, German rubber dipped screws. Comes with Pared box and pouch.",
+    "category": "Clothing",
+    "docId": 269774354324,
+    "seedUrlHash32": 2691430050,
+    "parentUrlDocId": 15576332194,
+    "gburl": "http://www.kjslaundry.com/pared-eyewear/lime-and-the-coconut-sunglasses.aspx-diffbotxyz111113228",
+    "lastCrawlTimeUTC": 1527058031,
+    "timestamp": "Wed, 23 May 2018 06:47:11 GMT"
+  }
 ]
