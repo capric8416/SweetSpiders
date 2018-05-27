@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
 # !/usr/bin/env python
 
-from .context import *
-from .crawler import *
+MONGODB_URL = 'mongodb://localhost:27017'

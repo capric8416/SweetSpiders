@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # !/usr/bin/env python
 import copy
+
 from SweetSpiders.common import IndexListDetailCrawler
 from pyquery import PyQuery
 
