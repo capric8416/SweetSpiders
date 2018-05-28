@@ -6,7 +6,7 @@ import requests
 def do_update():
     headers = {
         'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.139 Safari/537.36'}
-    url = 'http://wx.danaaa.com/api/spider/category.mo'
+    url = 'http://sw.danaaa.com/test_spider_category.html'
     jsonCategory = [
 
         {
@@ -60,7 +60,7 @@ def do_update():
         }
     ]
 
-    data = {'provider': 'nike', 'storeId': 332, 'jsonCategory': jsonCategory}
+    data = {'provider': 'Kokon to Zai', 'storeId': 1120, 'jsonCategory': jsonCategory}
     resp = requests.post(url=url, headers=headers, data=data)
     print(resp.text)
 

@@ -6,3 +6,6 @@ from .kikki_k import *
 from .kikocosmetics import *
 from .kjslaundry import *
 from .kentbrushes import *
+from .lkbennett import *
+from .kokontozai import *
+from .laportegna import *

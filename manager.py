@@ -34,9 +34,9 @@ class Manger:
             index_url = input('index_url: ')
         if not wait:
             wait = input('wait: ')
-
+        
         # 检查休眠区间
-        wait = eval(wait)
+        wait = eval(wait) if isinstance(wait, str) else wait
         assert wait is None or isinstance(wait, (int, float, tuple, list)), '休眠区间无效'
 
         # 检查首页链接

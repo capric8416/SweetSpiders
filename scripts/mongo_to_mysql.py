@@ -13,8 +13,8 @@ def start_mysql():
         port=3306,
         user='root',
         passwd='mysql',
-        db='sw',
-        charset='gbk')
+        db='work',
+        charset='utf8mb4')
     cur = conn.cursor()
     myConn_list = [conn, cur]
     return myConn_list
@@ -38,29 +38,29 @@ if __name__ == "__main__":
     cur = myConn_list[1]
     conn = myConn_list[0]
 
-    sqli = "insert into kjslaundry values(0,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+    sqli = "insert into Kjslaundry values(0,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
 
     for temple in collection.find():
         try:
             cur.execute(sqli, (
-                temple['source'].encode('utf8'),
-                json.dumps(temple['categories']).encode('utf8'),
-                json.dumps(temple['img']).encode('utf8'),
-                temple['was_price'].encode('utf8'),
-                temple['now_price'].encode('utf8'),
-                temple['description'].encode('utf8'),
-                json.dumps(temple['size']).encode('utf8'),
-                temple['store'].encode('utf8'),
-                temple['brand'].encode('utf8'),
-                json.dumps(temple['store_id']).encode('utf8'),
-                json.dumps(temple['coin_id']).encode('utf8'),
-                temple['product_id'].encode('utf8'),
-                temple['name'].encode('utf8'),
-                temple['update'].encode('utf8')
+                temple['url'],
+                json.dumps(temple['categories']),
+                json.dumps(temple['img']),
+                temple['was_price'],
+                temple['now_price'],
+                temple['description'],
+                json.dumps(temple['size']),
+                temple['store'],
+                temple['brand'],
+                temple['store_id'],
+                temple['coin_id'],
+                temple['product_id'],
+                temple['name'],
+                temple['created']
             ))
 
             print('保存成功!')
         except Exception as e:
-            print(e)
+                print(e)
 
     close_pymysql(cur, conn)
