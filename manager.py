@@ -1,17 +1,23 @@
 # -*- coding: utf-8 -*-
 # !/usr/bin/env python
 
+import copy
 import inspect
 import os
+import signal
 import string
 from urllib.parse import urlparse
 
 from SweetSpiders import spiders
+from SweetSpiders.common import RegisterTask
 from SweetSpiders.config import TEMPLATE
 from fire import Fire
 
 
 class Manger:
+    def __init__(self):
+        self.register = RegisterTask(class_name=None, method_name=None)
+
     @staticmethod
     def create(file_name=None, class_name=None, comment=None, index_url=None, wait=None):
         """
@@ -66,7 +72,7 @@ class Manger:
             fp.write(f'from .{file_name} import *\n')
 
     @staticmethod
-    def control(crawler=None, method=None):
+    def start(crawler=None, method=None):
         """
         如果制定爬虫方法，则直接调用，否则，进入交互模式
         :param crawler: str, 爬虫类名
@@ -108,7 +114,37 @@ class Manger:
         assert 0 <= index < len(methods), '方法不存在'
         print('=' * 30)
 
-        methods[index]()
+        class_name = str(crawler).rpartition('object')[0].rpartition('.')[-1].strip()
+        method_name = methods[index].__name__
+        with RegisterTask(class_name=class_name, method_name=method_name) as _:
+            methods[index]()
+
+    def status(self):
+        fmt = '{pid:<8}{class:<20}{method:<16}{created:<30}{running:}'
+
+        title = ['pid', 'class', 'method', 'created', 'running']
+        title = {t: t.upper() for t in title}
+
+        print('-' * 100)
+        print(fmt.format(**title))
+        print('-' * 100)
+
+        for task in self.register.select_all():
+            info = copy.copy(title)
+            info.update(task)
+            print(fmt.format(**info))
+
+        print('-' * 100)
+
+    def stop(self):
+        self.status()
+
+        pid = input('pid: ').split()
+        if not pid:
+            return
+
+        for hit in self.register.select_tasks(pid=pid):
+            os.kill(hit, signal.SIGTERM)
 
 
 if __name__ == '__main__':

@@ -4,6 +4,7 @@ import base64
 import copy
 import json
 from urllib.parse import urlparse
+
 import execjs
 from SweetSpiders.common import IndexListDetailCrawler
 from pyquery import PyQuery

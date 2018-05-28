@@ -1,17 +1,21 @@
 # -*- coding: utf-8 -*-
 # !/usr/bin/env python
+
 import functools
 import hashlib
 import inspect
 import json
 import logging
 import random
+import signal
+import sys
 import time
 from urllib.parse import urlparse, parse_qsl
 
 import redis
 import requests
 import urllib3
+from SweetSpiders.config import REDIS_URL, MONGODB_URL
 from pymongo import *
 
 urllib3.disable_warnings()
@@ -34,13 +38,13 @@ class IndexListDetailCrawler:
     }
 
     # Redis url
-    REDIS_URL = 'redis://127.0.0.1:6379'
+    REDIS_URL = REDIS_URL
 
     # 去重key
     DUPLICATED_POSTFIX = 'duplicated'
 
     # MongoDB url
-    MONGODB_URL = 'mongodb://localhost:27017'
+    MONGODB_URL = MONGODB_URL
 
     # MongoDB collection
     MONGODB_COLLECTION = 'products'
@@ -74,6 +78,9 @@ class IndexListDetailCrawler:
 
         # 爬取等待
         self.wait = self.WAIT
+
+        for s in (signal.SIGINT, signal.SIGTERM):
+            signal.signal(s, self._exit_gracefully)
 
     def get_index(self):
         """首页爬虫"""
@@ -338,3 +345,7 @@ class IndexListDetailCrawler:
             self.redis.delete(*names)
 
         self.mongo[self.spider][self.collection].remove({})
+
+    def _exit_gracefully(self, signum, frame):
+        *_, = self, signum, frame
+        sys.exit()
