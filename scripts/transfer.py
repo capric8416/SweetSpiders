@@ -2,11 +2,26 @@
 # !/usr/bin/env python
 
 
+import datetime
+import json
 import urllib.parse
 
 import requests
+from SweetSpiders.common import CategoryUUID
 from SweetSpiders.config import MONGODB_URL
+from bson import ObjectId
 from pymongo import MongoClient
+
+
+class JSONEncoder(json.JSONEncoder):
+    '''处理ObjectId,该类型无法转为json'''
+
+    def default(self, o):
+        if isinstance(o, ObjectId):
+            return str(o)
+        if isinstance(o, datetime.datetime):
+            return datetime.datetime.strftime(o, '%Y-%m-%d %H:%M:%S')
+        return json.JSONEncoder.default(self, o)
 
 
 class TransferCategory2Admin:
@@ -42,19 +57,82 @@ class TransferCategory2Admin:
         ]
     }
     """
+    """
+    "categories": categories[0].provider=xxx&categories[0].storeId=xxx&categories[0].jsonCategory=xxx&
+    categories[1].provider=xxx&categories[1].storeId=xxx&categories[1].jsonCategory=xxx
+    """
 
     def __init__(self):
-        self.url = 'http://sw.danaaa.com/test_spider_category.html'
+        self.url = 'http://sw.danaaa.com/api/spider/category.mo'
         self.mongo = MongoClient(MONGODB_URL)
-        self.db = ''
-        self.collection = ''
+        self.db = 'EttingerCrawler'
+        self.products_collection = 'products'
+        self.categories_collection = 'categories'
+        self.category_uuid = CategoryUUID()
 
     def run(self):
-        for item in self.mongo[self.db][self.collection].find():
-            data = {}  # 将mongo里面的数据转换成注释对应的
+        categories = []
+        for cat in self.mongo[self.db][self.categories_collection].find():
+            cat.pop('_id')
+            categories.append(cat)
 
-            resp = requests.post(url=self.url, data=data)
-            assert resp.status_code == 200
+        product = self.mongo[self.db][self.products_collection].find_one()
+        data = {
+            'provider': product['brand'],
+            'storeId': product['store_id'],
+            'jsonCategory': json.dumps(categories)
+        }
+
+        resp = requests.post(url=self.url, data=data)
+        print(resp.text)
+        assert resp.status_code == 200
+
+    def build_categories(self):
+        """构建分类树: 废弃，从商品表获取的分类不全"""
+
+        categories = [item['categories'] for item in self.mongo[self.db][self.products_collection].find()]
+
+        tree = []
+        for cat in categories:
+            for i, item in enumerate(cat):
+                item.append(self.category_uuid.get_or_create(*[x[0] for x in cat[:i + 1]]))
+
+            tree.append({
+                'name': cat[0][0], 'url': cat[0][1], 'uuid': cat[0][2],
+                'children': [
+                    {
+                        'name': cat[1][0], 'url': cat[1][1], 'uuid': cat[1][2],
+                        'children': [
+                            {'name': cat[2][0], 'url': cat[2][1], 'uuid': cat[2][2]}
+                        ]
+                    }
+                ]
+            })
+
+        return self.merge(tree)
+
+    def merge(self, target):
+        """递归合并children: 废弃，从商品表获取的分类不全"""
+
+        _ = self
+
+        result = []
+
+        name = ''
+        for cat in sorted(target, key=lambda d: d['name']):
+            if cat['name'] != name:
+                if result and 'children' in result[-1]:
+                    result[-1]['children'] = self.merge(result[-1]['children'])
+                result.append(cat)
+                name = cat['name']
+            else:
+                if 'children' in result[-1]:
+                    result[-1]['children'] += cat['children']
+
+        if result and 'children' in result[-1]:
+            result[-1]['children'] = self.merge(result[-1]['children'])
+
+        return result
 
 
 class TransferGoods2Admin:
@@ -115,8 +193,8 @@ class TransferGoods2Admin:
     def __init__(self):
         self.url = 'http://sw.danaaa.com/test_add_sku.html'
         self.mongo = MongoClient(MONGODB_URL)
-        self.db = ''
-        self.collection = ''
+        self.db = 'EttingerCrawler'
+        self.collection = 'products'
 
     def run(self):
         def _transform(d):
@@ -136,10 +214,9 @@ class TransferGoods2Admin:
         if goods:
             _transform(goods)
 
-
     def transform(self, items):
         # 将mongo里面的数据转换成注释对应的
-        
+
         data = {
             'base': {},
             'images': [],
@@ -147,17 +224,30 @@ class TransferGoods2Admin:
         }
 
         for item in items:
-            data['base']['provider'] = item['store']
+            data['base']['provider'] = item['brand']
             data['base']['storeId'] = item['store_id']
+            data['base']['brandId'] = item['brand_id']
+            data['base']['currencyId'] = item['coin_id']
+            data['base']['categoryUuid'] = item['product_id']
+            data['base']['categoryName'] = item['cat3_name']
+            data['base']['name'] = item['name']
+            data['base']['caption'] = item['title']
+            data['base']['description'] = item['description']
+            data['base']['introduction'] = item['title']
+            data['base']['url'] = item['url']
 
-            data['images'] = item['imgs']
+            data['images'] = item['images']
 
             data['colors'].append({
-              'price': item['price'],
-              'promotionPrice': item['price'],
-
+                'price': item['price'],
+                'promotionPrice': item['price'],
+                'stock': item['in_stock'],
+                'specName1': 'color',
+                'specValue1': item['color'],
+                'specName2': 'size',
+                'specValue2': item['size'],
             })
-        
+
         return self.build_form(data=data)
 
     def build_form(self, data):
@@ -174,3 +264,8 @@ class TransferGoods2Admin:
         colors = urllib.parse.urlencode(colors)
 
         return '&'.join([base_info, images, colors])
+
+
+if __name__ == '__main__':
+    admin = TransferCategory2Admin()
+    admin.run()

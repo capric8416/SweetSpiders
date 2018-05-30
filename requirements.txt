@@ -39,3 +39,4 @@ redis
 fire
 PyExecJS
 psutil
+python-redis-lock

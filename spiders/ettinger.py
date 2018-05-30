@@ -15,23 +15,49 @@ class EttingerCrawler(IndexListDetailCrawler):
 
     WAIT = [1, 5]
 
+    def __init__(self):
+        super(EttingerCrawler, self).__init__()
+
+        # 商品店铺
+        self.store = "Ettinger"
+
+        # 商品品牌
+        self.brand = "Ettinger"
+
+        # 店铺ID
+        self.store_id = 10
+
+        # 货币ID
+        self.coin_id = 1
+
+        # 品牌ID
+        self.brand_id = 317
+
     def _parse_index(self, resp):
         """首页解析器"""
 
         pq = PyQuery(resp.text)
 
-        cat1 = pq('.navmenu__parent-item')
-        for cat1_item in cat1.items():
+        results = []
+
+        categories = []
+        for cat1_item in pq('.navmenu__parent-item').items():
             cat1_name = cat1_item('a:eq(0)').text().strip()
+            cat1_url = self.INDEX_URL
             if cat1_name in ('About Us', 'Journal'):
                 continue
 
-            child_categories = cat1_item('.navmenu__submenu .container .navmenu__submenu-heading a')
-            for cat2 in child_categories.items():
+            cat1 = {'name': cat1_name, 'url': cat1_url, 'children': [], 'uuid': self.cu.get_or_create(cat1_name)}
+            for cat2 in cat1_item('.navmenu__submenu .container .navmenu__submenu-heading a').items():
                 cat2_name = cat2.text().strip()
                 cat2_url = self._full_url(url_from=resp.url, path=cat2.attr('href'))
                 if not cat2_name:
                     continue
+
+                cat2 = {
+                    'name': cat2_name, 'url': cat2_url, 'children': [],
+                    'uuid': self.cu.get_or_create(cat1_name, cat2_name)
+                }
                 for cat3 in cat1_item('.navmenu__submenu .container ul a').items():
                     cat3_name = cat3.text().strip()
                     if not cat3_name:
@@ -42,8 +68,21 @@ class EttingerCrawler(IndexListDetailCrawler):
 
                     cat3_url = self._full_url(url_from=resp.url, path=cat3.attr('href'))
 
-                    yield cat3_url, headers, resp.cookies.get_dict(), \
-                          {'categories': [(cat1_name,), (cat2_name, cat2_url), (cat3_name, cat3_url)]}
+                    cat2['children'].append({
+                        'name': cat3_name, 'url': cat3_url,
+                        'uuid': self.cu.get_or_create(cat1_name, cat2_name, cat3_name)
+                    })
+
+                    results.append([
+                        cat3_url, headers, resp.cookies.get_dict(),
+                        {'categories': [(cat1_name, cat1_url), (cat2_name, cat2_url), (cat3_name, cat3_url)]}
+                    ])
+
+                cat1['children'].append(cat2)
+
+            categories.append(cat1)
+
+        return categories, results
 
     def _get_product_list(self, url, headers, cookies, meta):
         """列表页面爬虫"""
@@ -112,6 +151,8 @@ class EttingerCrawler(IndexListDetailCrawler):
 
         return {
             'url': url, 'product_id': meta['product_id'], 'categories': meta['categories'], 'title': title.text(),
-            'style': style, 'name': name, 'price': price, 'color': color, 'item_code': item_code,
-            'description': description, 'thumbnails': thumbnails, 'images': images,
+            'style': style, 'name': name,
+            'price': price, 'color': color, 'item_code': item_code, 'description': description,
+            'thumbnails': thumbnails, 'images': images, 'brand': self.brand, 'store_id': self.store_id,
+            'store': self.store, 'coin_id': self.coin_id, 'brand_id': self.brand_id,
         }

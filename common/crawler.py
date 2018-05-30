@@ -18,6 +18,8 @@ import urllib3
 from SweetSpiders.config import REDIS_URL, MONGODB_URL
 from pymongo import *
 
+from .category_id import CategoryUUID
+
 urllib3.disable_warnings()
 
 
@@ -47,7 +49,8 @@ class IndexListDetailCrawler:
     MONGODB_URL = MONGODB_URL
 
     # MongoDB collection
-    MONGODB_COLLECTION = 'products'
+    MONGODB_PRODUCTS_COLLECTION = 'products'
+    MONGODB_CATEGORIES_COLLECTION = 'categories'
 
     def __init__(self):
         # 爬虫名字与类名相同
@@ -74,11 +77,16 @@ class IndexListDetailCrawler:
         self.mongo = MongoClient(self.MONGODB_URL)
 
         # 集合名
-        self.collection = self.MONGODB_COLLECTION
+        self.products_collection = self.MONGODB_PRODUCTS_COLLECTION
+        self.categories_collection = self.MONGODB_CATEGORIES_COLLECTION
 
         # 爬取等待
         self.wait = self.WAIT
 
+        # category -> uuid
+        self.cu = CategoryUUID()
+
+        # 捕获终止信号
         for s in (signal.SIGINT, signal.SIGTERM):
             signal.signal(s, self._exit_gracefully)
 
@@ -94,7 +102,9 @@ class IndexListDetailCrawler:
                 _ = e
                 self.logger.warning(f'[RETRY] {e}, {self.index_url}')
             else:
-                for info in self._parse_index(resp=resp):
+                categories, results = self._parse_index(resp=resp)
+                self._push_category_detail(categories)
+                for info in results:
                     self.push_category_info(info)
 
                 break
@@ -231,7 +241,10 @@ class IndexListDetailCrawler:
             return
 
         info['created'] = time.time()
-        self.mongo[self.spider][self.collection].insert_one(info)
+        self.mongo[self.spider][self.products_collection].insert_one(info)
+
+    def _push_category_detail(self, info):
+        self.mongo[self.spider][self.categories_collection].insert_many(info)
 
     def _push_info(self, name, *info, force=False):
         """
@@ -333,7 +346,8 @@ class IndexListDetailCrawler:
 
         def mongo_count():
             return f'===== MongoDB =====\n' + \
-                   f'\t{self.mongo[self.spider][self.collection].count()}: {self.spider}.{self.collection}'
+                   f'\t{self.mongo[self.spider][self.products_collection].count()}: ' \
+                   f'{self.spider}.{self.products_collection}'
 
         while True:
             self.logger.info('\n'.join(['', redis_count(), mongo_count(), '']))
@@ -344,7 +358,7 @@ class IndexListDetailCrawler:
         if names:
             self.redis.delete(*names)
 
-        self.mongo[self.spider][self.collection].remove({})
+        self.mongo[self.spider][self.products_collection].remove({})
 
     def _exit_gracefully(self, signum, frame):
         *_, = self, signum, frame
