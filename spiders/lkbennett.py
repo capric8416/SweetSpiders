@@ -52,7 +52,7 @@ class LkbennettCrawler(IndexListDetailCrawler):
 
     def _get_product_list(self, url, headers, cookies, meta):
         """列表页面爬虫，实现翻页请求"""
-        while True:
+        for count in range(1, result_count, 15):
             resp = self._request(
                 url=url, headers=headers, cookies=cookies,
                 rollback=self.push_category_info, meta=meta
@@ -65,10 +65,13 @@ class LkbennettCrawler(IndexListDetailCrawler):
             for info in self._parse_product_list(pq=pq, resp=resp, headers=headers, meta=meta):
                 self.push_product_info(info)
 
-            next_page = self._full_url(url_from=resp.url, path=pq('.paginationlinks .links .next .pagination-link').attr('href'))
-            if not next_page:
+            next_page = self._full_url(url_from=resp.url, path=pq('.store-navigation-pager .next').attr('href'))
+            result_count = res['listing']['result_count']
+            if int(result_count) < 15:
                 break
-            url = next_page
+
+
+            pass
 
     def _parse_product_list(self, pq, resp, headers, meta):
         """列表页解析器"""
@@ -80,6 +83,7 @@ class LkbennettCrawler(IndexListDetailCrawler):
         script = script.partition('=')[-1].strip(';')
         res = execjs.eval('(function(){ var value=' + script + ';return value; })()')
         data = res['listing']['items']
+
         for detail in data:
             url = self._full_url(url_from=resp.url, path=detail.get('url'))
             meta['product_id'] = detail.get('id')

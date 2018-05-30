@@ -8,3 +8,5 @@ from .kjslaundry import *
 from .kokontozai import *
 from .laportegna import *
 from .lkbennett import *
+from .lanvin import *
+from .larizia import *

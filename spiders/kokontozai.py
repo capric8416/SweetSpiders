@@ -63,7 +63,7 @@ class KokontozaiCrawler(IndexListDetailCrawler):
     def _get_product_list(self, url, headers, cookies, meta):
         """列表页面爬虫，实现翻页请求"""
 
-
+        raise NotImplementedError
 
     def _parse_product_list(self, pq, resp, headers, meta):
         """列表页解析器"""

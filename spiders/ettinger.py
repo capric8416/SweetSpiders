@@ -29,6 +29,7 @@ class EttingerCrawler(IndexListDetailCrawler):
             child_categories = cat1_item('.navmenu__submenu .container .navmenu__submenu-heading a')
             for cat2 in child_categories.items():
                 cat2_name = cat2.text().strip()
+                cat2_url = self._full_url(url_from=resp.url, path=cat2.attr('href'))
                 if not cat2_name:
                     continue
                 for cat3 in cat1_item('.navmenu__submenu .container ul a').items():
@@ -40,9 +41,9 @@ class EttingerCrawler(IndexListDetailCrawler):
                     headers['Referer'] = resp.url
 
                     cat3_url = self._full_url(url_from=resp.url, path=cat3.attr('href'))
-                    categories = (cat1_name, cat2_name, cat3_name)
 
-                    yield cat3_url, headers, resp.cookies.get_dict(), {'categories': categories}
+                    yield cat3_url, headers, resp.cookies.get_dict(), \
+                          {'categories': [(cat1_name,), (cat2_name, cat2_url), (cat3_name, cat3_url)]}
 
     def _get_product_list(self, url, headers, cookies, meta):
         """列表页面爬虫"""
@@ -110,8 +111,10 @@ class EttingerCrawler(IndexListDetailCrawler):
             thumbnails.append(small_picture_link)
 
         return {
-            'url': url, 'product_id': meta['product_id'], 'categories': meta['categories'],
-            'title': title.text(), 'style': style, 'name': name, 'price': price,
-            'color': color, 'item_code': item_code, 'description': description,
-            'thumbnails': thumbnails, 'images': images
+            'url': url, 'product_id': meta['product_id'], 'cat1_name': meta['categories'][0][0],
+            'cat1_url': meta['categories'][0][1], 'cat2_name': meta['categories'][1][0],
+            'cat2_url': meta['categories'][1][1], 'cat3_name': meta['categories'][2][0],
+            'cat3_url': meta['categories'][2][1], 'title': title.text(), 'style': style, 'name': name,
+            'price': price, 'color': color, 'item_code': item_code, 'description': description,
+            'thumbnails': thumbnails, 'images': images,
         }

@@ -120,7 +120,7 @@ class Manger:
             methods[index]()
 
     def status(self):
-        fmt = '{pid:<8}{class:<20}{method:<16}{created:<30}{running:}'
+        fmt = '{pid:<8}{class:<20}{method:<20}{created:<30}{running:}'
 
         title = ['pid', 'class', 'method', 'created', 'running']
         title = {t: t.upper() for t in title}
