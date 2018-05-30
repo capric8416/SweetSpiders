@@ -40,9 +40,9 @@ class RegisterTask:
         cursor.execute(self.sql_insert_into)
         self.connection.commit()
 
-    def drop_from(self):
+    def drop_from(self, pid=None):
         cursor = self.connection.cursor()
-        cursor.execute(self.sql_drop_from)
+        cursor.execute(self.sql_drop_from(pid=pid))
         self.connection.commit()
 
     def select_all(self):
@@ -52,7 +52,7 @@ class RegisterTask:
 
         results = cursor.fetchall()
         for item in results:
-            item['running'] = f'{time.time() - item["created"]}s'
+            item['elapsed'] = f'{time.time() - item["created"]}s'
             item['created'] = datetime.fromtimestamp(item['created']).strftime('%Y-%m-%d %H:%M:%S.%f')
 
         return results
@@ -89,10 +89,11 @@ class RegisterTask:
             ({self.pid}, "{self.class_name}", "{self.method_name}", {time.time()})
         '''
 
-    @property
-    def sql_drop_from(self):
+    def sql_drop_from(self, pid=None):
+        if not pid:
+            pid = self.pid
         return f'''
-            delete from {self.table} where pid={self.pid}
+            delete from {self.table} where pid={pid}
         '''
 
     @property

@@ -107,3 +107,4 @@ venv.bak/
 # 自定义
 .idea/
 *.html
+pid.db

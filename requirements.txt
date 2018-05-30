@@ -38,3 +38,4 @@ zope.interface
 redis
 fire
 PyExecJS
+psutil

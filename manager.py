@@ -8,6 +8,8 @@ import signal
 import string
 from urllib.parse import urlparse
 
+import SweetSpiders
+import psutil
 from SweetSpiders import spiders
 from SweetSpiders.common import RegisterTask
 from SweetSpiders.config import TEMPLATE
@@ -40,7 +42,7 @@ class Manger:
             index_url = input('index_url: ')
         if not wait:
             wait = input('wait: ')
-        
+
         # 检查休眠区间
         wait = eval(wait) if isinstance(wait, str) else wait
         assert wait is None or isinstance(wait, (int, float, tuple, list)), '休眠区间无效'
@@ -81,7 +83,8 @@ class Manger:
         """
 
         if crawler and method:
-            return getattr(getattr(spiders, crawler)(), method)()
+            with RegisterTask(class_name=crawler, method_name=method) as _:
+                return getattr(getattr(spiders, crawler)(), method)()
 
         objects = [
             getattr(spiders, name) for name in dir(spiders)
@@ -120,9 +123,9 @@ class Manger:
             methods[index]()
 
     def status(self):
-        fmt = '{pid:<8}{class:<20}{method:<20}{created:<30}{running:}'
+        fmt = '{pid:<8}{class:<20}{method:<20}{created:<30}{alive:<6}{elapsed:}'
 
-        title = ['pid', 'class', 'method', 'created', 'running']
+        title = ['pid', 'class', 'method', 'created', 'alive', 'elapsed']
         title = {t: t.upper() for t in title}
 
         print('-' * 100)
@@ -132,11 +135,12 @@ class Manger:
         for task in self._register.select_all():
             info = copy.copy(title)
             info.update(task)
+            info['alive'] = self._pid_status(pid=info['pid'])
             print(fmt.format(**info))
 
         print('-' * 100)
 
-    def stop(self):
+    def stop(self, force=False):
         self.status()
 
         pid = input('pid: ').split()
@@ -144,7 +148,33 @@ class Manger:
             return
 
         for hit in self._register.select_tasks(pid=pid):
-            os.kill(hit, signal.SIGTERM)
+            try:
+                os.kill(hit, signal.SIGKILL if force else signal.SIGTERM)
+            except ProcessLookupError:
+                pass
+
+            self._register.drop_from()
+
+    def wipe(self):
+        for task in self._register.select_all():
+            pid = task['pid']
+            if not self._pid_status(pid=pid):
+                self._register.drop_from(pid=pid)
+            elif SweetSpiders.__name__ not in self._pid_file(pid=pid):
+                self._register.drop_from(pid=pid)
+
+    def _pid_file(self, pid):
+        _ = self
+
+        cmdline = psutil.Process(pid).cmdline()
+        for i, c in enumerate(cmdline):
+            if c == '--file':
+                return cmdline[i + 1]
+        return ''
+
+    def _pid_status(self, pid):
+        _ = self
+        return psutil.pid_exists(pid)
 
 
 if __name__ == '__main__':
