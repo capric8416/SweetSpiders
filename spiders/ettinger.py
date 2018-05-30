@@ -111,10 +111,7 @@ class EttingerCrawler(IndexListDetailCrawler):
             thumbnails.append(small_picture_link)
 
         return {
-            'url': url, 'product_id': meta['product_id'], 'cat1_name': meta['categories'][0][0],
-            'cat1_url': meta['categories'][0][1], 'cat2_name': meta['categories'][1][0],
-            'cat2_url': meta['categories'][1][1], 'cat3_name': meta['categories'][2][0],
-            'cat3_url': meta['categories'][2][1], 'title': title.text(), 'style': style, 'name': name,
-            'price': price, 'color': color, 'item_code': item_code, 'description': description,
-            'thumbnails': thumbnails, 'images': images,
+            'url': url, 'product_id': meta['product_id'], 'categories': meta['categories'], 'title': title.text(),
+            'style': style, 'name': name, 'price': price, 'color': color, 'item_code': item_code,
+            'description': description, 'thumbnails': thumbnails, 'images': images,
         }

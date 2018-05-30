@@ -16,7 +16,7 @@ from fire import Fire
 
 class Manger:
     def __init__(self):
-        self.register = RegisterTask(class_name=None, method_name=None)
+        self._register = RegisterTask(class_name=None, method_name=None)
 
     @staticmethod
     def create(file_name=None, class_name=None, comment=None, index_url=None, wait=None):
@@ -129,7 +129,7 @@ class Manger:
         print(fmt.format(**title))
         print('-' * 100)
 
-        for task in self.register.select_all():
+        for task in self._register.select_all():
             info = copy.copy(title)
             info.update(task)
             print(fmt.format(**info))
@@ -143,7 +143,7 @@ class Manger:
         if not pid:
             return
 
-        for hit in self.register.select_tasks(pid=pid):
+        for hit in self._register.select_tasks(pid=pid):
             os.kill(hit, signal.SIGTERM)
 
 
