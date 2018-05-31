@@ -57,10 +57,6 @@ class TransferCategory2Admin:
         ]
     }
     """
-    """
-    "categories": categories[0].provider=xxx&categories[0].storeId=xxx&categories[0].jsonCategory=xxx&
-    categories[1].provider=xxx&categories[1].storeId=xxx&categories[1].jsonCategory=xxx
-    """
 
     def __init__(self):
         self.url = 'http://sw.danaaa.com/api/spider/category.mo'
@@ -191,7 +187,7 @@ class TransferGoods2Admin:
     """
 
     def __init__(self):
-        self.url = 'http://sw.danaaa.com/test_add_sku.html'
+        self.url = 'http://sw.danaaa.com/api/spider/add_by_sku.mo'
         self.mongo = MongoClient(MONGODB_URL)
         self.db = 'EttingerCrawler'
         self.collection = 'products'
@@ -199,7 +195,8 @@ class TransferGoods2Admin:
     def run(self):
         def _transform(d):
             d = self.transform(d)
-            resp = requests.post(url=self.url, data=d)
+            resp = requests.post(url=self.url, data=json.dumps(d))
+            print(resp.text)
             assert resp.status_code == 200
             goods.clear()
 
@@ -229,7 +226,7 @@ class TransferGoods2Admin:
             data['base']['brandId'] = item['brand_id']
             data['base']['currencyId'] = item['coin_id']
             data['base']['categoryUuid'] = item['product_id']
-            data['base']['categoryName'] = item['cat3_name']
+            data['base']['categoryName'] = item['categories'][2][0]
             data['base']['name'] = item['name']
             data['base']['caption'] = item['title']
             data['base']['description'] = item['description']
@@ -239,13 +236,13 @@ class TransferGoods2Admin:
             data['images'] = item['images']
 
             data['colors'].append({
-                'price': item['price'],
-                'promotionPrice': item['price'],
-                'stock': item['in_stock'],
+                'price': item['price'][1:],
+                'promotionPrice': '',
+                'stock': 10,
                 'specName1': 'color',
                 'specValue1': item['color'],
                 'specName2': 'size',
-                'specValue2': item['size'],
+                'specValue2': None,
             })
 
         return self.build_form(data=data)
@@ -265,7 +262,45 @@ class TransferGoods2Admin:
 
         return '&'.join([base_info, images, colors])
 
+    def start(self):
+        for item in self.mongo[self.db][self.collection].find():
+            data = {}
+            data["provider"] = item['brand']
+            data["storeId"] = item['store_id']
+            data["brandId"] = item['brand_id']
+            data["currencyId"] = item['coin_id']
+            data["categoryUuid"] = item['product_id']
+            data["categoryName"] = item['categories'][2][0]
+            data["name"] = item['name']
+            if not item['name']:
+                data["name"] = item['brand']
+            data["caption"] = item['title']
+            data["description"] = item['description']
+            data["introduction"] = item['style']
+            data["url"] = item['url']
+            for i,img in enumerate(item['images']):
+                data['images[%d]' % i] = img
+            data["spiderSkus[0].price"] = item['price'][1:]
+            data["spiderSkus[0].promotionPrice"] = ''
+            data["spiderSkus[0].stock"] = 9
+            data["spiderSkus[0].specName1"] = 'color'
+            data["spiderSkus[0].specValue1"] = item['color']
+            data["spiderSkus[0].specName2"] = 'size'
+            data["spiderSkus[0].specValue2"] = ''
+            data["spiderSkus[0].specName3"] = ''
+            data["spiderSkus[0].specValue3"] = ''
+            data["spiderSkus[0].specName4"] = ''
+            data["spiderSkus[0].specValue4"] = ''
+            data["spiderSkus[0].specName5"] = ''
+            data["spiderSkus[0].specValue5"] = ''
+
+            resp = requests.post(url=self.url, data=data)
+            print(resp.text)
+            assert resp.status_code == 200
+
 
 if __name__ == '__main__':
-    admin = TransferCategory2Admin()
-    admin.run()
+    # admin = TransferCategory2Admin()
+    # admin.run()
+    admin = TransferGoods2Admin()
+    admin.start()

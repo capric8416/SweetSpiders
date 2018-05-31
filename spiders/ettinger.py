@@ -149,6 +149,10 @@ class EttingerCrawler(IndexListDetailCrawler):
             small_picture_link = small_picture('img').attr('src')
             thumbnails.append(small_picture_link)
 
+        features = [p('p').text().strip() for p in pq('.product-full__specification__content .ezxmltext-field tbody tr td').items()]
+
+        material = pq('.embed-content-image__text__inner .embed-content-image__text__description .eztext-field').text().strip()
+
         return {
             'url': url, 'product_id': meta['product_id'], 'categories': meta['categories'], 'title': title.text(),
             'style': style, 'name': name,

@@ -3,6 +3,7 @@
 from SweetSpiders.common import IndexListDetailCrawler
 from pyquery import PyQuery
 import copy
+from urllib.parse import urlparse
 
 
 class LariziaCrawler(IndexListDetailCrawler):
@@ -28,6 +29,9 @@ class LariziaCrawler(IndexListDetailCrawler):
 
         # 货币ID
         self.coin_id = 1
+
+        # 品牌ID
+        self.brand_id = 151
 
     def _parse_index(self, resp):
         """首页解析器"""
@@ -59,14 +63,62 @@ class LariziaCrawler(IndexListDetailCrawler):
     def _get_product_list(self, url, headers, cookies, meta):
         """列表页面爬虫，实现翻页请求"""
 
-        raise NotImplementedError
+        while True:
+            resp = self._request(
+                url=url, headers=headers, cookies=cookies,
+                rollback=self.push_category_info, meta=meta)
+            if not resp:
+                return
+            pq = PyQuery(resp.text)
+            for info in self._parse_product_list(pq=pq, resp=resp, headers=headers, meta=meta):
+                self.push_product_info(info)
+
+            next_page = self._full_url(url_from=resp.url, path=pq('.text-align-right .pagination .next-page').attr('href'))
+            if not next_page:
+                break
+            url = next_page
 
     def _parse_product_list(self, pq, resp, headers, meta):
         """列表页解析器"""
 
-        raise NotImplementedError
+        headers = copy.copy(headers)
+        headers['Referer'] = resp.url
+
+        node = pq('#js-search-results-products__list li.col')
+        for detail in node.items():
+            url = self._full_url(url_from=resp.url, path=detail('.product__image a').attr('href'))
+            meta['product_id'] = urlparse(url).path.split('/')[-1]
+            yield url, headers, resp.cookies.get_dict(), meta
 
     def _parse_product_detail(self, url, resp, meta):
         """详情页解析器"""
 
-        raise NotImplementedError
+        _ = self
+        pq = PyQuery(resp.text)
+
+        imgs = []
+        for img in pq('.product__image__main .slick-list .slick-slide').items():
+            img_url = self._full_url(url_from=resp.url, path=img('a').attr('href'))
+            imgs.append(img_url)
+
+        title = pq('.price-match-wrapper #js-product-content__title .product-content__title--brand').text().strip()
+
+        name = pq('.price-match-wrapper #js-product-content__title #js-product-title').text().strip()
+
+        was_price = pq('#js-product-was .GBP').text().strip()
+
+        now_price = pq('#js-product-price .GBP').text().strip()
+        if not (was_price and now_price):
+            now_price = pq('#js-product-price .GBP').text().strip()
+
+        features = [li.text().strip() for li in pq('.product-tabs__content__cms ul li').items()]
+
+        description = pq('#product__description p').text().strip()
+
+        return {
+            'url': url, 'product_id': meta['product_id'], 'categories': meta['categories'], 'images': imgs,
+            'title': title, 'name': name, 'was_price': was_price, 'now_price': now_price, 'features': features,
+            'description': description, 'store': self.store, 'brand': self.brand, 'store_id': self.store_id,
+            'brand_id': self.brand_id, 'coin_id': self.coin_id
+        }
+
