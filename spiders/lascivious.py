@@ -33,7 +33,7 @@ class LasciviousCrawler(IndexListDetailCrawler):
         # 品牌ID
         self.brand_id = 152
 
-        self.stock = 0
+        self.stock = None
 
     def _parse_index(self, resp):
         """首页解析器"""
@@ -41,25 +41,33 @@ class LasciviousCrawler(IndexListDetailCrawler):
         results = []
         categories = []
 
-        top_node = pq('#navWrap li.last')
-        cat1_name = top_node('a').text().strip()
-        cat1_url = self._full_url(url_from=resp.url, path=top_node('a').attr('href'))
+        top_node = pq('#navWrap #nav li.nav-item')
+        for top in top_node.items():
+            cat1_name = top('.nav-item-link').text().strip()
+            if cat1_name == 'About':
+                continue
+            cat1_url = self._full_url(url_from=resp.url, path=top('.nav-item-link').attr('href'))
 
-        cat1 = {'name': cat1_name, 'url': cat1_url, 'children': [], 'uuid': self.cu.get_or_create(cat1_name)}
+            cat1 = {'name': cat1_name, 'url': cat1_url, 'children': [], 'uuid': self.cu.get_or_create(cat1_name)}
 
-        for cat2 in top_node('.sub-nav .sub-nav-item').items():
-            cat2_name = cat2('a').text().strip()
-            cat2_url = cat2('a').attr('href')
+            for cat2 in top('.sub-nav .sub-nav-item').items():
+                cat2_name = cat2('a').text().strip()
+                cat2_url = self._full_url(url_from=resp.url, path=cat2('a').attr('href'))
 
-            headers = copy.copy(self.headers)
-            headers['Referer'] = resp.url
+                headers = copy.copy(self.headers)
+                headers['Referer'] = resp.url
 
-            results.append([
-                cat2_url, headers, resp.cookies.get_dict(),
-                {'categories': [(cat1_name, cat1_url), (cat2_name, cat2_url)]}
-            ])
+                cat1['children'].append({
+                    'name': cat2_name, 'url': cat2_url,
+                    'uuid': self.cu.get_or_create(cat1_name, cat2_name)
+                })
 
-        categories.append(cat1)
+                results.append([
+                    cat2_url, headers, resp.cookies.get_dict(),
+                    {'categories': [(cat1_name, cat1_url), (cat2_name, cat2_url)]}
+                ])
+
+            categories.append(cat1)
         return categories, results
 
     def _get_product_list(self, url, headers, cookies, meta):
@@ -108,7 +116,7 @@ class LasciviousCrawler(IndexListDetailCrawler):
 
         name = pq('.grid-item h1').text().strip()
 
-        description = pq('#product-description #full_description p').text().strip()
+        description = pq('#product-description #full_description').text().strip()
 
         was_price = pq('#product-price .product-compare-price').text().strip()
 
@@ -116,9 +124,13 @@ class LasciviousCrawler(IndexListDetailCrawler):
         if not (was_price and now_price):
             now_price = pq('#product-price .product-price').text().strip()
 
-        sizes = [size.text().strip() for size in pq('#product-select-option-0 option')]
+        sizes = []
+        for size_node in pq('option').items():
+            size = size_node.text().strip()
+            sizes.append(size)
 
-        stock_text = pq('.grid-item #add #addText').text().strip()
+        stock_text = pq('#addText').text().strip()
+
         if stock_text == 'Sold Out':
             self.stock = 0
         if stock_text == 'Add to Cart':
@@ -127,6 +139,6 @@ class LasciviousCrawler(IndexListDetailCrawler):
         return {
             'url': url, 'product_id': meta['product_id'], 'categories': meta['categories'], 'images': images,
             'name': name, 'description': description, 'was_price': was_price, 'now_price': now_price,
-            'size': sizes, 'stock': self.stock, 'store': self.store, 'brand': self.brand, 'store_id': self.store_id,
+            'size': sizes, 'stock': self.stock, 'store': self.stock, 'brand': self.brand, 'store_id': self.store_id,
             'brand_id': self.brand_id, 'coin_id': self.coin_id
         }

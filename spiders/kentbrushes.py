@@ -33,6 +33,9 @@ class KentbrushesCrawler(IndexListDetailCrawler):
     def _parse_index(self, resp):
         """首页解析器"""
         pq = PyQuery(resp.text)
+        results = []
+        categories = []
+
         node = pq('.wrapper #mainMenu .main-menu .has-child')
         for top in node.items():
             top_category = top('a:eq(0)').text().strip()

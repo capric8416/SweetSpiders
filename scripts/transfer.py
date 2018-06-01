@@ -2,30 +2,18 @@
 # !/usr/bin/env python
 
 
-import datetime
 import json
 import urllib.parse
 
 import requests
 from SweetSpiders.common import CategoryUUID
 from SweetSpiders.config import MONGODB_URL
-from bson import ObjectId
 from pymongo import MongoClient
-
-
-class JSONEncoder(json.JSONEncoder):
-    '''处理ObjectId,该类型无法转为json'''
-
-    def default(self, o):
-        if isinstance(o, ObjectId):
-            return str(o)
-        if isinstance(o, datetime.datetime):
-            return datetime.datetime.strftime(o, '%Y-%m-%d %H:%M:%S')
-        return json.JSONEncoder.default(self, o)
 
 
 class TransferCategory2Admin:
     """
+    三级分类EttingerCrawler
     {
         "provider": "",
         "storeId": 0,
@@ -68,7 +56,7 @@ class TransferCategory2Admin:
 
     def run(self):
         categories = []
-        for cat in self.mongo[self.db][self.categories_collection].find():
+        for cat in self.mongo[self.db][self.categories_collection].find({"name": {"$in": ['Men', 'Women']}}):
             cat.pop('_id')
             categories.append(cat)
 
@@ -131,8 +119,82 @@ class TransferCategory2Admin:
         return result
 
 
+class TransferCategories:
+    """二级分类LasciviousCrawler"""
+
+    def __init__(self):
+        self.url = 'http://sw.danaaa.com/api/spider/category.mo'
+        self.mongo = MongoClient(MONGODB_URL)
+        self.db = 'LasciviousCrawler'
+        self.products_collection = 'products'
+        self.categories_collection = 'categories'
+        self.category_uuid = CategoryUUID()
+
+    def run(self):
+        categories = []
+        for cat in self.mongo[self.db][self.categories_collection].find():
+            cat.pop('_id')
+            categories.append(cat)
+
+        product = self.mongo[self.db][self.products_collection].find_one()
+        data = {
+            'provider': product['brand'],
+            'storeId': product['store_id'],
+            'jsonCategory': json.dumps(categories)
+        }
+
+        resp = requests.post(url=self.url, data=data)
+        print(resp.text)
+        assert resp.status_code == 200
+
+    def build_categories(self):
+        """构建分类树: 废弃，从商品表获取的分类不全"""
+
+        categories = [item['categories'] for item in self.mongo[self.db][self.products_collection].find()]
+
+        tree = []
+        for cat in categories:
+            for i, item in enumerate(cat):
+                item.append(self.category_uuid.get_or_create(*[x[0] for x in cat[:i + 1]]))
+
+            tree.append({
+                'name': cat[0][0], 'url': cat[0][1], 'uuid': cat[0][2],
+                'children': [
+                    {
+                        'name': cat[1][0], 'url': cat[1][1], 'uuid': cat[1][2],
+                    }
+                ]
+            })
+
+        return self.merge(tree)
+
+    def merge(self, target):
+        """递归合并children: 废弃，从商品表获取的分类不全"""
+
+        _ = self
+
+        result = []
+
+        name = ''
+        for cat in sorted(target, key=lambda d: d['name']):
+            if cat['name'] != name:
+                if result and 'children' in result[-1]:
+                    result[-1]['children'] = self.merge(result[-1]['children'])
+                result.append(cat)
+                name = cat['name']
+            else:
+                if 'children' in result[-1]:
+                    result[-1]['children'] += cat['children']
+
+        if result and 'children' in result[-1]:
+            result[-1]['children'] = self.merge(result[-1]['children'])
+
+        return result
+
+
 class TransferGoods2Admin:
     """
+    三级分类商品上传EttingerCrawler
     {
         "base": {
             "provider": "SKU",
@@ -278,7 +340,7 @@ class TransferGoods2Admin:
             data["description"] = item['description']
             data["introduction"] = item['style']
             data["url"] = item['url']
-            for i,img in enumerate(item['images']):
+            for i, img in enumerate(item['images']):
                 data['images[%d]' % i] = img
             data["spiderSkus[0].price"] = item['price'][1:]
             data["spiderSkus[0].promotionPrice"] = ''
@@ -299,8 +361,55 @@ class TransferGoods2Admin:
             assert resp.status_code == 200
 
 
+class TransferGoods:
+    """二级分类商品上传LasciviousCrawler"""
+
+    def __init__(self):
+        self.url = 'http://sw.danaaa.com/api/spider/add_by_sku.mo'
+        self.mongo = MongoClient(MONGODB_URL)
+        self.db = 'LasciviousCrawler'
+        self.collection = 'products'
+
+    def start(self):
+        for item in self.mongo[self.db][self.collection].find():
+            data = {}
+            data["provider"] = item['brand']
+            data["storeId"] = item['store_id']
+            data["brandId"] = item['brand_id']
+            data["currencyId"] = item['coin_id']
+            data["categoryUuid"] = item['product_id']
+            data["categoryName"] = item['categories'][1][0]
+            data["name"] = item['name']
+            if not item['name']:
+                data["name"] = item['brand']
+            data["caption"] = item['name']
+            data["description"] = item['description']
+            data["introduction"] = item['description']
+            data["url"] = item['url']
+            for i, img in enumerate(item['images']):
+                data['images[%d]' % i] = img
+            data["spiderSkus[0].price"] = item['was_price'][1:]
+            if not item['was_price']:
+                data["spiderSkus[0].price"] = item['now_price'][1:]
+                data["piderSkus[0].promotionPrice"] = ''
+            else:
+                data["spiderSkus[0].promotionPrice"] = item['now_price'][1:]
+            data["spiderSkus[0].stock"] = item['stock']
+            for i, size in enumerate(item['size']):
+                data["spiderSkus[0].specName%d" % int(i + 1)] = 'size'
+                data["spiderSkus[0].specValue%d" % int(i + 1)] = size.split('-')[0].strip()
+
+            resp = requests.post(url=self.url, data=data)
+            print(resp.text)
+            assert resp.status_code == 200
+
+
 if __name__ == '__main__':
     # admin = TransferCategory2Admin()
     # admin.run()
-    admin = TransferGoods2Admin()
+    # admin = TransferCategories()
+    # admin.run()
+    # admin = TransferGoods2Admin()
+    # admin.start()
+    admin = TransferGoods()
     admin.start()

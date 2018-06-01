@@ -13,7 +13,7 @@ def start_mysql():
         port=3306,
         user='root',
         passwd='mysql',
-        db='work',
+        db='sw',
         charset='utf8mb4')
     cur = conn.cursor()
     myConn_list = [conn, cur]
@@ -31,14 +31,14 @@ def close_pymysql(cur, conn):
 
 if __name__ == "__main__":
     client = pymongo.MongoClient('localhost', 27017)
-    db = client['KjslaundryCrawler']
+    db = client['EttingerCrawler']
     collection = db['products']
 
     myConn_list = start_mysql()
     cur = myConn_list[1]
     conn = myConn_list[0]
 
-    sqli = "insert into Kjslaundry values(0,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+    sqli = "insert into xx_goods values(0,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
 
     for temple in collection.find():
         try:

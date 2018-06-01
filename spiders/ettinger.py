@@ -48,9 +48,9 @@ class EttingerCrawler(IndexListDetailCrawler):
                 continue
 
             cat1 = {'name': cat1_name, 'url': cat1_url, 'children': [], 'uuid': self.cu.get_or_create(cat1_name)}
-            for cat2 in cat1_item('.navmenu__submenu .container .navmenu__submenu-heading a').items():
-                cat2_name = cat2.text().strip()
-                cat2_url = self._full_url(url_from=resp.url, path=cat2.attr('href'))
+            for cat2_node in cat1_item('.navmenu__submenu .container div.col-md-2').items():
+                cat2_name = cat2_node('.navmenu__submenu-heading a').text().strip()
+                cat2_url = self._full_url(url_from=resp.url, path=cat2_node.attr('href'))
                 if not cat2_name:
                     continue
 
@@ -58,7 +58,7 @@ class EttingerCrawler(IndexListDetailCrawler):
                     'name': cat2_name, 'url': cat2_url, 'children': [],
                     'uuid': self.cu.get_or_create(cat1_name, cat2_name)
                 }
-                for cat3 in cat1_item('.navmenu__submenu .container ul a').items():
+                for cat3 in cat2_node('ul li a').items():
                     cat3_name = cat3.text().strip()
                     if not cat3_name:
                         continue
@@ -68,10 +68,11 @@ class EttingerCrawler(IndexListDetailCrawler):
 
                     cat3_url = self._full_url(url_from=resp.url, path=cat3.attr('href'))
 
-                    cat2['children'].append({
-                        'name': cat3_name, 'url': cat3_url,
-                        'uuid': self.cu.get_or_create(cat1_name, cat2_name, cat3_name)
-                    })
+                    if cat3_name != 'View all':
+                        cat2['children'].append({
+                            'name': cat3_name, 'url': cat3_url,
+                            'uuid': self.cu.get_or_create(cat1_name, cat2_name, cat3_name)
+                        })
 
                     results.append([
                         cat3_url, headers, resp.cookies.get_dict(),
