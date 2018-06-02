@@ -70,8 +70,8 @@ class Manger:
         with open(inspect.getabsfile(spiders), mode='a') as fp:
             fp.write(f'from .{file_name} import *\n')
 
-    @staticmethod
-    def start(crawler=None, method=None, threads=None):
+    @classmethod
+    def start(cls, crawler=None, method=None, threads=1):
         """
         如果制定爬虫方法，则直接调用，否则，进入交互模式
         :param crawler: str, 爬虫类名
@@ -80,21 +80,11 @@ class Manger:
         :return: None
         """
 
-        def thread(func):
-            print('#' * 10)
-            func()
-            # with RegisterTask(class_name=class_name, method_name=method_name, threads=threads):
-            #     print('$' * 10)
-            #     func()
-
         if crawler and method:
-            class_name = crawler
-            method_name = method
-            with ThreadPoolSubmit(
-                concurrency=threads, func=thread,
-                iterable=[getattr(getattr(spiders, crawler)(), method)] * threads
-            ):
-                pass
+            cls._start(
+                call=getattr(getattr(spiders, crawler)(), method),
+                class_name=crawler, method_name=method, threads=threads
+            )
 
         objects = [
             getattr(spiders, name) for name in dir(spiders)
@@ -130,20 +120,27 @@ class Manger:
         assert threads >= 1
         print('=' * 30)
 
-        class_name = str(crawler).rpartition('object')[0].rpartition('.')[-1].strip()
-        method_name = methods[index].__name__
-        with ThreadPoolSubmit(concurrency=threads, func=thread, iterable=[methods[index]] * threads):
-            pass
+        cls._start(
+            call=methods[index],
+            class_name=str(crawler).rpartition('object')[0].rpartition('.')[-1].strip(),
+            method_name=methods[index].__name__, threads=threads
+        )
+
+    @staticmethod
+    def _start(call, class_name, method_name, threads):
+        with RegisterTask(class_name=class_name, method_name=method_name, threads=threads):
+            with ThreadPoolSubmit(concurrency=threads, func=lambda func: func(), iterable=[call] * threads):
+                pass
 
     def status(self):
-        fmt = '{pid:<8}{class:<20}{method:<20}{threads:<8}{created:<30}{alive:<6}{elapsed:}'
+        fmt = '{pid:<8}{alive:<10}{threads:<10}{class:<20}{method:<20}{created:<30}{elapsed:}'
 
-        title = ['pid', 'class', 'method', 'threads', 'created', 'alive', 'elapsed']
+        title = ['pid', 'alive', 'threads', 'class', 'method', 'created', 'elapsed']
         title = {t: t.upper() for t in title}
 
-        print('-' * 100)
+        print('-' * 120)
         print(fmt.format(**title))
-        print('-' * 100)
+        print('-' * 120)
 
         register = RegisterTask(class_name=None, method_name=None)
         for task in register.select_all():
@@ -152,7 +149,7 @@ class Manger:
             info['alive'] = self._pid_status(pid=info['pid'])
             print(fmt.format(**info))
 
-        print('-' * 100)
+        print('-' * 120)
 
     def stop(self, force=False):
         self.status()

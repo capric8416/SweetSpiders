@@ -2,13 +2,13 @@
 # !/usr/bin/env python
 
 import os
-import sqlite3
 import time
 from datetime import datetime
 from multiprocessing import Pool as ProcessPool, cpu_count
 from multiprocessing.dummy import Pool as ThreadPool
 
-from SweetSpiders.config import SQLITE_PID, TABLE_PID
+import pymysql
+from SweetSpiders.config import MYSQL_CONF, DB_SWEET_SPIDERS, TABLE_PID
 
 
 class RegisterTask:
@@ -18,13 +18,12 @@ class RegisterTask:
         self.threads = threads
         self.pid = os.getpid()
 
+        self.db = DB_SWEET_SPIDERS
         self.table = TABLE_PID
 
-        self.connection = sqlite3.connect(SQLITE_PID)
-        self.connection.row_factory = self.dict_factory
+        self.connection = pymysql.connect(**MYSQL_CONF)
 
     def __enter__(self):
-        self.create_table()
         self.insert_into()
         return self
 
@@ -33,54 +32,51 @@ class RegisterTask:
         self.connection.close()
 
     def create_table(self):
-        cursor = self.connection.cursor()
-        cursor.execute(self.sql_create_table)
-        cursor.execute(self.sql_create_index)
-        self.connection.commit()
+        with self.connection.cursor() as cursor:
+            cursor.execute(self.sql_create_table)
+            self.connection.commit()
 
     def insert_into(self):
-        cursor = self.connection.cursor()
-        cursor.execute(self.sql_insert_into)
-        self.connection.commit()
+        with self.connection.cursor() as cursor:
+            cursor.execute(self.sql_insert_into)
+            self.connection.commit()
 
     def drop_from(self, pid=None):
-        cursor = self.connection.cursor()
-        cursor.execute(self.sql_drop_from(pid=pid))
-        self.connection.commit()
+        with self.connection.cursor() as cursor:
+            cursor.execute(self.sql_drop_from(pid=pid))
+            self.connection.commit()
 
     def select_all(self):
-        cursor = self.connection.cursor()
-        cursor.execute(self.sql_select_all)
-        self.connection.commit()
+        with self.connection.cursor() as cursor:
+            cursor.execute(self.sql_select_all)
+            self.connection.commit()
 
-        results = cursor.fetchall()
-        for item in results:
-            item['elapsed'] = f'{time.time() - item["created"]}s'
-            item['created'] = datetime.fromtimestamp(item['created']).strftime('%Y-%m-%d %H:%M:%S.%f')
+            results = cursor.fetchall()
+            for item in results:
+                item['elapsed'] = f'{time.time() - item["created"]}s'
+                item['created'] = datetime.fromtimestamp(item['created']).strftime('%Y-%m-%d %H:%M:%S.%f')
 
-        return results
+            return results
 
     def select_tasks(self, pid):
-        cursor = self.connection.cursor()
-        cursor.execute(self.sql_select_task(pid=pid))
-        self.connection.commit()
-        return [item['pid'] for item in cursor.fetchall()]
+        with self.connection.cursor() as cursor:
+            cursor.execute(self.sql_select_task(pid=pid))
+            self.connection.commit()
+            return [item['pid'] for item in cursor.fetchall()]
 
     @property
     def sql_create_table(self):
         return f'''
+            create database if not exists {self.db} charset utf8mb4;
+            
             create table if not exists {self.table} (
                 pid int not null,
                 class varchar(255) not null,
                 method varchar(255) not null,
                 threads int not null,
                 created double not null
-            )
-        '''
-
-    @property
-    def sql_create_index(self):
-        return f'''
+            );
+            
             create unique index if not exists index_pid on {self.table}(pid)
         '''
 
@@ -110,10 +106,6 @@ class RegisterTask:
         return f'''
             select pid from {self.table} where pid in ({",".join(pid)})
         '''
-
-    @staticmethod
-    def dict_factory(cursor, row):
-        return {col[0]: row[idx] for idx, col in enumerate(cursor.description)}
 
 
 class _PoolSubmit:

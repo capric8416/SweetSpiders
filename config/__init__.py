@@ -4,5 +4,4 @@
 from .mongo import *
 from .mysql import *
 from .redis import *
-from .sqlite import *
 from .template import *
