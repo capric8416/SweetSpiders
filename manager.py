@@ -11,15 +11,12 @@ from urllib.parse import urlparse
 import SweetSpiders
 import psutil
 from SweetSpiders import spiders
-from SweetSpiders.common import RegisterTask
+from SweetSpiders.common import RegisterTask, ThreadPoolSubmit
 from SweetSpiders.config import TEMPLATE
 from fire import Fire
 
 
 class Manger:
-    def __init__(self):
-        self._register = RegisterTask(class_name=None, method_name=None)
-
     @staticmethod
     def create(file_name=None, class_name=None, comment=None, index_url=None, wait=None):
         """
@@ -74,17 +71,30 @@ class Manger:
             fp.write(f'from .{file_name} import *\n')
 
     @staticmethod
-    def start(crawler=None, method=None):
+    def start(crawler=None, method=None, threads=None):
         """
         如果制定爬虫方法，则直接调用，否则，进入交互模式
         :param crawler: str, 爬虫类名
         :param method: str, 爬虫方法名
+        :param threads: str, 线程数
         :return: None
         """
 
+        def thread(func):
+            print('#' * 10)
+            func()
+            # with RegisterTask(class_name=class_name, method_name=method_name, threads=threads):
+            #     print('$' * 10)
+            #     func()
+
         if crawler and method:
-            with RegisterTask(class_name=crawler, method_name=method) as _:
-                return getattr(getattr(spiders, crawler)(), method)()
+            class_name = crawler
+            method_name = method
+            with ThreadPoolSubmit(
+                concurrency=threads, func=thread,
+                iterable=[getattr(getattr(spiders, crawler)(), method)] * threads
+            ):
+                pass
 
         objects = [
             getattr(spiders, name) for name in dir(spiders)
@@ -115,24 +125,28 @@ class Manger:
         print('-' * 30)
         index = int(input('method: '))
         assert 0 <= index < len(methods), '方法不存在'
+
+        threads = int(input('threads: ') or '1')
+        assert threads >= 1
         print('=' * 30)
 
         class_name = str(crawler).rpartition('object')[0].rpartition('.')[-1].strip()
         method_name = methods[index].__name__
-        with RegisterTask(class_name=class_name, method_name=method_name) as _:
-            methods[index]()
+        with ThreadPoolSubmit(concurrency=threads, func=thread, iterable=[methods[index]] * threads):
+            pass
 
     def status(self):
-        fmt = '{pid:<8}{class:<20}{method:<20}{created:<30}{alive:<6}{elapsed:}'
+        fmt = '{pid:<8}{class:<20}{method:<20}{threads:<8}{created:<30}{alive:<6}{elapsed:}'
 
-        title = ['pid', 'class', 'method', 'created', 'alive', 'elapsed']
+        title = ['pid', 'class', 'method', 'threads', 'created', 'alive', 'elapsed']
         title = {t: t.upper() for t in title}
 
         print('-' * 100)
         print(fmt.format(**title))
         print('-' * 100)
 
-        for task in self._register.select_all():
+        register = RegisterTask(class_name=None, method_name=None)
+        for task in register.select_all():
             info = copy.copy(title)
             info.update(task)
             info['alive'] = self._pid_status(pid=info['pid'])
@@ -147,21 +161,23 @@ class Manger:
         if not pid:
             return
 
-        for hit in self._register.select_tasks(pid=pid):
+        register = RegisterTask(class_name=None, method_name=None)
+        for hit in register.select_tasks(pid=pid):
             try:
                 os.kill(hit, signal.SIGKILL if force else signal.SIGTERM)
             except ProcessLookupError:
                 pass
 
-            self._register.drop_from()
+            register.drop_from()
 
     def wipe(self):
-        for task in self._register.select_all():
+        register = RegisterTask(class_name=None, method_name=None)
+        for task in register.select_all():
             pid = task['pid']
             if not self._pid_status(pid=pid):
-                self._register.drop_from(pid=pid)
+                register.drop_from(pid=pid)
             elif SweetSpiders.__name__ not in self._pid_file(pid=pid):
-                self._register.drop_from(pid=pid)
+                register.drop_from(pid=pid)
 
     def _pid_file(self, pid):
         _ = self
