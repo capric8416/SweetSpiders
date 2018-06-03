@@ -29,38 +29,94 @@ class KikocosmeticsCrawler(IndexListDetailCrawler):
         # 货币ID
         self.coin_id = 1
 
+        # 品牌ID
+        self.brand_id = 145
+
     def _parse_index(self, resp):
         """首页解析器"""
-        if not resp:
-            return
-        headers = copy.copy(self.headers)
-        headers['referer'] = resp.url
+        results = []
+        categories = []
         pq = PyQuery(resp.text)
 
         node = pq('#main-menu-nav-first-menu-panel .nav .nav1  .nav1-item')
         for top_category in node.items():
-            top_category_name = top_category('.nav1-link').text().strip()
-            if top_category_name == 'MakeUp' or top_category_name == 'Skin Care' or top_category_name == 'Accessories':
+            cat1_name = top_category('.nav1-link').text().strip()
+            if cat1_name == 'MakeUp' or cat1_name == 'Skin Care' or cat1_name == 'Accessories':
+                cat1_url = self._full_url(url_from=resp.url, path=top_category('.nav1-link').attr('href'))
+                cat1 = {
+                    'name': cat1_name, 'url': cat1_url, 'children': [],
+                    'uuid': self.cu.get_or_create(cat1_name)
+                }
                 child_category = top_category('.nav2-wrapper .nav2 .nav3 .nav3-item .nav3-link')
                 for child in child_category.items():
-                    child_name = child('a').text()
-                    child_url = self._full_url(url_from=resp.url, path=child.attr('href'))
-                    categories = (top_category_name, child_name)
-                    yield child_url, headers, resp.cookies.get_dict(), {'categories': categories}
-            elif top_category_name == 'NEW':
+                    cat2_name = child('a').text()
+                    cat2_url = self._full_url(url_from=resp.url, path=child.attr('href'))
+
+                    headers = copy.copy(self.headers)
+                    headers['Referer'] = resp.url
+
+                    cat1['children'].append({
+                        'name': cat2_name, 'url': cat2_url,
+                        'uuid': self.cu.get_or_create(cat1_name, cat2_name)
+                    })
+
+                    results.append([
+                        cat2_url, headers, resp.cookies.get_dict(),
+                        {'categories': [(cat1_name, cat1_url), (cat2_name, cat2_url)]}
+                    ])
+
+                categories.append(cat1)
+            elif cat1_name == 'NEW':
+                cat1_url = self._full_url(url_from=resp.url, path=top_category('.nav1-link').attr('href'))
+                cat1 = {
+                    'name': cat1_name, 'url': cat1_url, 'children': [],
+                    'uuid': self.cu.get_or_create(cat1_name)
+                }
                 list_node = top_category('.nav2-wrapper .highlights .highlight-item')
                 for list_url in list_node.items():
-                    child_name = list_url('a').text()
-                    list_link = self._full_url(url_from=resp.url, path=list_url('a').attr('href'))
-                    categories = (top_category_name, child_name)
-                    yield list_link, headers, resp.cookies.get_dict(), {'categories': categories}
-            elif top_category_name == 'Best Seller':
+                    cat2_name = list_url('a').text()
+                    cat2_url = self._full_url(url_from=resp.url, path=list_url('a').attr('href'))
+
+                    headers = copy.copy(self.headers)
+                    headers['Referer'] = resp.url
+
+                    cat1['children'].append({
+                        'name': cat2_name, 'url': cat2_url,
+                        'uuid': self.cu.get_or_create(cat1_name, cat2_name)
+                    })
+
+                    results.append([
+                        cat2_url, headers, resp.cookies.get_dict(),
+                        {'categories': [(cat1_name, cat1_url), (cat2_name, cat2_url)]}
+                    ])
+
+                categories.append(cat1)
+            elif cat1_name == 'Best Seller':
+                cat1_url = self._full_url(url_from=resp.url, path=top_category('.nav1-link').attr('href'))
+                cat1 = {
+                    'name': cat1_name, 'url': cat1_url, 'children': [],
+                    'uuid': self.cu.get_or_create(cat1_name)
+                }
                 list_node = top_category('.nav2-wrapper .nav2 .nav2-item  ')
                 for list_url in list_node.items():
-                    list_link = self._full_url(url_from=resp.url, path=list_url('a').attr('href'))
-                    child_name = list_url('a').text()
-                    categories = (top_category_name, child_name)
-                    yield list_link, headers, resp.cookies.get_dict(), {'categories': categories}
+                    cat2_url = self._full_url(url_from=resp.url, path=list_url('a').attr('href'))
+                    cat2_name = list_url('a').text()
+
+                    headers = copy.copy(self.headers)
+                    headers['Referer'] = resp.url
+
+                    cat1['children'].append({
+                        'name': cat2_name, 'url': cat2_url,
+                        'uuid': self.cu.get_or_create(cat1_name, cat2_name)
+                    })
+
+                    results.append([
+                        cat2_url, headers, resp.cookies.get_dict(),
+                        {'categories': [(cat1_name, cat1_url), (cat2_name, cat2_url)]}
+                    ])
+
+                categories.append(cat1)
+        return categories, results
 
     def _get_product_list(self, url, headers, cookies, meta):
         while True:
@@ -131,5 +187,6 @@ class KikocosmeticsCrawler(IndexListDetailCrawler):
         return {
             'url': product_source_url, 'imgs': imgs, 'color': color_imgs, 'name': name, 'description': description,
             'was_price': was_price, 'now_price': now_price, 'product_id': product_id, 'categories': categories,
-            'store': self.store, 'brand': self.brand, 'store_id': self.store_id, 'coin_id': self.coin_id
+            'store': self.store, 'brand': self.brand, 'store_id': self.store_id, 'coin_id': self.coin_id,
+            'brand_id': self.brand_id,
         }

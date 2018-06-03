@@ -337,18 +337,18 @@ class TransferGoods2Admin:
             if not item['name']:
                 data["name"] = item['brand']
             data["caption"] = item['title']
-            data["description"] = item['description']
-            data["introduction"] = item['style']
+            data["description"] = ''.join(item['features'])
+            data["introduction"] = item['description']
             data["url"] = item['url']
             for i, img in enumerate(item['images']):
                 data['images[%d]' % i] = img
             data["spiderSkus[0].price"] = item['price'][1:]
             data["spiderSkus[0].promotionPrice"] = ''
-            data["spiderSkus[0].stock"] = 9
+            data["spiderSkus[0].stock"] = 999
             data["spiderSkus[0].specName1"] = 'color'
             data["spiderSkus[0].specValue1"] = item['color']
-            data["spiderSkus[0].specName2"] = 'size'
-            data["spiderSkus[0].specValue2"] = ''
+            data["spiderSkus[0].specName2"] = 'meterial'
+            data["spiderSkus[0].specValue2"] = item['meterial']
             data["spiderSkus[0].specName3"] = ''
             data["spiderSkus[0].specValue3"] = ''
             data["spiderSkus[0].specName4"] = ''
@@ -358,7 +358,7 @@ class TransferGoods2Admin:
 
             resp = requests.post(url=self.url, data=data)
             print(resp.text)
-            assert resp.status_code == 200
+            # assert resp.status_code == 200
 
 
 class TransferGoods:
@@ -409,7 +409,7 @@ if __name__ == '__main__':
     # admin.run()
     # admin = TransferCategories()
     # admin.run()
-    # admin = TransferGoods2Admin()
-    # admin.start()
-    admin = TransferGoods()
+    admin = TransferGoods2Admin()
     admin.start()
+    # admin = TransferGoods()
+    # admin.start()

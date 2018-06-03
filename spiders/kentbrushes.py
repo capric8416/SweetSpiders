@@ -30,6 +30,9 @@ class KentbrushesCrawler(IndexListDetailCrawler):
         # 货币ID
         self.coin_id = 1
 
+        # 品牌ID
+        self.brand_id = 143
+
     def _parse_index(self, resp):
         """首页解析器"""
         pq = PyQuery(resp.text)
@@ -38,15 +41,31 @@ class KentbrushesCrawler(IndexListDetailCrawler):
 
         node = pq('.wrapper #mainMenu .main-menu .has-child')
         for top in node.items():
-            top_category = top('a:eq(0)').text().strip()
+            cat1_name = top('a:eq(0)').text().strip()
+            cat1_url = top('a:eq(0)').attr('href')
+            cat1 = {
+                'name': cat1_name, 'url': cat1_url, 'children': [],
+                'uuid': self.cu.get_or_create(cat1_name)
+            }
             for child in top('.sub-menu-mob li').items():
-                child_category = child('a').text().strip()
-                child_url = child('a').attr('href')
-                categories = (top_category, child_category)
+                cat2_name = child('a').text().strip()
+                cat2_url = child('a').attr('href')
 
                 headers = copy.copy(self.headers)
                 headers['Referer'] = resp.url
-                yield child_url, headers, resp.cookies.get_dict(), {'categories': categories}
+
+                cat1['children'].append({
+                    'name': cat2_name, 'url': cat2_url,
+                    'uuid': self.cu.get_or_create(cat1_name, cat2_name)
+                })
+
+                results.append([
+                    cat2_url, headers, resp.cookies.get_dict(),
+                    {'categories': [(cat1_name, cat1_url), (cat2_name, cat2_url)]}
+                ])
+
+            categories.append(cat1)
+        return categories, results
 
     def _get_product_list(self, url, headers, cookies, meta):
         """列表页面爬虫，实现翻页请求"""
@@ -96,6 +115,7 @@ class KentbrushesCrawler(IndexListDetailCrawler):
         name = pq('.product-side .desk-only h1.ptitle').text().strip()
 
         in_stock = pq('.product-view .product-side .desk-only .availability span').text().strip()
+        stock = 999 if in_stock == 'In stock' else 0
 
         short_desc = pq('.product-side .product .short-desc').text().strip()
 
@@ -105,6 +125,7 @@ class KentbrushesCrawler(IndexListDetailCrawler):
 
         return {
             'url': url, 'product_id': meta['product_id'], 'categories': meta['categories'], 'img': imgs,
-            'name': name, 'in_stock': in_stock, 'short_desc': short_desc, 'price': price, 'description': description,
-            'store': self.store, 'brand': self.brand, 'store_id': self.store_id, 'coin_id': self.coin_id
+            'name': name, 'in_stock': stock, 'short_desc': short_desc, 'price': price, 'description': description,
+            'store': self.store, 'brand': self.brand, 'store_id': self.store_id, 'coin_id': self.coin_id,
+            'brand_id': self.brand_id
         }

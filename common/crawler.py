@@ -345,9 +345,14 @@ class IndexListDetailCrawler:
             return f'===== Redis ==== \n' + '\n'.join(msgs)
 
         def mongo_count():
-            return f'===== MongoDB =====\n' + \
-                   f'\t{self.mongo[self.spider][self.products_collection].count()}: ' \
-                   f'{self.spider}.{self.products_collection}'
+            msgs = [
+                f'\t{self.mongo[self.spider][self.products_collection].count()}: '
+                f'{self.spider}.{self.products_collection}',
+                f'\t{self.mongo[self.spider][self.categories_collection].count()}: '
+                f'{self.spider}.{self.categories_collection}'
+            ]
+            return f'===== MongoDB =====\n' + '\n'.join(msgs)
+
 
         while True:
             self.logger.info('\n'.join(['', redis_count(), mongo_count(), '']))
@@ -358,6 +363,7 @@ class IndexListDetailCrawler:
         if names:
             self.redis.delete(*names)
 
+        self.mongo[self.spider][self.categories_collection].remove({})
         self.mongo[self.spider][self.products_collection].remove({})
 
     def _exit_gracefully(self, signum, frame):

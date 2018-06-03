@@ -39,7 +39,6 @@ class EttingerCrawler(IndexListDetailCrawler):
         pq = PyQuery(resp.text)
 
         results = []
-
         categories = []
         for cat1_item in pq('.navmenu__parent-item').items():
             cat1_name = cat1_item('a:eq(0)').text().strip()
@@ -50,7 +49,7 @@ class EttingerCrawler(IndexListDetailCrawler):
             cat1 = {'name': cat1_name, 'url': cat1_url, 'children': [], 'uuid': self.cu.get_or_create(cat1_name)}
             for cat2_node in cat1_item('.navmenu__submenu .container div.col-md-2').items():
                 cat2_name = cat2_node('.navmenu__submenu-heading a').text().strip()
-                cat2_url = self._full_url(url_from=resp.url, path=cat2_node.attr('href'))
+                cat2_url = self._full_url(url_from=resp.url, path=cat2_node('.navmenu__submenu-heading a').attr('href'))
                 if not cat2_name:
                     continue
 
@@ -150,7 +149,7 @@ class EttingerCrawler(IndexListDetailCrawler):
             small_picture_link = small_picture('img').attr('src')
             thumbnails.append(small_picture_link)
 
-        features = [p('p').text().strip() for p in pq('.product-full__specification__content .ezxmltext-field tbody tr td').items()]
+        features = [p.text().strip() for p in pq('.product-full__specification__content .ezxmltext-field .default p').items()]
 
         material = pq('.embed-content-image__text__inner .embed-content-image__text__description .eztext-field').text().strip()
 
@@ -159,5 +158,6 @@ class EttingerCrawler(IndexListDetailCrawler):
             'style': style, 'name': name,
             'price': price, 'color': color, 'item_code': item_code, 'description': description,
             'thumbnails': thumbnails, 'images': images, 'brand': self.brand, 'store_id': self.store_id,
-            'store': self.store, 'coin_id': self.coin_id, 'brand_id': self.brand_id,
+            'store': self.store, 'coin_id': self.coin_id, 'brand_id': self.brand_id, 'features': features,
+            'meterial': material
         }

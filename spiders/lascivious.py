@@ -33,8 +33,6 @@ class LasciviousCrawler(IndexListDetailCrawler):
         # 品牌ID
         self.brand_id = 152
 
-        self.stock = None
-
     def _parse_index(self, resp):
         """首页解析器"""
         pq = PyQuery(resp.text)
@@ -129,16 +127,12 @@ class LasciviousCrawler(IndexListDetailCrawler):
             size = size_node.text().strip()
             sizes.append(size)
 
-        stock_text = pq('#addText').text().strip()
-
-        if stock_text == 'Sold Out':
-            self.stock = 0
-        if stock_text == 'Add to Cart':
-            self.stock = 999
+        stock_text = pq('[itemprop="availability"]').attr('href')
+        stock = 999 if 'InStock' in stock_text else 0
 
         return {
             'url': url, 'product_id': meta['product_id'], 'categories': meta['categories'], 'images': images,
             'name': name, 'description': description, 'was_price': was_price, 'now_price': now_price,
-            'size': sizes, 'stock': self.stock, 'store': self.stock, 'brand': self.brand, 'store_id': self.store_id,
+            'size': sizes, 'stock': stock, 'store': self.store, 'brand': self.brand, 'store_id': self.store_id,
             'brand_id': self.brand_id, 'coin_id': self.coin_id
         }

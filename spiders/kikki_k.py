@@ -32,67 +32,77 @@ class KikkikCrawler(IndexListDetailCrawler):
         # 货币ID
         self.coin_id = 4
 
+        # 品牌ID
+        self.brand_id = 144
+
     def _parse_index(self, resp):
         """首页解析器"""
-        if not resp:
-            return
-        headers = copy.copy(self.headers)
-        headers['referer'] = resp.url
+        results = []
+        categories = []
         pq = PyQuery(resp.text)
-        node = pq('#nav li.nav-2')
-        top_category = node('a:eq(0) span').text().strip()
-        child_node = node('.nav-panel--dropdown .menu-mobile-desktop .nav-submenu .classic')
-        for child in child_node.items():
-            child_category = child('a span').text()
-            child_url = child('a').attr('href')
-            categories = (top_category, child_category)
-            yield child_url, headers, resp.cookies.get_dict(), {'categories': categories}
 
-        node2 = pq('#nav li.nav-3')
-        top2_category = node2('a:eq(0) span').text().strip()
-        child2_node = node2('.nav-panel--dropdown .nav-block--center .nav-submenu--mega li')
-        for child in child2_node.items():
-            child_category = child('a span').text().strip()
-            child_url = child('a').attr('href')
-            categories = (top2_category, child_category)
-            yield child_url, headers, resp.cookies.get_dict(), {'categories': categories}
+        node = pq('#nav li.nav-item--parent')
+        for top in node.items():
+            cat1_name = top('a.level-top span').text().strip()
+            if cat1_name == 'Shop By':
+                continue
+            if cat1_name == 'Home':
+                    break
+            if cat1_name == 'Diaries & Calendars':
+                cat1_url = top('a.level-top').attr('href')
 
-        node3 = pq('#nav li.nav-4')
-        top3_category = node3('a:eq(0) span').text().strip()
-        child3_node = node3('.nav-panel--dropdown .nav-block--center .nav-submenu--mega li')
-        for child in child3_node.items():
-            child3_category = child('a span').text().strip()
-            child_url = child('a').attr('href')
-            categories = (top3_category, child3_category)
-            yield child_url, headers, resp.cookies.get_dict(), {'categories': categories}
+                cat1 = {
+                    'name': cat1_name, 'url': cat1_url, 'children': [],
+                    'uuid': self.cu.get_or_create(cat1_name)
+                }
+                child_node = top('.nav-panel--dropdown .nav-panel-inner .nav-block--center ul.nav-submenu li.level1 ul li.level2')
+                for child in child_node.items():
+                    cat2_name = child('a span').text().strip()
+                    cat2_url = child('a').attr('href')
 
-        node4 = pq('#nav li.nav-5')
-        top4_category = node4('a:eq(0) span').text().strip()
-        child4_node = node4('.nav-panel--dropdown .nav-block--center .nav-submenu--mega li')
-        for child in child4_node.items():
-            child4_category = child('a span').text().strip()
-            child_url = child('a').attr('href')
-            categories = (top4_category, child4_category)
-            yield child_url, headers, resp.cookies.get_dict(), {'categories': categories}
+                    headers = copy.copy(self.headers)
+                    headers['Referer'] = resp.url
 
-        node5 = pq('#nav li.nav-6')
-        top5_category = node5('a:eq(0) span').text().strip()
-        child5_node = node5('.nav-panel--dropdown .nav-block ul')
-        for child in child5_node.items():
-            for a in child('li a').items():
-                child5_category = a('span').text().strip()
-                child_url = a.attr('href')
-                categories = (top5_category, child5_category)
-                yield child_url, headers, resp.cookies.get_dict(), {'categories': categories}
+                    cat1['children'].append({
+                        'name': cat2_name, 'url': cat2_url,
+                        'uuid': self.cu.get_or_create(cat1_name, cat2_name)
+                    })
 
-        node6 = pq('#nav li.nav-7')
-        top6_category = node6('a:eq(0) span').text().strip()
-        child6_node = node6('.nav-panel--dropdown .nav-block--center .nav-submenu--mega li')
-        for child in child6_node.items():
-            child6_category = child('a span').text().strip()
-            child_url = child('a').attr('href')
-            categories = (top6_category, child6_category)
-            yield child_url, headers, resp.cookies.get_dict(), {'categories': categories}
+                    results.append([
+                        cat2_url, headers, resp.cookies.get_dict(),
+                        {'categories': [(cat1_name, cat1_url), (cat2_name, cat2_url)]}
+                    ])
+
+                categories.append(cat1)
+            else:
+                cat1_url = top('a.level-top').attr('href')
+                cat1 = {
+                    'name': cat1_name, 'url': cat1_url, 'children': [],
+                    'uuid': self.cu.get_or_create(cat1_name)
+                }
+                child_node = top('.nav-panel--dropdown .nav-panel-inner .nav-block--center ul.nav-submenu li.level1')
+                for child in child_node.items():
+                    cat2_name = child('a span').text().strip()
+                    if cat2_name == 'View All':
+                        continue
+                    cat2_url = child('a').attr('href')
+
+                    headers = copy.copy(self.headers)
+                    headers['Referer'] = resp.url
+
+                    cat1['children'].append({
+                        'name': cat2_name, 'url': cat2_url,
+                        'uuid': self.cu.get_or_create(cat1_name, cat2_name)
+                    })
+
+                    results.append([
+                        cat2_url, headers, resp.cookies.get_dict(),
+                        {'categories': [(cat1_name, cat1_url), (cat2_name, cat2_url)]}
+                    ])
+
+                categories.append(cat1)
+
+        return categories, results
 
     def _get_product_list(self, url, headers, cookies, meta):
         resp = self._request(url=url, headers=headers, cookies=cookies, rollback=self.push_category_info, meta=meta)
@@ -176,8 +186,12 @@ class KikkikCrawler(IndexListDetailCrawler):
         # 商品介绍
         description = pq('.short-description').text().strip()
 
+        # 库存
+        stock_text = pq('.product-type-data p').attr('class')
+        stock = 999 if 'in-stock' in stock_text else 0
+
         return {'url': url, 'img': imgs, 'was_price': was_price, 'categories': meta['categories'],
                 'now_price': now_price, 'features': features, 'description': description,
                 'store': self.store, 'brand': self.brand, 'store_id': self.store_id, 'coin_id': self.coin_id,
-                'product_id': meta['product_id'], 'name': name,
+                'product_id': meta['product_id'], 'name': name, 'brand_id': self.brand_id, 'stock': stock
                 }
