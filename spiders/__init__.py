@@ -11,3 +11,5 @@ from .lkbennett import *
 from .lanvin import *
 from .larizia import *
 from .lascivious import *
+from .lush import *
+from .alexandermcqueen import *

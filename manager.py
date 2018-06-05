@@ -129,8 +129,11 @@ class Manger:
     @staticmethod
     def _start(call, class_name, method_name, threads):
         with RegisterTask(class_name=class_name, method_name=method_name, threads=threads):
-            with ThreadPoolSubmit(concurrency=threads, func=lambda func: func(), iterable=[call] * threads):
-                pass
+            if threads == 1:
+                call()
+            else:
+                with ThreadPoolSubmit(concurrency=threads, func=lambda func: func(), iterable=[call] * threads):
+                    pass
 
     def status(self):
         fmt = '{pid:<8}{alive:<10}{threads:<10}{class:<20}{method:<20}{created:<30}{elapsed:}'

@@ -137,7 +137,7 @@ class EttingerCrawler(IndexListDetailCrawler):
         price = pq('.product-full__price .attribute-price').text()
         color = pq('.product-full__color p').text()
         item_code = pq('.product-full__item-code .ezstring-field').text()
-        description = pq('.product-full__description .ezxmltext-field p').text()
+        description = pq('.product-full__description .ezxmltext-field p').text().strip()
 
         big_picture_node = pq('.gallery .carousel .item picture')
         for big_picture_url in big_picture_node.items():

@@ -120,12 +120,12 @@ class TransferCategory2Admin:
 
 
 class TransferCategories:
-    """二级分类LasciviousCrawler"""
+    """二级分类LasciviousCrawler,LushCrawler"""
 
     def __init__(self):
         self.url = 'http://sw.danaaa.com/api/spider/category.mo'
         self.mongo = MongoClient(MONGODB_URL)
-        self.db = 'LasciviousCrawler'
+        self.db = 'LushCrawler'
         self.products_collection = 'products'
         self.categories_collection = 'categories'
         self.category_uuid = CategoryUUID()
@@ -347,8 +347,8 @@ class TransferGoods2Admin:
             data["spiderSkus[0].stock"] = 999
             data["spiderSkus[0].specName1"] = 'color'
             data["spiderSkus[0].specValue1"] = item['color']
-            data["spiderSkus[0].specName2"] = 'meterial'
-            data["spiderSkus[0].specValue2"] = item['meterial']
+            data["spiderSkus[0].specName2"] = ''
+            data["spiderSkus[0].specValue2"] = ''
             data["spiderSkus[0].specName3"] = ''
             data["spiderSkus[0].specValue3"] = ''
             data["spiderSkus[0].specName4"] = ''
@@ -362,12 +362,12 @@ class TransferGoods2Admin:
 
 
 class TransferGoods:
-    """二级分类商品上传LasciviousCrawler"""
+    """二级分类商品上传LasciviousCrawler,LushCrawler"""
 
     def __init__(self):
         self.url = 'http://sw.danaaa.com/api/spider/add_by_sku.mo'
         self.mongo = MongoClient(MONGODB_URL)
-        self.db = 'LasciviousCrawler'
+        self.db = 'LushCrawler'
         self.collection = 'products'
 
     def start(self):
@@ -375,7 +375,7 @@ class TransferGoods:
             data = {}
             data["provider"] = item['brand']
             data["storeId"] = item['store_id']
-            data["brandId"] = item['brand_id']
+            data["brandId"] = 437
             data["currencyId"] = item['coin_id']
             data["categoryUuid"] = item['product_id']
             data["categoryName"] = item['categories'][1][0]
@@ -384,24 +384,17 @@ class TransferGoods:
                 data["name"] = item['brand']
             data["caption"] = item['name']
             data["description"] = item['description']
-            data["introduction"] = item['description']
+            data["introduction"] = item['introduction']
+            if not item['introduction']:
+                data['introduction'] = item['name']
             data["url"] = item['url']
-            for i, img in enumerate(item['images']):
-                data['images[%d]' % i] = img
-            data["spiderSkus[0].price"] = item['was_price'][1:]
-            if not item['was_price']:
-                data["spiderSkus[0].price"] = item['now_price'][1:]
-                data["piderSkus[0].promotionPrice"] = ''
-            else:
-                data["spiderSkus[0].promotionPrice"] = item['now_price'][1:]
-            data["spiderSkus[0].stock"] = item['stock']
-            for i, size in enumerate(item['size']):
-                data["spiderSkus[0].specName%d" % int(i + 1)] = 'size'
-                data["spiderSkus[0].specValue%d" % int(i + 1)] = size.split('-')[0].strip()
-
+            data['images[0]'] = item['img']
+            data["spiderSkus[0].price"] = item['price'][1:].split('/')[0].strip()
+            data["piderSkus[0].promotionPrice"] = ''
+            data["spiderSkus[0].stock"] = 999
             resp = requests.post(url=self.url, data=data)
             print(resp.text)
-            assert resp.status_code == 200
+            # assert resp.status_code == 200
 
 
 if __name__ == '__main__':
