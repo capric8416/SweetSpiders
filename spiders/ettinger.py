@@ -122,7 +122,7 @@ class EttingerCrawler(IndexListDetailCrawler):
                 meta['product_id'] = product_id
                 yield url, headers, resp.cookies.get_dict(), meta
 
-    def _parse_product_detail(self, url, resp, meta):
+    def _parse_product_detail(self, url, resp, meta, **extra):
         """详情页解析器"""
 
         _ = self

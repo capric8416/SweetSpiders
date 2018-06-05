@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # !/usr/bin/env python
 
+import copy
 import functools
 import hashlib
 import inspect
@@ -158,9 +159,14 @@ class IndexListDetailCrawler:
         if not resp:
             return
 
-        return self._parse_product_detail(url=url, resp=resp, meta=meta)
+        headers = copy.copy(headers)
+        headers['Referer'] = resp.url
 
-    def _parse_product_detail(self, url, resp, meta):
+        cookies = resp.cookies.get_dict()
+
+        return self._parse_product_detail(url=url, resp=resp, meta=meta, headers=headers, cookies=cookies)
+
+    def _parse_product_detail(self, url, resp, meta, **extra):
         """
         详情页解析器，提取详情页信息
         """
@@ -264,6 +270,9 @@ class IndexListDetailCrawler:
 
         # 链接
         url = item[0]
+        if not url:
+            return
+
         # 解析
         parsed = urlparse(url)
         # 查询参数排序
@@ -352,7 +361,6 @@ class IndexListDetailCrawler:
                 f'{self.spider}.{self.categories_collection}'
             ]
             return f'===== MongoDB =====\n' + '\n'.join(msgs)
-
 
         while True:
             self.logger.info('\n'.join(['', redis_count(), mongo_count(), '']))

@@ -90,7 +90,7 @@ class LaportegnaCrawler(IndexListDetailCrawler):
             meta['product_id'] = urlparse(url).path.split('/')[-1]
             yield url, headers, resp.cookies.get_dict(), meta
 
-    def _parse_product_detail(self, url, resp, meta):
+    def _parse_product_detail(self, url, resp, meta, **extra):
         """详情页解析器"""
 
         _ = self

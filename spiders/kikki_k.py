@@ -159,7 +159,7 @@ class KikkikCrawler(IndexListDetailCrawler):
             meta['product'] = urlparse(url).path[1:]
             yield url, headers, resp.cookies.get_dict(), meta
 
-    def _parse_product_detail(self, resp, url, meta):
+    def _parse_product_detail(self, url, resp, meta, **extra):
         pq = PyQuery(resp.text)
         # 商品图片
         imgs = []

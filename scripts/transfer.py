@@ -362,7 +362,7 @@ class TransferGoods2Admin:
 
 
 class TransferGoods:
-    """二级分类商品上传LasciviousCrawler,LushCrawler"""
+    """二级分类商品上传LasciviousCrawler,LushCrawler,BelstaffCrawler"""
 
     def __init__(self):
         self.url = 'http://sw.danaaa.com/api/spider/add_by_sku.mo'
@@ -380,18 +380,26 @@ class TransferGoods:
             data["categoryUuid"] = item['product_id']
             data["categoryName"] = item['categories'][1][0]
             data["name"] = item['name']
-            if not item['name']:
-                data["name"] = item['brand']
             data["caption"] = item['name']
             data["description"] = item['description']
             data["introduction"] = item['introduction']
             if not item['introduction']:
-                data['introduction'] = item['name']
+                data['introduction'] = item['meterials']
             data["url"] = item['url']
+            # for i, img in enumerate(item['images']):
+            #     data['images[%d]' % i] = img
             data['images[0]'] = item['img']
-            data["spiderSkus[0].price"] = item['price'][1:].split('/')[0].strip()
+            data["spiderSkus[0].price"] = item['price'][1:]
             data["piderSkus[0].promotionPrice"] = ''
             data["spiderSkus[0].stock"] = 999
+            # data["spiderSkus[0].specName1"] = 'color'
+            # data["spiderSkus[0].specValue1"] = item['color']
+            # for i, size in enumerate(item['sizes']):
+            #     data["spiderSkus[0].specName%d" % int(i+2)] = 'size'
+            #     data["spiderSkus[0].specValue%d" % int(i+2)] = size
+            data["spiderSkus[0].specName1"] = 'standard'
+            data["spiderSkus[0].specValue1"] = item['price']
+
             resp = requests.post(url=self.url, data=data)
             print(resp.text)
             # assert resp.status_code == 200
@@ -402,7 +410,7 @@ if __name__ == '__main__':
     # admin.run()
     # admin = TransferCategories()
     # admin.run()
-    admin = TransferGoods2Admin()
-    admin.start()
-    # admin = TransferGoods()
+    # admin = TransferGoods2Admin()
     # admin.start()
+    admin = TransferGoods()
+    admin.start()

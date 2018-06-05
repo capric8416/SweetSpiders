@@ -72,7 +72,7 @@ class KjslaundryCrawler(IndexListDetailCrawler):
             meta['product_id'] = url.split('/')[-1][:-5]
             yield url, headers, resp.cookies.get_dict(), meta
 
-    def _parse_product_detail(self, url, resp, meta):
+    def _parse_product_detail(self, url, resp, meta, **extra):
         pq = PyQuery(resp.text)
         # 商品图片
         img_urls = []

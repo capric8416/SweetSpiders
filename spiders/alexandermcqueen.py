@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 # !/usr/bin/env python
 import copy
-from urllib.parse import urlparse
+import json
+from urllib.parse import urlparse, urlunparse, urlencode, parse_qsl
 
 from SweetSpiders.common import IndexListDetailCrawler
 from pyquery import PyQuery
@@ -37,9 +38,16 @@ class AlexandermcqueenCrawler(IndexListDetailCrawler):
     def _parse_index(self, resp):
         """首页解析器"""
 
+        self.headers['Accept-Language'] = 'en-GB'
+
         pq = PyQuery(resp.text)
         results = []
         categories = []
+
+        sitecode = pq('script:contains("yTos.navigation")').text().strip()
+        sitecode = sitecode[sitecode.index('yTos.navigation'):sitecode.index(
+            'yTos.configuration')].partition('=')[-1].strip(' \n;')
+        sitecode = json.loads(sitecode)['SiteCode'].replace('GROUP', '')
 
         level_0 = pq('.main_menu .top_menu .level-0 > .menuItem')
         for cat1 in level_0.items():
@@ -82,7 +90,10 @@ class AlexandermcqueenCrawler(IndexListDetailCrawler):
 
                         results.append([
                             cat3_url, headers, resp.cookies.get_dict(),
-                            {'categories': [(cat1_name, cat1_url), (cat2_name, cat2_url), (cat3_name, cat3_url)]}
+                            {
+                                'sitecode': sitecode,
+                                'categories': [(cat1_name, cat1_url), (cat2_name, cat2_url), (cat3_name, cat3_url)]
+                            }
                         ])
 
                     cat1['children'].append(cat2)
@@ -96,7 +107,8 @@ class AlexandermcqueenCrawler(IndexListDetailCrawler):
         params = None
 
         resp = self._request(
-            url=url, params=params, headers=headers, cookies=cookies,
+            url=url, params=params, headers=headers,
+            cookies=cookies, allow_redirects=False,
             rollback=self.push_category_info, meta=meta
         )
         if not resp:
@@ -107,16 +119,15 @@ class AlexandermcqueenCrawler(IndexListDetailCrawler):
         for info in self._parse_product_list(pq=pq, resp=resp, headers=headers, meta=meta):
             self.push_product_info(info)
 
-        search = pq('script:contains("yTos.search")').text().strip().partition('yTos.search')[-1].strip(' \n=;')
-        search = json.loads(search)
+        search = pq('script:contains("yTos.search")').text().strip().partition(
+            'yTos.search')[-1].partition('typeof')[0].strip(' \n=;if(') or \
+                 pq('script:contains("yTos.search")').text().strip().partition('yTos.search')[-1].strip(' \n=;')
+        if not search:
+            return
 
-        sitecode = pq('script:contains("yTos.navigation")').text().strip()
-        sitecode = sitecode[sitecode.index('yTos.navigation'):sitecode.index('yTos.configuration')].partition('=')[
-            -1].strip(' \n;')
-        sitecode = json.loads(sitecode)['SiteCode']
-        search['siteCode'] = sitecode
+        search = json.loads(search)
+        search['siteCode'] = meta['sitecode']
         totalpage = int(search.get('totalPages'))
-        page = int(search.get('page'))
 
         url = 'https://www.alexandermcqueen.com/Search/RenderProducts'
         params = {
@@ -156,13 +167,86 @@ class AlexandermcqueenCrawler(IndexListDetailCrawler):
         headers = copy.copy(headers)
         headers['Referer'] = resp.url
 
-        node = pq('#wcrssbdbgs_spl .shelfContainer  .products  article. item')
-        for detail in node.items():
-            url = self._full_url(url_from=resp.url, path=detail('a').attr('href'))
-            meta['product_id'] = urlparse(url).path.split('/')[-1][:-5]
-            yield url, headers, resp.cookies.get_dict(), meta
+        node = pq('article.item')
+        if node:
+            for detail in node.items():
+                url = self._full_url(url_from=resp.url, path=detail('a').attr('href'))
+                meta['product_id'] = urlparse(url).path.split('/')[-1][:-5]
+                yield url, headers, resp.cookies.get_dict(), meta
+        else:
+            node = pq('.columns-row .outro-section-inner-wrapper')
+            for detail in node.items():
+                url = self._fix_url(self._full_url(url_from=resp.url, path=detail('a').attr('href')))
+                meta['product_id'] = urlparse(url).path.split('/')[-1][:-5]
+                yield url, headers, resp.cookies.get_dict(), meta
 
-    def _parse_product_detail(self, url, resp, meta):
+    def _fix_url(self, url):
+        p = urlparse(url)
+        q = dict(parse_qsl(p.query))
+
+        if q.get('siteCode', '').endswith('_CN'):
+            q['siteCode'] = q['siteCode'][:-2] + 'GB'
+        else:
+            return url
+
+        return urlunparse(p._replace(query=urlencode(q)))
+
+    def _parse_product_detail(self, url, resp, meta, **extra):
         """详情页解析器"""
 
-        raise NotImplementedError
+        _ = self
+        pq = PyQuery(resp.text)
+
+        # 商品图片
+        images = []
+        for img in pq('.productImages .alternativeImages li').items():
+            img_url = img('img').attr('src')
+            images.append(img_url)
+
+        # 商品名称
+        name = pq('.productName .inner').text().strip()
+
+        # 商品价格
+        price = pq('.itemPriceContainer .price .value').text().strip()
+
+        # 商品详细介绍
+        introduction = pq('.descriptionsContainer .attributesUpdater .value').text().strip()
+
+        #  商品简介
+        p1 = pq('.moreDescriptionsContent .fittingWrapper span').text().strip()
+        p2 = pq('.moreDescriptionsContent .compositionWrapper span').text().strip()
+        p3 = pq('.moreDescriptionsContent .modelFabricColor span').text().strip()
+        description = p1 + p2 + p3
+
+        params = {}
+        params['siteCode'] = meta['sitecode']
+
+        code10 = urlparse(url).path.split('/')[-1].split('.')[0].partition('cod')[-1]
+        params['code10'] = code10
+        if not code10:
+            params['code10'] = dict(parse_qsl(urlparse(url).query))['cod10']
+
+        link = 'https://www.alexandermcqueen.com/yTos/api/Plugins/ItemPluginApi/GetCombinationsAsync/'
+        resp = self._request(url=link, params=params, headers=extra['headers'], cookies=extra['cookies'])
+        data = resp.json()
+
+        # 商品颜色
+        colors = [c['Description'] for c in data['Colors']]
+
+        # 商品尺寸
+        sizes = [(s['Alternative'] or {'Description': None})['Description'] for s in data['Sizes']]
+        sizes = [s for s in sizes if s]
+
+        # 商品库存
+        stock_text = data['IsSoldOut']
+        if stock_text == 'false':
+            stock = 999
+        else:
+            stock = 0
+
+        return {
+            'url': url, 'product_id': meta['product_id'], 'categories': meta['categories'], 'images': images,
+            'name': name, 'price': price, 'introduction': introduction, 'description': description, 'color': colors,
+            'sizes': sizes, 'stock': stock, 'store': self.store, 'brand': self.brand, 'store_id': self.store_id,
+            'brand_id': self.brand_id, 'coin_id': self.coin_id
+        }

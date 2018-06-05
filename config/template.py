@@ -31,7 +31,7 @@ class {class_name}(IndexListDetailCrawler):
 
         raise NotImplementedError
 
-    def _parse_product_detail(self, url, resp, meta):
+    def _parse_product_detail(self, url, resp, meta, **extra):
         """详情页解析器"""
 
         raise NotImplementedError
