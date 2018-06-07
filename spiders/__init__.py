@@ -14,3 +14,4 @@ from .lascivious import *
 from .lush import *
 from .alexandermcqueen import *
 from .belstaff import *
+from .crabtree import *

@@ -200,7 +200,7 @@ class AlexandermcqueenCrawler(IndexListDetailCrawler):
         # 商品图片
         images = []
         for img in pq('.productImages .alternativeImages li').items():
-            img_url = img('img').attr('src')
+            img_url = img('img').attr('src').replace('_9_', '_18_')
             images.append(img_url)
 
         # 商品名称
@@ -238,15 +238,11 @@ class AlexandermcqueenCrawler(IndexListDetailCrawler):
         sizes = [s for s in sizes if s]
 
         # 商品库存
-        stock_text = data['IsSoldOut']
-        if stock_text == 'false':
-            stock = 999
-        else:
-            stock = 0
+        stock = 999
 
         return {
             'url': url, 'product_id': meta['product_id'], 'categories': meta['categories'], 'images': images,
             'name': name, 'price': price, 'introduction': introduction, 'description': description, 'color': colors,
             'sizes': sizes, 'stock': stock, 'store': self.store, 'brand': self.brand, 'store_id': self.store_id,
-            'brand_id': self.brand_id, 'coin_id': self.coin_id
+            'brand_id': self.brand_id, 'coin_id': self.coin_id, 'stock': stock
         }

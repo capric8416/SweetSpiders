@@ -151,7 +151,11 @@ class EttingerCrawler(IndexListDetailCrawler):
 
         features = [p.text().strip() for p in pq('.product-full__specification__content .ezxmltext-field .default p').items()]
 
-        material = pq('.embed-content-image__text__inner .embed-content-image__text__description .eztext-field').text().strip()
+        meterials = []
+        node = pq('.product-full__leather-and-materials .ezxmltext-field > div')
+        for div in node.items():
+            p = div('.embed-content-image__text .embed-content-image__text__description .eztext-field').text().strip()
+            meterials.append(p)
 
         return {
             'url': url, 'product_id': meta['product_id'], 'categories': meta['categories'], 'title': title.text(),
@@ -159,5 +163,5 @@ class EttingerCrawler(IndexListDetailCrawler):
             'price': price, 'color': color, 'item_code': item_code, 'description': description,
             'thumbnails': thumbnails, 'images': images, 'brand': self.brand, 'store_id': self.store_id,
             'store': self.store, 'coin_id': self.coin_id, 'brand_id': self.brand_id, 'features': features,
-            'meterial': material
+            'meterial': meterials,
         }

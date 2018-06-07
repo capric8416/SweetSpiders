@@ -119,6 +119,80 @@ class TransferCategory2Admin:
         return result
 
 
+class TransferCategoriesBelstaff:
+    def __init__(self):
+        self.url = 'http://sw.danaaa.com/api/spider/category.mo'
+        self.mongo = MongoClient(MONGODB_URL)
+        self.db = 'BelstaffCrawler'
+        self.products_collection = 'products'
+        self.categories_collection = 'categories'
+        self.category_uuid = CategoryUUID()
+
+    def run(self):
+        categories = []
+        for cat in self.mongo[self.db][self.categories_collection].find():
+            cat.pop('_id')
+            categories.append(cat)
+
+        product = self.mongo[self.db][self.products_collection].find_one()
+        data = {
+            'provider': product['brand'],
+            'storeId': product['store_id'],
+            'jsonCategory': json.dumps(categories)
+        }
+
+        resp = requests.post(url=self.url, data=data)
+        print(resp.text)
+        assert resp.status_code == 200
+
+    def build_categories(self):
+        """构建分类树: 废弃，从商品表获取的分类不全"""
+
+        categories = [item['categories'] for item in self.mongo[self.db][self.products_collection].find()]
+
+        tree = []
+        for cat in categories:
+            for i, item in enumerate(cat):
+                item.append(self.category_uuid.get_or_create(*[x[0] for x in cat[:i + 1]]))
+
+            tree.append({
+                'name': cat[0][0], 'url': cat[0][1], 'uuid': cat[0][2],
+                'children': [
+                    {
+                        'name': cat[1][0], 'url': cat[1][1], 'uuid': cat[1][2],
+                        'children': [
+                            {'name': cat[2][0], 'url': cat[2][1], 'uuid': cat[2][2]}
+                        ]
+                    }
+                ]
+            })
+
+        return self.merge(tree)
+
+    def merge(self, target):
+        """递归合并children: 废弃，从商品表获取的分类不全"""
+
+        _ = self
+
+        result = []
+
+        name = ''
+        for cat in sorted(target, key=lambda d: d['name']):
+            if cat['name'] != name:
+                if result and 'children' in result[-1]:
+                    result[-1]['children'] = self.merge(result[-1]['children'])
+                result.append(cat)
+                name = cat['name']
+            else:
+                if 'children' in result[-1]:
+                    result[-1]['children'] += cat['children']
+
+        if result and 'children' in result[-1]:
+            result[-1]['children'] = self.merge(result[-1]['children'])
+
+        return result
+
+
 class TransferCategories:
     """二级分类LasciviousCrawler,LushCrawler"""
 
@@ -337,8 +411,10 @@ class TransferGoods2Admin:
             if not item['name']:
                 data["name"] = item['brand']
             data["caption"] = item['title']
-            data["description"] = ''.join(item['features'])
+            data["description"] = ''.join(item['features']) + ''.join(item['meterial'])
             data["introduction"] = item['description']
+            if not item['description']:
+                data["introduction"] = item['meterial']
             data["url"] = item['url']
             for i, img in enumerate(item['images']):
                 data['images[%d]' % i] = img
@@ -380,29 +456,110 @@ class TransferGoods:
             data["categoryUuid"] = item['product_id']
             data["categoryName"] = item['categories'][1][0]
             data["name"] = item['name']
-            data["caption"] = item['name']
+            data["caption"] = ''
             data["description"] = item['description']
             data["introduction"] = item['introduction']
             if not item['introduction']:
                 data['introduction'] = item['meterials']
             data["url"] = item['url']
-            # for i, img in enumerate(item['images']):
-            #     data['images[%d]' % i] = img
             data['images[0]'] = item['img']
-            data["spiderSkus[0].price"] = item['price'][1:]
-            data["piderSkus[0].promotionPrice"] = ''
-            data["spiderSkus[0].stock"] = 999
-            # data["spiderSkus[0].specName1"] = 'color'
-            # data["spiderSkus[0].specValue1"] = item['color']
-            # for i, size in enumerate(item['sizes']):
-            #     data["spiderSkus[0].specName%d" % int(i+2)] = 'size'
-            #     data["spiderSkus[0].specValue%d" % int(i+2)] = size
-            data["spiderSkus[0].specName1"] = 'standard'
-            data["spiderSkus[0].specValue1"] = item['price']
+            for i, price in enumerate(item['price']):
+                data["spiderSkus[%d].price" % int(i)] = price.split('/')[0][1:]
+                data["piderSkus[%d].promotionPrice" % int(i)] = ''
+                data["spiderSkus[%d].stock" % int(i)] = 999
+            for i, standard in enumerate(item['price']):
+                data["spiderSkus[%d].specName1" % int(i)] = 'standard'
+                data["spiderSkus[%d].specValue1" % int(i)] = standard
 
             resp = requests.post(url=self.url, data=data)
             print(resp.text)
             # assert resp.status_code == 200
+
+
+class TransferGoodsBelstaff:
+    def __init__(self):
+        self.url = 'http://sw.danaaa.com/api/spider/add_by_sku.mo'
+        self.mongo = MongoClient(MONGODB_URL)
+        self.db = 'BelstaffCrawler'
+        self.collection = 'products'
+
+    def start(self):
+        for item in self.mongo[self.db][self.collection].find():
+            data = {}
+            data["provider"] = item['brand']
+            data["storeId"] = item['store_id']
+            data["brandId"] = item['brand_id']
+            data["currencyId"] = item['coin_id']
+            data["categoryUuid"] = item['product_id']
+            data["categoryName"] = item['categories'][2][0]
+            data["name"] = item['name']
+            data["caption"] = ''
+            data["description"] = item['description']
+            data["introduction"] = item['introduction']
+            if not item['introduction']:
+                data['introduction'] = item['name']
+            data["url"] = item['url']
+            for i, img in enumerate(item['images']):
+                data['images[%d]' % int(i)] = img
+
+            for i, size in enumerate(item['sizes']):
+                if ',' in item['price']:
+                    data["spiderSkus[%d].price" % int(i)] = item['price'][1:].replace(',', '')
+                else:
+                    data["spiderSkus[%d].price" % int(i)] = item['price'][1:]
+                data["piderSkus[%d].promotionPrice" % int(i)] = ''
+                data["spiderSkus[%d].specName1" % int(i)] = 'size'
+                data["spiderSkus[%d].specValue1" % int(i)] = size
+                data["spiderSkus[%d].specName2" % int(i)] = 'color'
+                data["spiderSkus[%d].specValue2" % int(i)] = item['color']
+
+            resp = requests.post(url=self.url, data=data)
+            print(resp.text)
+            # assert resp.status_code == 200
+
+
+class TransferGoodsToAlexandermcqueen:
+    def __init__(self):
+        self.url = 'http://sw.danaaa.com/api/spider/add_by_sku.mo'
+        self.mongo = MongoClient(MONGODB_URL)
+        self.db = 'AlexandermcqueenCrawler'
+        self.collection = 'products'
+
+    def start(self):
+        for item in self.mongo[self.db][self.collection].find():
+            data = {}
+            data["provider"] = item['brand']
+            data["storeId"] = item['store_id']
+            data["brandId"] = item['brand_id']
+            data["currencyId"] = item['coin_id']
+            data["categoryUuid"] = item['product_id']
+            if not item['product_id']:
+                data["categoryUuid"] = item['name']
+            data["categoryName"] = item['categories'][2][0]
+            data["name"] = item['name']
+            data["caption"] = item['name']
+            data["description"] = item['description']
+            data["introduction"] = item['introduction']
+            if not item['introduction']:
+                data['introduction'] = item['name']
+            data["url"] = item['url']
+            for i, img in enumerate(item['images']):
+                data['images[%d]' % i] = img
+            data["spiderSkus[0].price"] = item['price']
+            data["piderSkus[0].promotionPrice"] = ''
+            data["spiderSkus[0].stock"] = 999
+            data["spiderSkus[0].specName1"] = 'color'
+            temp = item['color']
+            if not temp:
+                data["spiderSkus[0].specValue1"] = ''
+            else:
+                data["spiderSkus[0].specValue1"] = temp[0]
+            for i, size in enumerate(item['sizes']):
+                data["spiderSkus[0].specName%d" % int(i + 2)] = 'size'
+                data["spiderSkus[0].specValue%d" % int(i + 2)] = size
+
+            resp = requests.post(url=self.url, data=data)
+            print(resp.text)
 
 
 if __name__ == '__main__':
@@ -410,7 +567,13 @@ if __name__ == '__main__':
     # admin.run()
     # admin = TransferCategories()
     # admin.run()
+    # admin = TransferCategoriesBelstaff()
+    # admin.run()
     # admin = TransferGoods2Admin()
     # admin.start()
-    admin = TransferGoods()
+    # admin = TransferGoods()
+    # admin.start()
+    admin = TransferGoodsBelstaff()
     admin.start()
+    # admin = TransferGoodsToAlexandermcqueen()
+    # admin.start()

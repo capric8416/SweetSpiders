@@ -120,7 +120,7 @@ class LushCrawler(IndexListDetailCrawler):
         name = pq('.object-commerce-detail .whiteboard-table h1.product-title').text().strip()
 
         # 商品价格及规格
-        price = pq('.object-commerce-product #edit-product-id--2 option').text().strip()
+        price = [price.text().strip() for price in pq('.object-commerce-product #edit-product-id--2 option').items()]
 
         # 商品描述
         introduction = [p.text().strip() for p in pq('#main_column .textformat p').items()]
