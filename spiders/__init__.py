@@ -15,3 +15,5 @@ from .lush import *
 from .alexandermcqueen import *
 from .belstaff import *
 from .crabtree import *
+from .fulton import *
+from .moltonbrown import *

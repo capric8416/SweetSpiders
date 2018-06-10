@@ -49,45 +49,47 @@ class CrabtreeCrawler(IndexListDetailCrawler):
             elif cat1_name == 'Collection Rituals':
                 break
             elif cat1_name in ('Hair Care', "Men's", 'Gifts'):
-                cat1_url = top_node('a.accordion-submenu-toggle').attr('href')
-                cat1 = {'name': cat1_name, 'url': cat1_url, 'children': [], 'uuid': self.cu.get_or_create(cat1_name)}
-                cat2_name = cat1_name
-                cat2_url = cat1_url
+                cat1_url = top_node('a.accordion-submenu-toggle').attr('href').strip()
+
+                cat1 = {'name': cat1_name, 'url': cat1_url, 'uuid': self.cu.get_or_create(cat1_name)}
 
                 headers = copy.copy(self.headers)
                 headers['Referer'] = resp.url
-
-                cat1['children'].append({
-                    'name': cat2_name, 'url': cat2_url,
-                    'uuid': self.cu.get_or_create(cat1_name, cat2_name)
-                })
+                cookies = resp.cookies.get_dict()
 
                 results.append([
-                    cat2_url, headers, resp.cookies.get_dict(),
-                    {'categories': [(cat1_name, cat1_url), (cat2_name, cat2_url)]}
+                    cat1_url, headers, cookies,
+                    {'categories': [(cat1_name, cat1_url)]}
                 ])
 
                 categories.append(cat1)
 
             else:
-                cat1_url = top_node('a.accordion-submenu-toggle').attr('href')
+                cat1_url = top_node('a.accordion-submenu-toggle').attr('href').strip()
                 cat1 = {'name': cat1_name, 'url': cat1_url, 'children': [], 'uuid': self.cu.get_or_create(cat1_name)}
                 child = top_node('ul.level-3 .accordion-childmenu-label')
                 for child_node in child.items():
                     cat2_name = child_node('a.sliding-u-click').text().strip()
-                    cat2_url = child_node('a.sliding-u-click').attr('href')
+                    cat2_url = child_node('a.sliding-u-click').attr('href').strip()
 
                     headers = copy.copy(self.headers)
                     headers['Referer'] = resp.url
+                    cookies = resp.cookies.get_dict()
 
                     cat1['children'].append({
                         'name': cat2_name, 'url': cat2_url,
                         'uuid': self.cu.get_or_create(cat1_name, cat2_name)
                     })
 
-                    results.append([
-                        cat2_url, headers, resp.cookies.get_dict(),
-                        {'categories': [(cat1_name, cat1_url), (cat2_name, cat2_url)]}
+                    results.extend([
+                        [
+                            cat1_url, headers, cookies,
+                            {'categories': [(cat1_name, cat1_url)]}
+                        ],
+                        [
+                            cat2_url, headers, cookies,
+                            {'categories': [(cat1_name, cat1_url), (cat2_name, cat2_url)]}
+                        ]
                     ])
 
                 categories.append(cat1)
@@ -96,10 +98,14 @@ class CrabtreeCrawler(IndexListDetailCrawler):
 
     def _get_product_list(self, url, headers, cookies, meta):
         """列表页面爬虫，实现翻页请求"""
-
+        # http://www.crabtree-evelyn.com/uk/en/body-care/bath-soaks/?sz=12&start=0&format=page-element
+        start = 0
+        sz = 12
+        format = 'page-element'
+        params = {'sz': sz, 'start': start, 'format': format}
         while True:
             resp = self._request(
-                url=url, headers=headers, cookies=cookies,
+                url=url, headers=headers, cookies=cookies, params=params,
                 rollback=self.push_category_info, meta=meta
             )
             if not resp:
@@ -110,11 +116,11 @@ class CrabtreeCrawler(IndexListDetailCrawler):
             for info in self._parse_product_list(pq=pq, resp=resp, headers=headers, meta=meta):
                 self.push_product_info(info)
 
-            next_page = pq('.next').attr('href')
-            if not next_page:
+            if not pq('.infinite-scroll-placeholder').attr('data-grid-url'):
                 break
 
-            url = next_page
+            start += 12
+            params.update({'start': start})
 
     def _parse_product_list(self, pq, resp, headers, meta):
         """列表页解析器"""
@@ -122,7 +128,7 @@ class CrabtreeCrawler(IndexListDetailCrawler):
         headers = copy.copy(headers)
         headers['Referer'] = resp.url
 
-        node = pq('.item-list .lazyload .product-tile-wrapper')
+        node = pq('.product-tile-wrapper')
         for detail in node.items():
             url = self._full_url(url_from=resp.url, path=detail(
                 '.product-info .product-list-item .product-name .name-link').attr('href'))
@@ -140,15 +146,18 @@ class CrabtreeCrawler(IndexListDetailCrawler):
         for img in pq('.product-primary-image .pdp-image-slides > div img').items():
             img_url = img.attr('src')
             imgs.append(img_url)
+        imgs = imgs[:-1]
 
         # 商品名称
-        name = pq('.product-detail .product-name').text().strip()
+        name = pq('.cols .product-detail .product-name').text().strip()
 
         # 商品原价
         was_price = pq('.product-content .product-price-amount .price-standard').text().strip()
 
         # 商品现价
         now_price = pq('.product-content .product-price .price-sales-pinned').text().strip()
+        if not (was_price and now_price):
+            now_price = pq('.product-content .product-price .price-sales').text().strip()
 
         # 商品介绍
         introduction = pq('.product-content .short-description p').text().strip()
@@ -161,7 +170,9 @@ class CrabtreeCrawler(IndexListDetailCrawler):
         description = p1 + p2 + p3 + p4
 
         # 商品尺寸
-        size = pq('.product-variations .attribute .value input').attr('value')
+        size = pq('.product-variations .attribute .value .selection .select2-selection .select2-selection__rendered').text().strip()
+        if not size:
+            size = pq('.product-variations .attribute .value input').attr('value')
 
         return {
             'url': url, 'product_id': meta['product_id'], 'categories': meta['categories'], 'images': imgs,
@@ -169,8 +180,3 @@ class CrabtreeCrawler(IndexListDetailCrawler):
             'description': description, 'size': size, 'store': self.store, 'brand': self.brand,
             'store_id': self.store_id, 'brand_id': self.brand_id, 'coin_id': self.coin_id
         }
-
-
-
-
-

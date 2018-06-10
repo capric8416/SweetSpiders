@@ -168,7 +168,7 @@ class Manger:
             except ProcessLookupError:
                 pass
 
-            register.drop_from()
+            register.drop_from(pid=hit)
 
     def wipe(self):
         register = RegisterTask(class_name=None, method_name=None)
