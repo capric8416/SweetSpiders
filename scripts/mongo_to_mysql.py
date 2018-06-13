@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 # !/usr/bin/env python
-import json
 
 import pymongo
 import pymysql
@@ -31,36 +30,111 @@ def close_pymysql(cur, conn):
 
 if __name__ == "__main__":
     client = pymongo.MongoClient('localhost', 27017)
-    db = client['EttingerCrawler']
+    db = client['LasciviousCrawler']
     collection = db['products']
 
     myConn_list = start_mysql()
     cur = myConn_list[1]
     conn = myConn_list[0]
 
-    sqli = "insert into xx_goods values(0,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+    sql = '''
+        insert into sw.xx_goods values(
+            '0',
+            now(),
+            now(),
+            '42',
+            %s,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            '0',
+            %s,
+            %s,
+            %s,
+            '\0',
+            '',
+            '',
+            '',
+            '\0',
+            null,
+            %s,
+            null,
+            '0',
+            now(),
+            '0',
+            now(),
+            %s,
+            '[]',
+            %s,
+            %s,
+            '0',
+            '0',
+            '0',
+            null,
+            null,
+            null,
+            '2018061012041',
+            '[]',
+            '0',
+            '0',
+            null,
+            '0',
+            now(),
+            '0',
+            now(),
+            null,
+            '152',
+            '302',
+            '923',
+            null,
+            null,
+            null,
+            %s,
+            null,
+            null,
+            '',
+            null,
+            null,
+            '0',
+            '3225',
+            '70',
+            '0.000000'
+        );
+    '''
 
-    for temple in collection.find():
+    for item in collection.find():
         try:
-            cur.execute(sqli, (
-                temple['url'],
-                json.dumps(temple['categories']),
-                json.dumps(temple['img']),
-                temple['was_price'],
-                temple['now_price'],
-                temple['description'],
-                json.dumps(temple['size']),
-                temple['store'],
-                temple['brand'],
-                temple['store_id'],
-                temple['coin_id'],
-                temple['product_id'],
-                temple['name'],
-                temple['created']
+            cur.execute(sql, (
+                item['brand'],
+                item['images'][0],
+                item['description'],
+                item['description'],
+                item['now_price'].lstrip('£'),
+                item['categories'][1][0],
+                item['now_price'].lstrip('£'),
+                item['images'][0],
+                item['url'],
             ))
 
             print('保存成功!')
         except Exception as e:
-                print(e)
+            print(e)
 
     close_pymysql(cur, conn)

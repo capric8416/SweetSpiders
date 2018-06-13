@@ -208,6 +208,8 @@ class AlexandermcqueenCrawler(IndexListDetailCrawler):
 
         # 商品价格
         price = pq('.itemPriceContainer .price .value').text().strip()
+        if price == 'Complimentary':
+            price = '999999999'  # 没有价格
 
         # 商品详细介绍
         introduction = pq('.descriptionsContainer .attributesUpdater .value').text().strip()
@@ -234,15 +236,25 @@ class AlexandermcqueenCrawler(IndexListDetailCrawler):
         colors = [c['Description'] for c in data['Colors']]
 
         # 商品尺寸
-        sizes = [(s['Alternative'] or {'Description': None})['Description'] for s in data['Sizes']]
-        sizes = [s for s in sizes if s]
+        sizes = []
+        for s in data['Sizes']:
+            if s['Labeled']:
+                size = s['Description']
+            else:
+                size = s['Alternative']['Description']
+            if size not in ('', None, 'OneSize'):
+                sizes.append(size)
 
         # 商品库存
-        stock = 999
+        issoldout = data['IsSoldOut']
+        if issoldout:
+            stock = 0
+        else:
+            stock = 999
 
         return {
             'url': url, 'product_id': meta['product_id'], 'categories': meta['categories'], 'images': images,
             'name': name, 'price': price, 'introduction': introduction, 'description': description, 'color': colors,
             'sizes': sizes, 'stock': stock, 'store': self.store, 'brand': self.brand, 'store_id': self.store_id,
-            'brand_id': self.brand_id, 'coin_id': self.coin_id, 'stock': stock
+            'brand_id': self.brand_id, 'coin_id': self.coin_id
         }

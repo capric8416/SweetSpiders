@@ -138,7 +138,7 @@ class MoltonbrownCrawler(IndexListDetailCrawler):
             if title_text == 'DELIVERY':
                 break
             content = p('.collapsibleContent').text().strip()
-            full_content = title_text + ':' +  content
+            full_content = title_text + ':' + content
             introduction.append(full_content)
 
         # 商品规格

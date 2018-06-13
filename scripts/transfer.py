@@ -4,9 +4,10 @@
 
 import json
 import urllib.parse
+from itertools import product
 
 import requests
-from SweetSpiders.common import CategoryUUID
+from SweetSpiders.common import CategoryUUID, ThreadPoolSubmit
 from SweetSpiders.config import MONGODB_URL
 from pymongo import MongoClient
 
@@ -193,6 +194,80 @@ class TransferCategoriesBelstaff:
         return result
 
 
+class TransferCategoriesToAlexandermcqueen:
+    def __init__(self):
+        self.url = 'http://sw.danaaa.com/api/spider/category.mo'
+        self.mongo = MongoClient(MONGODB_URL)
+        self.db = 'AlexandermcqueenCrawler'
+        self.products_collection = 'products'
+        self.categories_collection = 'categories'
+        self.category_uuid = CategoryUUID()
+
+    def run(self):
+        categories = []
+        for cat in self.mongo[self.db][self.categories_collection].find():
+            cat.pop('_id')
+            categories.append(cat)
+
+        product = self.mongo[self.db][self.products_collection].find_one()
+        data = {
+            'provider': product['brand'],
+            'storeId': product['store_id'],
+            'jsonCategory': json.dumps(categories)
+        }
+
+        resp = requests.post(url=self.url, data=data)
+        print(resp.text)
+        assert resp.status_code == 200
+
+    def build_categories(self):
+        """构建分类树: 废弃，从商品表获取的分类不全"""
+
+        categories = [item['categories'] for item in self.mongo[self.db][self.products_collection].find()]
+
+        tree = []
+        for cat in categories:
+            for i, item in enumerate(cat):
+                item.append(self.category_uuid.get_or_create(*[x[0] for x in cat[:i + 1]]))
+
+            tree.append({
+                'name': cat[0][0], 'url': cat[0][1], 'uuid': cat[0][2],
+                'children': [
+                    {
+                        'name': cat[1][0], 'url': cat[1][1], 'uuid': cat[1][2],
+                        'children': [
+                            {'name': cat[2][0], 'url': cat[2][1], 'uuid': cat[2][2]}
+                        ]
+                    }
+                ]
+            })
+
+        return self.merge(tree)
+
+    def merge(self, target):
+        """递归合并children: 废弃，从商品表获取的分类不全"""
+
+        _ = self
+
+        result = []
+
+        name = ''
+        for cat in sorted(target, key=lambda d: d['name']):
+            if cat['name'] != name:
+                if result and 'children' in result[-1]:
+                    result[-1]['children'] = self.merge(result[-1]['children'])
+                result.append(cat)
+                name = cat['name']
+            else:
+                if 'children' in result[-1]:
+                    result[-1]['children'] += cat['children']
+
+        if result and 'children' in result[-1]:
+            result[-1]['children'] = self.merge(result[-1]['children'])
+
+        return result
+
+
 class TransferCategories:
     """二级分类LasciviousCrawler,LushCrawler"""
 
@@ -271,6 +346,77 @@ class TransferCategoriesToFulton:
         self.url = 'http://sw.danaaa.com/api/spider/category.mo'
         self.mongo = MongoClient(MONGODB_URL)
         self.db = 'FultonCrawler'
+        self.products_collection = 'products'
+        self.categories_collection = 'categories'
+        self.category_uuid = CategoryUUID()
+
+    def run(self):
+        categories = []
+        for cat in self.mongo[self.db][self.categories_collection].find():
+            cat.pop('_id')
+            categories.append(cat)
+
+        product = self.mongo[self.db][self.products_collection].find_one()
+        data = {
+            'provider': product['brand'],
+            'storeId': product['store_id'],
+            'jsonCategory': json.dumps(categories)
+        }
+
+        resp = requests.post(url=self.url, data=data)
+        print(resp.text)
+        assert resp.status_code == 200
+
+    def build_categories(self):
+        """构建分类树: 废弃，从商品表获取的分类不全"""
+
+        categories = [item['categories'] for item in self.mongo[self.db][self.products_collection].find()]
+
+        tree = []
+        for cat in categories:
+            for i, item in enumerate(cat):
+                item.append(self.category_uuid.get_or_create(*[x[0] for x in cat[:i + 1]]))
+
+            tree.append({
+                'name': cat[0][0], 'url': cat[0][1], 'uuid': cat[0][2],
+                'children': [
+                    {
+                        'name': cat[1][0], 'url': cat[1][1], 'uuid': cat[1][2],
+                    }
+                ]
+            })
+
+        return self.merge(tree)
+
+    def merge(self, target):
+        """递归合并children: 废弃，从商品表获取的分类不全"""
+
+        _ = self
+
+        result = []
+
+        name = ''
+        for cat in sorted(target, key=lambda d: d['name']):
+            if cat['name'] != name:
+                if result and 'children' in result[-1]:
+                    result[-1]['children'] = self.merge(result[-1]['children'])
+                result.append(cat)
+                name = cat['name']
+            else:
+                if 'children' in result[-1]:
+                    result[-1]['children'] += cat['children']
+
+        if result and 'children' in result[-1]:
+            result[-1]['children'] = self.merge(result[-1]['children'])
+
+        return result
+
+
+class TransferCategoriesToCrabtree:
+    def __init__(self):
+        self.url = 'http://sw.danaaa.com/api/spider/category.mo'
+        self.mongo = MongoClient(MONGODB_URL)
+        self.db = 'CrabtreeCrawler'
         self.products_collection = 'products'
         self.categories_collection = 'categories'
         self.category_uuid = CategoryUUID()
@@ -597,6 +743,7 @@ class TransferGoodsToAlexandermcqueen:
         self.collection = 'products'
 
     def start(self):
+        iterable = []
         for item in self.mongo[self.db][self.collection].find():
             data = {}
             data["provider"] = item['brand']
@@ -614,27 +761,36 @@ class TransferGoodsToAlexandermcqueen:
             if not item['introduction']:
                 data['introduction'] = item['name']
             data["url"] = item['url']
+
             for i, img in enumerate(item['images']):
                 data['images[%d]' % i] = img
 
-            for i, size in enumerate(item['sizes']):
-                if ',' in item['price']:
-                    data["spiderSkus[%d].price" % int(i+1)] = item['price'].replace(',', '')
-                else:
-                    data["spiderSkus[%d].price" % int(i+1)] = item['price']
-                data["spiderSkus[%d].promotionPrice" % int(i+1)] = ''
-                data["spiderSkus[%d].stock" % int(i+1)] = ''
-                data["spiderSkus[%d].specName1" % int(i+1)] = 'size'
-                data["spiderSkus[%d].specValue1" % int(i+1)] = size
-                data["spiderSkus[%d].specName1" % int(i+1)] = 'color'
-                temp = item['color']
-                if not temp:
-                    data["spiderSkus[%d].specValue1" % int(i+1)] = ''
-                else:
-                    data["spiderSkus[%d].specValue1" % int(i+1)] = temp[0]
+            if not item['color']:
+                item['color'].append('')
+            if not item['sizes']:
+                item['sizes'].append('')
 
-            resp = requests.post(url=self.url, data=data)
-            print(resp.text)
+            for i, (color, size) in enumerate(product(item['color'], item['sizes'])):
+                if ',' in item['price']:
+                    data["spiderSkus[%d].price" % int(i + 1)] = item['price'].replace(',', '')
+                else:
+                    data["spiderSkus[%d].price" % int(i + 1)] = item['price']
+
+                data["spiderSkus[%d].promotionPrice" % int(i + 1)] = ''
+                data["spiderSkus[%d].stock" % int(i + 1)] = item['stock']
+                data["spiderSkus[%d].specName2" % int(i + 1)] = 'color'
+                data["spiderSkus[%d].specValue2" % int(i + 1)] = color
+                data["spiderSkus[%d].specName1" % int(i + 1)] = 'size'
+                data["spiderSkus[%d].specValue1" % int(i + 1)] = size
+
+            iterable.append(data)
+
+        with ThreadPoolSubmit(func=self.update, iterable=iterable, concurrency=10):
+            pass
+
+    def update(self, data):
+        resp = requests.post(url=self.url, data=data)
+        print(resp.text)
 
 
 class TransferGoodsToCrabtree:
@@ -654,7 +810,10 @@ class TransferGoodsToCrabtree:
             data["categoryUuid"] = item['product_id']
             if not item['product_id']:
                 data["categoryUuid"] = item['name']
-            data["categoryName"] = item['categories'][1][0]
+            if item['categories'][1][0]:
+                data["categoryName"] = item['categories'][1][0]
+            else:
+                data["categoryName"] = item['categories'][0][0]
             data["name"] = item['name']
             data["caption"] = ''
             data["description"] = item['description']
@@ -665,15 +824,16 @@ class TransferGoodsToCrabtree:
             for i, img in enumerate(item['images']):
                 data['images[%d]' % i] = img
 
-            data["spiderSkus[0].price"] = item['was_price'][1:]
-            if not item['was_price']:
-                data["spiderSkus[0].price"] = item['now_price'][1:]
-                data["spiderSkus[0].promotionPrice"] = ''
-            else:
-                data["spiderSkus[0].promotionPrice"] = item['now_price'][1:]
-            data["spiderSkus[0].stock"] = ''
-            data["spiderSkus[0].specName1"] = 'size'
-            data["spiderSkus[0].specValue1"] = item['size']
+            for i, (was_price, now_price, size) in enumerate(zip(item['was_price'], item['now_price'], item['size'])):
+                data["spiderSkus[%d].price" % int(i+1)] = was_price[1:]
+                if not item['was_price']:
+                    data["spiderSkus[%d].price" % int(i+1)] = now_price[1:]
+                    data["spiderSkus[%d].promotionPrice" % int(i+1)] = ''
+                else:
+                    data["spiderSkus[%d].promotionPrice" % int(i+1)] = now_price[1:]
+                data["spiderSkus[%d].stock" % int(i+1)] = item['stock']
+                data["spiderSkus[%d].specName1"] = 'size'
+                data["spiderSkus[%d].specValue1"] = item['size']
 
             resp = requests.post(url=self.url, data=data)
             print(resp.text)
@@ -729,7 +889,11 @@ if __name__ == '__main__':
     # admin.run()
     # admin = TransferCategoriesBelstaff()
     # admin.run()
+    # admin = TransferCategoriesToCrabtree()
+    # admin.run()
     # admin = TransferCategoriesToFulton()
+    # admin.run()
+    # admin = TransferCategoriesToAlexandermcqueen()
     # admin.run()
     # admin = TransferGoods2Admin()
     # admin.start()
@@ -739,8 +903,7 @@ if __name__ == '__main__':
     # admin.start()
     # admin = TransferGoodsToAlexandermcqueen()
     # admin.start()
-    # admin = TransferGoodsToCrabtree()
-    # admin.start()
-    admin = TransferGoodsToFulton()
+    admin = TransferGoodsToCrabtree()
     admin.start()
-
+    # admin = TransferGoodsToFulton()
+    # admin.start()

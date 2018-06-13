@@ -17,3 +17,4 @@ from .belstaff import *
 from .crabtree import *
 from .fulton import *
 from .moltonbrown import *
+from .paulsmith import *

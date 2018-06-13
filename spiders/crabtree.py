@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # !/usr/bin/env python
 import copy
+import json
 from urllib.parse import urlparse
 
 from SweetSpiders.common import IndexListDetailCrawler
@@ -143,24 +144,41 @@ class CrabtreeCrawler(IndexListDetailCrawler):
 
         # 商品图片
         imgs = []
-        for img in pq('.product-primary-image .pdp-image-slides > div img').items():
-            img_url = img.attr('src')
-            imgs.append(img_url)
-        imgs = imgs[:-1]
+        if pq('.product-add-to-cart .product-variations .attribute .value .variation-select  option'):
+            for img in pq(
+                    '.product-add-to-cart .product-variations .attribute .value .variation-select  option').items():
+                img_url = json.loads(img.attr('data-lgimg'))['url']
+                imgs.append(img_url)
+        else:
+            for img in pq('#pdpMain .product-image .primary-image').items():
+                img_url = img.attr('src')
+                imgs.append(img_url)
+                imgs = list(set(imgs))
 
         # 商品名称
         name = pq('.cols .product-detail .product-name').text().strip()
 
         # 商品原价
+        was_prices = []
         was_price = pq('.product-content .product-price-amount .price-standard').text().strip()
 
         # 商品现价
-        now_price = pq('.product-content .product-price .price-sales-pinned').text().strip()
+        now_prices = []
+        now_price = pq(
+            '.purchase-area .product-content .product-price .price-sales-pinned').text().strip()
         if not (was_price and now_price):
-            now_price = pq('.product-content .product-price .price-sales').text().strip()
+            now_price = pq(
+                '.product-col-2 .purchase-area .product-content .product-price .price-sales').text().strip() or pq(
+                '.set-purchase-area .product-price .salesprice').text().strip()
+        was_prices.append(was_price)
+        now_prices.append(now_price)
 
         # 商品介绍
         introduction = pq('.product-content .short-description p').text().strip()
+        if pq('.product-content .short-description ul'):
+            for li in pq('.product-content .short-description ul li').items():
+                li_text = li('b').text().strip()
+                introduction += li_text
 
         # 商品描述
         p1 = pq('.cae__container .cae__explore-further-content .cae__h2').text().strip()
@@ -170,13 +188,46 @@ class CrabtreeCrawler(IndexListDetailCrawler):
         description = p1 + p2 + p3 + p4
 
         # 商品尺寸
-        size = pq('.product-variations .attribute .value .selection .select2-selection .select2-selection__rendered').text().strip()
-        if not size:
-            size = pq('.product-variations .attribute .value input').attr('value')
+        if not pq('.set-purchase-area .product-price .salesprice') and len(
+                pq('.pdpForm .product-add-to-cart .product-variations .attribute .value .variation-select option')) > 1:
+            size = [s.text().strip() for s in
+                    pq(
+                        '.product-add-to-cart .product-variations .attribute .value .variation-select option:selected').items()]
+            if not size:
+                size = [pq('.product-variations .attribute .value input').attr('value')]
+
+            option = pq(
+                '.product-add-to-cart .product-variations .attribute .value .variation-select  option:not(selected)')
+            if option:
+                link = option.attr('value')
+                resp = self._request(url=link, headers=extra['headers'], cookies=extra['cookies'])
+                pq = PyQuery(resp.text)
+                size_2 = pq(
+                    '.product-add-to-cart .product-variations .attribute .value .variation-select  option:selected').text().strip()
+                size.append(size_2)
+                was_price_2 = pq('.purchase-area .product-content .product-price .price-standard').text().strip()
+                now_price_2 = pq('.purchase-area .product-content .product-price .price-sales-pinned').text().strip()
+                if not (was_price_2 and now_price_2):
+                    now_price_2 = pq('.purchase-area .product-content .product-price .price-sales').text().strip()
+                was_prices.append(was_price_2)
+                now_prices.append(now_price_2)
+        else:
+            size = [s.text().strip() for s in
+                    pq(
+                        '.product-add-to-cart .product-variations .attribute .value .variation-select option:selected').items()]
+            if not size:
+                size = [pq('.product-variations .attribute .value input').attr('value')]
+
+        # 商品库存
+        stock_text = pq('.pdpForm .product-add-to-cart .availability-msg .not-available-msg .status').text().strip()
+        if stock_text:
+            stock = 0
+        else:
+            stock = 999
 
         return {
             'url': url, 'product_id': meta['product_id'], 'categories': meta['categories'], 'images': imgs,
-            'name': name, 'was_price': was_price, 'now_price': now_price, 'introduction': introduction,
+            'name': name, 'was_price': was_prices, 'now_price': now_prices, 'introduction': introduction,
             'description': description, 'size': size, 'store': self.store, 'brand': self.brand,
-            'store_id': self.store_id, 'brand_id': self.brand_id, 'coin_id': self.coin_id
+            'store_id': self.store_id, 'brand_id': self.brand_id, 'coin_id': self.coin_id, 'stock': stock
         }
