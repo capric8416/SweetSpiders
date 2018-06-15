@@ -77,7 +77,7 @@ class RegisterTask:
                 created double not null
             );
             
-            create unique index if not exists index_pid on {self.table}(pid)
+            create unique index index_pid on {self.table}(pid)
         '''
 
     @property

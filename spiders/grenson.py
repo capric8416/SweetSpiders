@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 # !/usr/bin/env python
+import copy
+from urllib.parse import urlparse
+
 from SweetSpiders.common import IndexListDetailCrawler
 from pyquery import PyQuery
-from urllib.parse import urlparse
-import copy
 
 
 class GrensonCrawler(IndexListDetailCrawler):
@@ -136,7 +137,9 @@ class GrensonCrawler(IndexListDetailCrawler):
         introduction = pq('.product-section .product-attr span').text().strip()
 
         # 商品尺码
-        data = 
+        resp = self._request(url=url, method='post', headers=extra['headers'], cookies=extra['cookies'],
+                             data={'amfpc_ajax_blocks': 'product.info.options.wrapper'})
+
         if pq('#product-options-wrapper'):
             size_text = pq('#product-options-wrapper .size-text').text().strip()
             sizes = []
@@ -174,9 +177,3 @@ class GrensonCrawler(IndexListDetailCrawler):
             'description': description, 'store': self.store, 'brand': self.brand, 'store_id': self.store_id,
             'brand_id': self.brand_id, 'coin_id': self.coin_id
         }
-
-            
-
-
-
-
