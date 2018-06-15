@@ -51,6 +51,11 @@ class MoltonbrownCrawler(IndexListDetailCrawler):
             child = cat1_node('.sub-menu > div > div a')
             for cat2_node in child.items():
                 cat2_name = cat2_node.text().strip()
+                # 去掉香薰所在的二级分类
+                if cat2_name in ('Gifts for Her', 'Gifts for Him', 'Gifts for Mum', 'Gifts for Dad', 'Wedding Gifts',
+                                 'Gifts under £50', 'Gifts for the Home', 'Aroma Reed Diffusers'):
+                    continue
+                # 去掉含有Bestsellers所在的二级分类
                 if 'Bestsellers' in cat2_name:
                     break
                 cat2_url = self._full_url(url_from=resp.url, path=cat2_node('a').attr('href'))
@@ -74,7 +79,7 @@ class MoltonbrownCrawler(IndexListDetailCrawler):
 
     def _get_product_list(self, url, headers, cookies, meta):
         """列表页面爬虫，实现翻页请求"""
-        pageSize = 12
+        pagesize = 12
         params = {}
         p = 1
         while True:
@@ -99,7 +104,7 @@ class MoltonbrownCrawler(IndexListDetailCrawler):
                 break
 
             p += 1
-            params.update({'p': p, 'pageSize': pageSize})
+            params.update({'p': p, 'pageSize': pagesize})
 
     def _parse_product_list(self, pq, resp, headers, meta):
         """列表页解析器"""

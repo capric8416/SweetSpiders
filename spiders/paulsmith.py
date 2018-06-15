@@ -63,7 +63,7 @@ class PaulsmithCrawler(IndexListDetailCrawler):
                 child_3_node = child_node('.shop-menu-dropdown-wrapper:eq(0) a.shop-menu-dropdown-item')
                 for cat3_node in child_3_node.items():
                     cat3_name = cat3_node.text().strip()
-                    if 'All' in cat3_name:
+                    if 'All' in cat3_name or 'View all' in cat3_name:
                         continue
                     cat3_url = cat3_node('a.shop-menu-dropdown-item').attr('href')
 
@@ -134,21 +134,28 @@ class PaulsmithCrawler(IndexListDetailCrawler):
         name = pq('.page-title-wrapper .page-title .base').text().strip()
 
         # 商品价格
-        price = pq('.product-info-main .mb-4 .price-box .price-wrapper .price').text().strip()
+        was_price = pq('.price-box .old-price .price-container .price-wrapper .price').text().strip()
+
+        now_price = pq('.price-box .special-price .price-container .price-wrapper .price').text().strip()
+        if not (was_price and now_price):
+            now_price = pq('.product-info-main .mb-4 .price-box .price-wrapper .price').text().strip()
 
         # 商品规格
         sizes = []
-        data = json.loads(pq('script:contains("configurableQty")').text().strip())
-        options = data['#product_addtocart_form']['configurable']['spConfig']['attributes']['250']['options']
-        for option in options:
-            size = option['label']
-            oos = option['oos']
-            if oos:
-                size = size + '- Out of Stock'
-            else:
-                size = size
+        if pq('script:contains("configurableQty")'):
+            data = json.loads(pq('script:contains("configurableQty")').text().strip())
+            options = data['#product_addtocart_form']['configurable']['spConfig']['attributes']['250']['options']
+            for option in options:
+                size = option['label']
+                oos = option['oos']
+                if oos:
+                    size = size + ' - Out of Stock'
+                else:
+                    size = size
+                sizes.append(size)
+        else:
+            size = pq('#product-add-form .box-tocart .form-group .select option').text().strip()
             sizes.append(size)
-
 
         # 商品颜色
         colors = []
@@ -167,7 +174,7 @@ class PaulsmithCrawler(IndexListDetailCrawler):
             introduction3 = 'Sizing' + ':' + p3
         else:
             introduction3 = ''
-        introduction = introduction1 + introduction2 + introduction3
+        introduction = introduction1 + ';' + introduction2 + ';' + introduction3
 
         # 商品库存
         stock_text = pq('#product-addtocart-button span').text().strip()
@@ -178,7 +185,7 @@ class PaulsmithCrawler(IndexListDetailCrawler):
 
         return {
             'url': url, 'product_id': meta['product_id'], 'categories': meta['categories'], 'images': images,
-            'name': name, 'price': price, 'size': size, 'colors': colors, 'introduction': introduction,
-            'stock': stock, 'store': self.store, 'brand': self.brand, 'store_id': self.store_id,
-            'brand_id': self.brand_id, 'coin_id': self.coin_id
+            'name': name, 'was_price': was_price, 'now_price': now_price, 'size': sizes, 'colors': colors,
+            'introduction': introduction, 'stock': stock, 'store': self.store, 'brand': self.brand,
+            'store_id': self.store_id, 'brand_id': self.brand_id, 'coin_id': self.coin_id
         }

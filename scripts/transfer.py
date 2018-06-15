@@ -483,6 +483,77 @@ class TransferCategoriesToCrabtree:
         return result
 
 
+class TransferCategoriesToMoltonbrown:
+    def __init__(self):
+        self.url = 'http://sw.danaaa.com/api/spider/category.mo'
+        self.mongo = MongoClient(MONGODB_URL)
+        self.db = 'MoltonbrownCrawler'
+        self.products_collection = 'products'
+        self.categories_collection = 'categories'
+        self.category_uuid = CategoryUUID()
+
+    def run(self):
+        categories = []
+        for cat in self.mongo[self.db][self.categories_collection].find():
+            cat.pop('_id')
+            categories.append(cat)
+
+        product = self.mongo[self.db][self.products_collection].find_one()
+        data = {
+            'provider': product['brand'],
+            'storeId': product['store_id'],
+            'jsonCategory': json.dumps(categories)
+        }
+
+        resp = requests.post(url=self.url, data=data)
+        print(resp.text)
+        assert resp.status_code == 200
+
+    def build_categories(self):
+        """构建分类树: 废弃，从商品表获取的分类不全"""
+
+        categories = [item['categories'] for item in self.mongo[self.db][self.products_collection].find()]
+
+        tree = []
+        for cat in categories:
+            for i, item in enumerate(cat):
+                item.append(self.category_uuid.get_or_create(*[x[0] for x in cat[:i + 1]]))
+
+            tree.append({
+                'name': cat[0][0], 'url': cat[0][1], 'uuid': cat[0][2],
+                'children': [
+                    {
+                        'name': cat[1][0], 'url': cat[1][1], 'uuid': cat[1][2],
+                    }
+                ]
+            })
+
+        return self.merge(tree)
+
+    def merge(self, target):
+        """递归合并children: 废弃，从商品表获取的分类不全"""
+
+        _ = self
+
+        result = []
+
+        name = ''
+        for cat in sorted(target, key=lambda d: d['name']):
+            if cat['name'] != name:
+                if result and 'children' in result[-1]:
+                    result[-1]['children'] = self.merge(result[-1]['children'])
+                result.append(cat)
+                name = cat['name']
+            else:
+                if 'children' in result[-1]:
+                    result[-1]['children'] += cat['children']
+
+        if result and 'children' in result[-1]:
+            result[-1]['children'] = self.merge(result[-1]['children'])
+
+        return result
+
+
 class TransferGoods2Admin:
     """
     三级分类商品上传EttingerCrawler
@@ -810,7 +881,7 @@ class TransferGoodsToCrabtree:
             data["categoryUuid"] = item['product_id']
             if not item['product_id']:
                 data["categoryUuid"] = item['name']
-            if item['categories'][1][0]:
+            if len(item['categories']) == 2:
                 data["categoryName"] = item['categories'][1][0]
             else:
                 data["categoryName"] = item['categories'][0][0]
@@ -824,16 +895,18 @@ class TransferGoodsToCrabtree:
             for i, img in enumerate(item['images']):
                 data['images[%d]' % i] = img
 
+            if not item['was_price']:
+                item['was_price'].append('')
             for i, (was_price, now_price, size) in enumerate(zip(item['was_price'], item['now_price'], item['size'])):
-                data["spiderSkus[%d].price" % int(i+1)] = was_price[1:]
-                if not item['was_price']:
-                    data["spiderSkus[%d].price" % int(i+1)] = now_price[1:]
-                    data["spiderSkus[%d].promotionPrice" % int(i+1)] = ''
+                if was_price == '':
+                    data["spiderSkus[%d].price" % int(i)] = now_price[1:]
+                    data["spiderSkus[%d].promotionPrice" % int(i)] = ''
                 else:
-                    data["spiderSkus[%d].promotionPrice" % int(i+1)] = now_price[1:]
-                data["spiderSkus[%d].stock" % int(i+1)] = item['stock']
-                data["spiderSkus[%d].specName1"] = 'size'
-                data["spiderSkus[%d].specValue1"] = item['size']
+                    data["spiderSkus[%d].price" % int(i)] = was_price[1:]
+                    data["spiderSkus[%d].promotionPrice" % int(i)] = now_price[1:]
+                data["spiderSkus[%d].stock" % int(i)] = item['stock']
+                data["spiderSkus[%d].specName1" % int(i)] = 'size'
+                data["spiderSkus[%d].specValue1" % int(i)] = size
 
             resp = requests.post(url=self.url, data=data)
             print(resp.text)
@@ -882,6 +955,44 @@ class TransferGoodsToFulton:
             print(resp.text)
 
 
+class TransferGoodsToMoltonbrown:
+    def __init__(self):
+        self.url = 'http://sw.danaaa.com/api/spider/add_by_sku.mo'
+        self.mongo = MongoClient(MONGODB_URL)
+        self.db = 'MoltonbrownCrawler'
+        self.collection = 'products'
+
+    def start(self):
+        for item in self.mongo[self.db][self.collection].find():
+            data = {}
+            data["provider"] = item['brand']
+            data["storeId"] = item['store_id']
+            data["brandId"] = item['brand_id']
+            data["currencyId"] = item['coin_id']
+            data["categoryUuid"] = item['product_id']
+            if not item['product_id']:
+                data["categoryUuid"] = item['name']
+            data["categoryName"] = item['categories'][1][0]
+            data["name"] = item['name']
+            data["caption"] = ''
+            data["description"] = ''
+            data["introduction"] = item['introduction']
+            if not item['introduction']:
+                data['introduction'] = item['name']
+            data["url"] = item['url']
+            for i, img in enumerate(item['images']):
+                data['images[%d]' % i] = img
+
+            data["spiderSkus[0].price"] = item['price'][1:]
+            data["spiderSkus[0].promotionPrice"] = ''
+            data["spiderSkus[0].stock"] = item['stock']
+            data["spiderSkus[0].specName1"] = 'size'
+            data["spiderSkus[0].specValue1"] = item['size']
+
+            resp = requests.post(url=self.url, data=data)
+            print(resp.text)
+
+
 if __name__ == '__main__':
     # admin = TransferCategory2Admin()
     # admin.run()
@@ -890,6 +1001,8 @@ if __name__ == '__main__':
     # admin = TransferCategoriesBelstaff()
     # admin.run()
     # admin = TransferCategoriesToCrabtree()
+    # admin.run()
+    # admin = TransferCategoriesToMoltonbrown()
     # admin.run()
     # admin = TransferCategoriesToFulton()
     # admin.run()
@@ -903,7 +1016,9 @@ if __name__ == '__main__':
     # admin.start()
     # admin = TransferGoodsToAlexandermcqueen()
     # admin.start()
-    admin = TransferGoodsToCrabtree()
-    admin.start()
+    # admin = TransferGoodsToCrabtree()
+    # admin.start()
     # admin = TransferGoodsToFulton()
     # admin.start()
+    admin = TransferGoodsToMoltonbrown()
+    admin.start()
