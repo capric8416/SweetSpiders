@@ -180,11 +180,12 @@ class AlexandermcqueenCrawler(IndexListDetailCrawler):
                 meta['product_id'] = urlparse(url).path.split('/')[-1][:-5]
                 yield url, headers, resp.cookies.get_dict(), meta
 
-    def _fix_url(self, url):
+    @staticmethod
+    def _fix_url(url):
         p = urlparse(url)
         q = dict(parse_qsl(p.query))
 
-        if q.get('siteCode', '').endswith('_CN'):
+        if not q.get('siteCode', '').endswith('_GB'):
             q['siteCode'] = q['siteCode'][:-2] + 'GB'
         else:
             return url

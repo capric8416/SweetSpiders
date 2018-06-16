@@ -16,7 +16,7 @@ from SweetSpiders.config import TEMPLATE
 from fire import Fire
 
 
-class Manger:
+class Manager:
     @staticmethod
     def create(file_name=None, class_name=None, comment=None, index_url=None, wait=None):
         """
@@ -194,4 +194,4 @@ class Manger:
 
 
 if __name__ == '__main__':
-    Fire(Manger)
+    Fire(Manager)

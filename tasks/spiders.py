@@ -5,14 +5,9 @@ import hashlib
 import inspect
 import string
 
-from SweetSpiders.manager import Manger
+from SweetSpiders.manager import Manager
 from SweetSpiders.spiders import *
 from SweetSpiders.tasks.app import app
-
-
-@app.task
-def spider_task(crawler, method, threads=1):
-    return Manger.start(crawler=crawler, method=method, threads=threads)
 
 
 def get_spider_tasks(queues, threads_conf=None, task_template=None):
@@ -23,7 +18,7 @@ def get_spider_tasks(queues, threads_conf=None, task_template=None):
         task_template = '''
             @app.task
             def {task_name}():
-                return Manger.start(crawler='{crawler}', method='{method}', threads={threads})
+                return Manager.start(crawler='{crawler}', method='{method}', threads={threads})
         '''
 
     task_template = [line for line in task_template.split('\n') if line.strip()]
@@ -50,5 +45,7 @@ def get_spider_tasks(queues, threads_conf=None, task_template=None):
 
 
 if __name__ == '__main__':
+    _ = app
+    _ = Manager
     for t in get_spider_tasks(queues=4):
         print(t)

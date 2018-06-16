@@ -41,3 +41,4 @@ PyExecJS
 psutil
 python-redis-lock
 pymysql
+celery

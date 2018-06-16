@@ -42,6 +42,6 @@ task_queues = [
 
 # 任务工作调度
 beat_schedule = get_beat_schedule(*[
-    Schedule(task=task, schedule=CronTable(minute='*/1'), options={'queue': task_queues[q].name})
+    Schedule(task=task, schedule=CronTable(minute='*/10'), options={'queue': task_queues[q].name})
     for q, task in get_spider_tasks(queues=len(task_queues))
 ])
