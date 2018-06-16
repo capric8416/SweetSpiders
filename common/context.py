@@ -21,7 +21,7 @@ class RegisterTask:
         self.db = DB_SWEET_SPIDERS
         self.table = TABLE_PID
 
-        self.connection = pymysql.connect(**MYSQL_CONF)
+        self.connection = None
 
     def __enter__(self):
         self.insert_into()

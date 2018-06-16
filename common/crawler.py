@@ -122,7 +122,12 @@ class IndexListDetailCrawler:
         self.logger.info(f'[RUN] {self.spider}.{inspect.currentframe().f_code.co_name}')
 
         while True:
-            info = self.pop_category_info()[-1]
+            try:
+                info = self.pop_category_info()[-1]
+            except TimeoutError:
+                self.logger.warning('[超时退出] get_product_list')
+                return
+
             try:
                 self._get_product_list(*json.loads(info.decode()))
             except Exception as e:
@@ -148,7 +153,12 @@ class IndexListDetailCrawler:
         self.logger.info(f'[RUN] {self.spider}.{inspect.currentframe().f_code.co_name}')
 
         while True:
-            info = self.pop_product_info()[-1]
+            try:
+                info = self.pop_product_info()[-1]
+            except TimeoutError:
+                self.logger.warning('[超时退出] get_product_detail')
+                return
+
             info = self._get_product_detail(*json.loads(info.decode()))
             self._push_product_detail(info=info)
 
@@ -255,7 +265,7 @@ class IndexListDetailCrawler:
     def _push_info(self, name, *info, force=False):
         """
         添加url到对应的redis list
-        :param name: str, redis key
+        :param name: str, redis.conf key
         :param info: tuple, 链接及信息
         :param force, bool, 跳过去重检查
         :return: None

@@ -10,7 +10,7 @@ import redis
 import redis_lock
 from SweetSpiders.config import REDIS_URL
 
-from .sigleton import Singleton
+from .singleton import Singleton
 
 
 class CategoryUUID(metaclass=Singleton):

@@ -2,6 +2,7 @@
 # !/usr/bin/env python
 
 from .category_id import *
+from .celery import *
 from .context import *
 from .crawler import *
-from .sigleton import *
+from .singleton import *
