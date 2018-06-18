@@ -189,21 +189,22 @@ class CrabtreeCrawler(IndexListDetailCrawler):
 
         # 商品尺寸
         if not pq('.set-purchase-area .product-price .salesprice') and len(
-                pq('.pdpForm .product-add-to-cart .product-variations .attribute .value .variation-select option')) > 1:
+                pq(
+                    '.product-col-2 .product-add-to-cart .product-variations .attribute .value .variation-select option')) > 1:
             size = [s.text().strip() for s in
                     pq(
-                        '.product-add-to-cart .product-variations .attribute .value .variation-select option:selected').items()]
+                        '.product-col-2 .product-add-to-cart .product-variations .attribute .value .variation-select option:selected').items()]
             if not size:
                 size = [pq('.product-variations .attribute .value input').attr('value')]
 
-            option = pq(
-                '.product-add-to-cart .product-variations .attribute .value .variation-select  option:not(selected)')
-            if option:
+            options = pq(
+                '.product-col-2 .product-add-to-cart .product-variations .attribute .value .variation-select  option:not(:selected)').items()
+            for option in options:
                 link = option.attr('value')
                 resp = self._request(url=link, headers=extra['headers'], cookies=extra['cookies'])
                 pq = PyQuery(resp.text)
                 size_2 = pq(
-                    '.product-add-to-cart .product-variations .attribute .value .variation-select  option:selected').text().strip()
+                    '.product-col-2 .product-add-to-cart .product-variations .attribute .value .variation-select  option:selected').text().strip()
                 size.append(size_2)
                 was_price_2 = pq('.purchase-area .product-content .product-price .price-standard').text().strip()
                 now_price_2 = pq('.purchase-area .product-content .product-price .price-sales-pinned').text().strip()
@@ -214,9 +215,10 @@ class CrabtreeCrawler(IndexListDetailCrawler):
         else:
             size = [s.text().strip() for s in
                     pq(
-                        '.product-add-to-cart .product-variations .attribute .value .variation-select option:selected').items()]
+                        '.product-col-2 .product-add-to-cart .product-variations .attribute .value .variation-select option:selected').items()]
             if not size:
-                size = [pq('.product-variations .attribute .value input').attr('value')]
+                size = [pq('.product-col-2 .product-variations .attribute .value input').attr('value')]
+                size = [siz for siz in size if siz]
 
         # 商品库存
         stock_text = pq('.pdpForm .product-add-to-cart .availability-msg .not-available-msg .status').text().strip()
@@ -231,3 +233,12 @@ class CrabtreeCrawler(IndexListDetailCrawler):
             'description': description, 'size': size, 'store': self.store, 'brand': self.brand,
             'store_id': self.store_id, 'brand_id': self.brand_id, 'coin_id': self.coin_id, 'stock': stock
         }
+
+
+if __name__ == '__main__':
+    import requests
+    url = 'http://www.crabtree-evelyn.com/uk/en/product/citron-coriander-energising-hand-therapy/citron-coriander-energising-hand-therapy.html?cgid=hand-care'
+    resp = requests.get(url)
+    spider = CrabtreeCrawler()
+    spider._parse_product_detail(url=url, resp=resp, meta={'product_id': None, 'categories': None}, headers={}, cookies={})
+
