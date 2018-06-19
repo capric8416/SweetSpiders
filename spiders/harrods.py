@@ -51,28 +51,149 @@ class HarrodsCrawler(IndexListDetailCrawler):
 
             cat1 = {'name': cat1_name, 'url': cat1_url, 'children': [], 'uuid': self.cu.get_or_create(cat1_name)}
 
-            child = cat1_node('.nav_sub-menu-wrapper .nav_sub-menu-container ul.nav_sub-menu')
+            child = cat1_node('.nav_sub-menu-wrapper .nav_sub-menu-container ul.nav_sub-menu .nav_sub-menu-group')
             for cat2_node in child.items():
-                cat2_name = child('.nav_sub-menu-group .nav_sub-menu-title').text().strip()
-                if cat2_name == 'Featured Brands':
+                cat2_name = cat2_node('.nav_sub-menu-title').text().strip()
+                if cat2_name == 'Featured Brands' or 'Style Edits':
+                    continue
+                if cat2_name == 'Inspiration & Trends':
+                    break
+                if cat2_name == 'Wine & Spirits':
+                    break
+                if cat2_name == 'SALE':
                     break
                 cat2_url = cat1_url
-                for cat3_node in cat2_node('.nav_sub-menu-group .nav_sub-menu-list .nav_sub-menu-item').items():
-                    pass
+                cat2 = {
+                    'name': cat2_name, 'url': cat2_url, 'children': [],
+                    'uuid': self.cu.get_or_create(cat1_name, cat2_name)
+                }
+                for cat3_node in cat2_node('.nav_sub-menu-list .nav_sub-menu-item').items():
+                    cat3_name = cat3_node('.nav_sub-menu-link').text().strip()
+                    if cat3_name == 'Just In':
+                        continue
+                    if 'All' in cat3_name:
+                        continue
+                    if 'Perfume' in cat3_name:
+                        continue
+                    if cat3_name == "Men's Fragrance" or "Men's Gift Sets":
+                        continue
+                    if cat3_name == 'Diffusers':
+                        break
+                    cat3_url = cat3_node('.nav_sub-menu-link').attr('href')
 
+                    headers = copy.copy(self.headers)
+                    headers['Referer'] = resp.url
 
+                    cat2['children'].append({
+                        'name': cat3_name, 'url': cat3_url,
+                        'uuid': self.cu.get_or_create(cat1_name, cat2_name, cat3_name)
+                    })
+
+                    results.append([
+                        cat3_url, headers, resp.cookies.get_dict(),
+                        {'categories': [(cat1_name, cat1_url), (cat2_name, cat2_url), (cat3_name, cat3_url)]}
+                    ])
+
+                cat1['children'].append(cat2)
+
+            categories.append(cat1)
+        return categories, results
 
     def _get_product_list(self, url, headers, cookies, meta):
         """列表页面爬虫，实现翻页请求"""
 
-        raise NotImplementedError
+        while True:
+            resp = self._request(
+                url=url, headers=headers, cookies=cookies,
+                rollback=self.push_category_info, meta=meta
+            )
+            if not resp:
+                return
+
+            pq = PyQuery(resp.text)
+
+            for info in self._parse_product_list(pq=pq, resp=resp, headers=headers, meta=meta):
+                self.push_product_info(info)
+
+            next_page = pq('.control_viewtypes .control_paging-list a.control_paging-item').attr('href')
+
+            if not next_page:
+                break
+
+            url = next_page
 
     def _parse_product_list(self, pq, resp, headers, meta):
         """列表页解析器"""
 
-        raise NotImplementedError
+        headers = copy.copy(headers)
+        headers['Referer'] = resp.url
+
+        node = pq('.grid .product-grid .product-grid_list .product-grid_item')
+        for detail in node.items():
+            url = self._full_url(url_from=resp.url, path=detail('.product-card .product-card_info a.product-card_link').attr('href'))
+            meta['product_id'] = urlparse(url).path.split('/')[-1]
+            yield url, headers, resp.cookies.get_dict(), meta
 
     def _parse_product_detail(self, url, resp, meta, **extra):
         """详情页解析器"""
 
-        raise NotImplementedError
+        _ = self
+        pq = PyQuery(resp.text)
+
+        # 商品图片
+        images = []
+        for img in pq('.grid .pdp_images .pdp_images-container .hrd_scroller ul.pdp_images-list .pdp_images-item').items():
+            img_url = self._full_url(url_from=resp.url, path=img('.pdp_images-image').attr('src'))
+            images.append(img_url)
+        images = list(set(images))
+
+        # 商品标题
+        title = pq('.pdp_buying-controls .buying-controls .js-pdp-add-to-bag .buying-controls_details .buying-controls_brand span').text().strip()
+
+        # 商品名称
+        name = pq('.pdp_buying-controls .buying-controls .js-pdp-add-to-bag .buying-controls_details .buying-controls_name').text().strip()
+
+        # 商品价格
+        was_price = pq('.pdp_main .pdp_buying-controls .js-pdp-add-to-bag .buying-controls_price .price_group--was .price').text().strip()
+
+        now_price = pq('.pdp_main .pdp_buying-controls .js-pdp-add-to-bag .buying-controls_price .price_group--now .price').text().strip()
+
+        if not (was_price and now_price):
+            now_price = pq('.pdp_main .pdp_buying-controls .js-pdp-add-to-bag .buying-controls_price .price').text().strip()
+
+        # 商品颜色
+        colors = []
+        if pq('.js-pdp-add-to-bag .buying-controls_details .buying-controls_option .buying-controls_value'):
+            color = pq('.js-pdp-add-to-bag .buying-controls_details .buying-controls_option .buying-controls_value').text().strip()
+            colors.append(colors)
+        else:
+            for color_node in pq('.js-pdp-add-to-bag .buying-controls_details .buying-controls_option .hrd_dropdown-list .hrd_dropdown-item').items():
+                color = color_node('.hrd_dropdown-item-label').text().strip()
+                colors.append(color)
+
+        # 商品介绍
+        details = [li.text().strip() for li in pq('.pdp_details .product-info .product-info_section-1 .product-info_list li.product-info_item').items()]
+        details = 'Details' + ''.join(details)
+        overview = pq('.pdp_details .product-info_section-2 .product-info_content').text().strip()
+        overview = 'Overview' + overview
+        introduction = details + ';' + overview
+
+        # 商品尺码
+        sizes = []
+        for size_node in pq('.js-pdp-add-to-bag .buying-controls_details .buying-controls_option--size .buying-controls_select--size option').items():
+            size = size_node.text().strip()
+            sizes.append(size)
+
+        # 商品库存
+        stock = 999
+
+        # 尺寸指导
+        # size_guide
+
+        return {
+            'url': url, 'product_id': meta['product_id'], 'categories': meta['categories'], 'images': images,
+            'title': title, 'name': name, 'was_price': was_price, 'now_price': now_price, 'colors': colors,
+            'introduction': introduction, 'sizes': sizes, 'stock': stock, 'store': self.store, 'brand': self.brand,
+            'store_id': self.store_id, 'brand_id': self.brand_id, 'coin_id': self.coin_id
+        }
+
