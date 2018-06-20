@@ -21,3 +21,4 @@ from .paulsmith import *
 from .grenson import *
 from .tedbaker import *
 from .harrods import *
+from .astleyclarke import *

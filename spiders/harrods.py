@@ -54,13 +54,9 @@ class HarrodsCrawler(IndexListDetailCrawler):
             child = cat1_node('.nav_sub-menu-wrapper .nav_sub-menu-container ul.nav_sub-menu .nav_sub-menu-group')
             for cat2_node in child.items():
                 cat2_name = cat2_node('.nav_sub-menu-title').text().strip()
-                if cat2_name == 'Featured Brands' or 'Style Edits':
+                if cat2_name in ('Featured Brands',):
                     continue
-                if cat2_name == 'Inspiration & Trends':
-                    break
-                if cat2_name == 'Wine & Spirits':
-                    break
-                if cat2_name == 'SALE':
+                if cat2_name in ('Inspiration & Trends', 'Wine & Spirits', 'SALE', 'Style Edits'):
                     break
                 cat2_url = cat1_url
                 cat2 = {
@@ -75,9 +71,9 @@ class HarrodsCrawler(IndexListDetailCrawler):
                         continue
                     if 'Perfume' in cat3_name:
                         continue
-                    if cat3_name == "Men's Fragrance" or "Men's Gift Sets":
+                    if cat3_name in ("Men's Fragrance", "Men's Gift Sets", "Salon De Parfums"):
                         continue
-                    if cat3_name == 'Diffusers':
+                    if cat3_name in ('Diffusers', 'Harrods of London'):
                         break
                     cat3_url = cat3_node('.nav_sub-menu-link').attr('href')
 
@@ -115,9 +111,11 @@ class HarrodsCrawler(IndexListDetailCrawler):
             for info in self._parse_product_list(pq=pq, resp=resp, headers=headers, meta=meta):
                 self.push_product_info(info)
 
-            next_page = pq('.control_viewtypes .control_paging-list a.control_paging-item').attr('href')
+            text = pq('.control_viewtypes .control_paging-list a.control_paging-item:last span').text().strip()
+            if text == 'Next':
+                next_page = self._full_url(url_from=resp.url, path=pq('.control_viewtypes .control_paging-list a.control_paging-item:last').attr('href'))
 
-            if not next_page:
+            else:
                 break
 
             url = next_page
@@ -142,7 +140,7 @@ class HarrodsCrawler(IndexListDetailCrawler):
 
         # 商品图片
         images = []
-        for img in pq('.grid .pdp_images .pdp_images-container .hrd_scroller ul.pdp_images-list .pdp_images-item').items():
+        for img in pq('.grid .pdp_images .pdp_images-container ul.pdp_images-list .pdp_images-item').items():
             img_url = self._full_url(url_from=resp.url, path=img('.pdp_images-image').attr('src'))
             images.append(img_url)
         images = list(set(images))
@@ -165,7 +163,7 @@ class HarrodsCrawler(IndexListDetailCrawler):
         colors = []
         if pq('.js-pdp-add-to-bag .buying-controls_details .buying-controls_option .buying-controls_value'):
             color = pq('.js-pdp-add-to-bag .buying-controls_details .buying-controls_option .buying-controls_value').text().strip()
-            colors.append(colors)
+            colors.append(color)
         else:
             for color_node in pq('.js-pdp-add-to-bag .buying-controls_details .buying-controls_option .hrd_dropdown-list .hrd_dropdown-item').items():
                 color = color_node('.hrd_dropdown-item-label').text().strip()
@@ -173,9 +171,9 @@ class HarrodsCrawler(IndexListDetailCrawler):
 
         # 商品介绍
         details = [li.text().strip() for li in pq('.pdp_details .product-info .product-info_section-1 .product-info_list li.product-info_item').items()]
-        details = 'Details' + ''.join(details)
-        overview = pq('.pdp_details .product-info_section-2 .product-info_content').text().strip()
-        overview = 'Overview' + overview
+        details = 'Details' + ':' + ''.join(details)
+        overview = pq('.pdp_details .product-info_section-2 .product-info_content p').text().strip()
+        overview = 'Overview' + ':' + overview
         introduction = details + ';' + overview
 
         # 商品尺码
