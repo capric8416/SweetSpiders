@@ -2,7 +2,6 @@
 # !/usr/bin/env python
 import hashlib
 import json
-
 import oss2
 import pymongo
 import pymysql
@@ -17,7 +16,7 @@ class TransferGoodsProducts:
             port=3306,
             user='root',
             passwd='mysql',
-            db='sw',
+            db='sweet',
             charset='utf8mb4'
         )
 
@@ -26,10 +25,10 @@ class TransferGoodsProducts:
         self.collection = self.db[collection]
 
         auth = oss2.Auth('pHrZGmZxcbOqvnod', 'dXzTR9DeVPZ5DeMShrNUIqKTKF7Eg5')
-        host = 'oss-cn-qingdao.aliyuncs.com'
-        bucket = 'dana1'
+        host = 'oss-cn-beijing.aliyuncs.com'
+        bucket = 'new-dana'
         endpoint = f'http://{host}'
-        self.base_url = f'https://{bucket}.{host}'
+        self.base_url = f'http://{bucket}.{host}'
         self.bucket = oss2.Bucket(auth, endpoint, bucket)
 
     def run(self):
@@ -54,7 +53,7 @@ class TransferGoodsProducts:
         ) as res:
             for goods_id, dst in res:
                 with self.mysql.cursor() as cur:
-                    cur.execute('update xx_goods set source_url = %s where id = %s;', dst, goods_id)
+                    cur.execute('update xx_goods set image = "%s" where id = %s;', (dst, goods_id))
                     print(f'更新商品图片成功: {goods_id} {dst}')
 
     def image_download_and_update(self, goods_id, image, url):
@@ -65,7 +64,7 @@ class TransferGoodsProducts:
         }
 
         data = requests.get(url=image, headers=headers).content
-        path = f'sweet/{hashlib.sha1(data).hexdigest()}.jpg'
+        path = f'{hashlib.sha1(data).hexdigest()}.jpg'
 
         self.bucket.put_object(key=path, data=data)
 
@@ -74,7 +73,7 @@ class TransferGoodsProducts:
     def insert_to_goods(self, item):
         # 将数据导入xx_goods表中
         sql = '''
-            insert into sw.xx_goods values(
+            insert into sweet.xx_goods values(
                 '0',
                 now(),
                 now(),
@@ -99,12 +98,12 @@ class TransferGoodsProducts:
                 null,
                 null,
                 null,
-                null,
+                %s,
                 '0',
                 %s,
                 %s,
                 %s,
-                0,
+                1,
                 1,
                 1,
                 1,
@@ -150,8 +149,9 @@ class TransferGoodsProducts:
                 null,
                 '0',
                 '3225',
-                '36',
-                '0.000000'
+                '27',
+                '0.000000',
+                '27'
             );
         '''
 
@@ -160,6 +160,7 @@ class TransferGoodsProducts:
         with self.mysql.cursor() as cur:
             cur.execute(sql, (
                 item['brand'],
+                item['name'],
                 item['images'][0],
                 item['description'],
                 item['description'],
@@ -182,7 +183,7 @@ class TransferGoodsProducts:
         # 将数据导入xx_product表中
 
         sql = '''
-                insert into sw.xx_product values (
+                insert into sweet.xx_product values (
                     '0',
                     now(),
                     now(),
@@ -190,16 +191,16 @@ class TransferGoodsProducts:
                     %s,
                     null,
                     '0',
-                    0,
+                    1,
                     %s,
                     %s,
                     %s,
                     '2018062015334',
                     %s,
+                    '1000',
                     %s,
                     %s,
-                    %s,
-                    null,
+                    '1',
                     %s,
                     null,
                     null
@@ -214,7 +215,6 @@ class TransferGoodsProducts:
                     item['now_price'].lstrip('£'),
                     item['now_price'].lstrip('£'),
                     json.dumps([{'size': size}]),
-                    item['stock'],
                     goods_id,
                     item['now_price'].lstrip('£'),
                     item['url'],
