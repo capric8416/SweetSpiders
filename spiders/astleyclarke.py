@@ -127,7 +127,7 @@ class AstleyclarkeCrawler(IndexListDetailCrawler):
 
         # 商品图片
         images = []
-        for img_node in pq('#main-image-wrapper .slick-list .slick-track li.slick-slide').items():
+        for img_node in pq('#main-image-wrapper li').items():
             img_url = self._full_url(url_from=resp.url, path=img_node('a').attr('href'))
             images.append(img_url)
         images = list(set(images))
@@ -144,7 +144,7 @@ class AstleyclarkeCrawler(IndexListDetailCrawler):
             now_price = pq('.product-right .price .price-box .regular-price span.price').text().strip()
 
         # 商品介绍
-        introduction1 = pq('.product-right .description .std .prodcopy p').text().strip()
+        introduction1 = pq('.product-right .description .std').text().strip()
         introduction2 = [li.text().strip() for li in pq('.product-right .description .std .prodcopy .bullets li').items()]
 
         introduction = introduction1 + ';' + ''.join(introduction2)
@@ -154,12 +154,12 @@ class AstleyclarkeCrawler(IndexListDetailCrawler):
         # 获取售罄尺码
         if pq('.product-right #product-options-wrapper #option-buttons-container div'):
             for size_out in pq('.product-right #product-options-wrapper #option-buttons-container div').items():
-                sizes_out = size_out.text().strip() + 'Out of Stock'
+                sizes_out = size_out.text().strip() + ' -- Out of Stock'
                 sizes.append(sizes_out)
         # 获取有库存尺码
         if pq('.product-right #product-options-wrapper #option-buttons-container a'):
             for size_in in pq('.product-right #product-options-wrapper #option-buttons-container a').items():
-                sizes_in = size_in.text().strip() + 'In Stock'
+                sizes_in = size_in.text().strip() + ' -- In Stock'
                 sizes.append(sizes_in)
 
         # 商品颜色
@@ -172,7 +172,7 @@ class AstleyclarkeCrawler(IndexListDetailCrawler):
         details = pq('.product-bottom #product-attribute-specs-table tbody').text().strip()
 
         # 尺寸指导
-        size_guide
+        size_guide = ''
 
         return {
             'url': url, 'product_id': meta['product_id'], 'categories': meta['categories'], 'images': images,
