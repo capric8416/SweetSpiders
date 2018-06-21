@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # !/usr/bin/env python
-
+import oss2
 import json
 
 import pymongo
@@ -29,6 +29,12 @@ class TransferGoodsProducts:
 
         self.mysql.commit()
         self.mysql.close()
+
+    def transfer_image_url(self, img_url):
+        """转换图片链接"""
+        auth = oss2.Auth('pHrZGmZxcbOqvnod', 'dXzTR9DeVPZ5DeMShrNUIqKTKF7Eg5')
+        bucket = oss2.Bucket(auth, 'http://res.danaaa.com', 'dana1')
+        pass
 
     def insert_to_goods(self, item):
         # 将数据导入xx_goods表中
