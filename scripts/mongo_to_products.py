@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
 # !/usr/bin/env python
-import oss2
+import hashlib
 import json
 
+import oss2
 import pymongo
 import pymysql
+import requests
+from SweetSpiders.common import ThreadPoolSubmit
 
 
 class TransferGoodsProducts:
@@ -22,19 +25,45 @@ class TransferGoodsProducts:
         self.db = self.mongo[db]
         self.collection = self.db[collection]
 
+        auth = oss2.Auth('pHrZGmZxcbOqvnod', 'dXzTR9DeVPZ5DeMShrNUIqKTKF7Eg5')
+        self.bucket = oss2.Bucket(auth, 'http://oss-cn-qingdao.aliyuncs.com', 'dana1')
+
     def run(self):
+        goods_image = []
+
         for item in self.collection.find():
-            goods_id = self.insert_to_goods(item)
+            goods_id, image, url = self.insert_to_goods(item)
             self.insert_to_product(item, goods_id)
+
+            goods_image.append([goods_id, image, url])
+
+        self.convert_image_url(goods_image)
 
         self.mysql.commit()
         self.mysql.close()
 
-    def transfer_image_url(self, img_url):
+    def convert_image_url(self, goods_images):
         """转换图片链接"""
-        auth = oss2.Auth('pHrZGmZxcbOqvnod', 'dXzTR9DeVPZ5DeMShrNUIqKTKF7Eg5')
-        bucket = oss2.Bucket(auth, 'http://res.danaaa.com', 'dana1')
-        pass
+
+        with ThreadPoolSubmit(func=self.image_download_and_update, iterable=goods_images, concurrency=20) as res:
+            for (goods_id, *_), dst in zip(goods_images, res):
+                with self.mysql.cursor() as cur:
+                    cur.execute('update xx_goods set source_url = %s where id = %s;', dst, goods_id)
+                    print(f'更新商品图片成功: {goods_id} {dst}')
+
+    def image_download_and_update(self, src, referer):
+        headers = {
+            'Referer': referer,
+            'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) '
+                          'Chrome/67.0.3396.79 Safari/537.36'
+        }
+
+        data = requests.get(url=src, headers=headers).content
+        path = f'sweet/{hashlib.sha1(data).hexdigest()}.jpg'
+
+        self.bucket.put_object(key=path, data=data)
+
+        return f'http://res.danaaa.com/dana1/{path}'
 
     def insert_to_goods(self, item):
         # 将数据导入xx_goods表中
@@ -120,6 +149,8 @@ class TransferGoodsProducts:
             );
         '''
 
+        image = item['images'][0]
+
         with self.mysql.cursor() as cur:
             cur.execute(sql, (
                 item['brand'],
@@ -129,7 +160,7 @@ class TransferGoodsProducts:
                 item['now_price'].lstrip('£'),
                 item['categories'][1][0],
                 item['now_price'].lstrip('£'),
-                item['images'][0],
+                image,
                 item['url'],
             ))
 
@@ -137,7 +168,9 @@ class TransferGoodsProducts:
 
         with self.mysql.cursor() as cur:
             cur.execute('SELECT LAST_INSERT_ID();')
-            return cur.fetchone()[0]
+            goods_id = cur.fetchone()[0]
+
+        return goods_id, image, item['url']
 
     def insert_to_product(self, item, goods_id):
         # 将数据导入xx_product表中
@@ -186,4 +219,10 @@ class TransferGoodsProducts:
 
 if __name__ == "__main__":
     t = TransferGoodsProducts(db='LasciviousCrawler')
-    t.run()
+    # t.run()
+
+    t.image_download_and_update(
+        src='https://cdn.shopify.com/s/files/1/0903/9008/products/'
+            'Purple-Kitty-Suspender-Product-1_1024x1024.jpg?v=1473623377',
+        referer=''
+    )
