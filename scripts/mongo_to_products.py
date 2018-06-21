@@ -26,7 +26,11 @@ class TransferGoodsProducts:
         self.collection = self.db[collection]
 
         auth = oss2.Auth('pHrZGmZxcbOqvnod', 'dXzTR9DeVPZ5DeMShrNUIqKTKF7Eg5')
-        self.bucket = oss2.Bucket(auth, 'http://oss-cn-qingdao.aliyuncs.com', 'dana1')
+        host = 'oss-cn-qingdao.aliyuncs.com'
+        bucket = 'dana1'
+        endpoint = f'http://{host}'
+        self.base_url = f'https://{bucket}.{host}'
+        self.bucket = oss2.Bucket(auth, endpoint, bucket)
 
     def run(self):
         goods_image = []
@@ -63,7 +67,7 @@ class TransferGoodsProducts:
 
         self.bucket.put_object(key=path, data=data)
 
-        return f'http://res.danaaa.com/dana1/{path}'
+        return f'{self.base_url}/{path}'
 
     def insert_to_goods(self, item):
         # 将数据导入xx_goods表中
