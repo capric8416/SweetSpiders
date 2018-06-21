@@ -49,25 +49,27 @@ class TransferGoodsProducts:
     def convert_image_url(self, goods_images):
         """转换图片链接"""
 
-        with ThreadPoolSubmit(func=self.image_download_and_update, iterable=goods_images, concurrency=20) as res:
-            for (goods_id, *_), dst in zip(goods_images, res):
+        with ThreadPoolSubmit(
+                action='starmap', func=self.image_download_and_update, iterable=goods_images, concurrency=20
+        ) as res:
+            for goods_id, dst in res:
                 with self.mysql.cursor() as cur:
                     cur.execute('update xx_goods set source_url = %s where id = %s;', dst, goods_id)
                     print(f'更新商品图片成功: {goods_id} {dst}')
 
-    def image_download_and_update(self, src, referer):
+    def image_download_and_update(self, goods_id, image, url):
         headers = {
-            'Referer': referer,
+            'Referer': url,
             'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) '
                           'Chrome/67.0.3396.79 Safari/537.36'
         }
 
-        data = requests.get(url=src, headers=headers).content
+        data = requests.get(url=image, headers=headers).content
         path = f'sweet/{hashlib.sha1(data).hexdigest()}.jpg'
 
         self.bucket.put_object(key=path, data=data)
 
-        return f'{self.base_url}/{path}'
+        return goods_id, f'{self.base_url}/{path}'
 
     def insert_to_goods(self, item):
         # 将数据导入xx_goods表中
@@ -223,10 +225,4 @@ class TransferGoodsProducts:
 
 if __name__ == "__main__":
     t = TransferGoodsProducts(db='LasciviousCrawler')
-    # t.run()
-
-    t.image_download_and_update(
-        src='https://cdn.shopify.com/s/files/1/0903/9008/products/'
-            'Purple-Kitty-Suspender-Product-1_1024x1024.jpg?v=1473623377',
-        referer=''
-    )
+    t.run()
