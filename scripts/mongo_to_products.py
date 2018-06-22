@@ -53,7 +53,7 @@ class TransferGoodsProducts:
         ) as res:
             for goods_id, dst in res:
                 with self.mysql.cursor() as cur:
-                    cur.execute('update xx_goods set image = "%s" where id = %s;', (dst, goods_id))
+                    cur.execute('update xx_goods set image = %s where id = %s;', (dst+'?x-oss-process=image/resize,m_lfit,w_400,h_400', goods_id))
                     print(f'更新商品图片成功: {goods_id} {dst}')
 
     def image_download_and_update(self, goods_id, image, url):
