@@ -3,6 +3,7 @@
 
 import pymongo
 import pymysql
+import json
 
 
 # --------------------------数据库启动函数------------------------------
@@ -12,7 +13,7 @@ def start_mysql():
         port=3306,
         user='root',
         passwd='mysql',
-        db='sw',
+        db='sweet',
         charset='utf8mb4')
     cur = conn.cursor()
     myConn_list = [conn, cur]
@@ -40,11 +41,11 @@ if __name__ == "__main__":
     # 将数据导入xx_spider_product表中
 
     sql = '''
-        insert into sw.xx_spider_product values(
+        insert into sweet.xx_spider_product values(
             '0',
             now(),
             now(),
-            '46',
+            '5',
             %s,
             %s,
             '1',
@@ -57,7 +58,7 @@ if __name__ == "__main__":
             '923',
             %s,
             null,
-            0,
+            '1',
             null,
             '442'
         );
@@ -66,15 +67,14 @@ if __name__ == "__main__":
     for item in collection.find():
         try:
             cur.execute(sql, (
-                item['brand'],
+                item['product_id'],
                 item['categories'][0][0],
-                item['description'],
-                item['images'][0],
+                '<p>'+item['description']+'</p>',
+                json.dumps(item['images']),
                 item['name'],
                 item['brand'],
                 item['url'],
             ))
-            print(sql)
             print('保存成功!')
         except Exception as e:
             print(e)
