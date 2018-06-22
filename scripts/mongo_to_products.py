@@ -2,6 +2,7 @@
 # !/usr/bin/env python
 import hashlib
 import json
+
 import oss2
 import pymongo
 import pymysql
@@ -53,7 +54,15 @@ class TransferGoodsProducts:
         ) as res:
             for goods_id, dst in res:
                 with self.mysql.cursor() as cur:
-                    cur.execute('update xx_goods set image = %s where id = %s;', (dst+'?x-oss-process=image/resize,m_lfit,w_400,h_400', goods_id))
+                    cur.execute('update xx_goods set image = %s where id = %s;',
+                                (dst + '?x-oss-process=image/resize,m_lfit,w_400,h_400', goods_id))
+                    cur.execute('update xx_goods set product_images = %s where id = %s;', (json.dumps([{"title": "null",
+                                                                                                        "source": dst,
+                                                                                                        "large": dst + '?x-oss-process=image/resize,m_lfit,w_800,h_800',
+                                                                                                        "medium": dst + '?x-oss-process=image/resize,m_lfit,w_400,h_400',
+                                                                                                        "thumbnail": dst + '?x-oss-process=image/resize,m_lfit,w_200,h_200',
+                                                                                                        "order": "null"}]),
+                                                                                           goods_id))
                     print(f'更新商品图片成功: {goods_id} {dst}')
 
     def image_download_and_update(self, goods_id, image, url):
@@ -188,7 +197,7 @@ class TransferGoodsProducts:
                     now(),
                     now(),
                     '47',
-                    %s,
+                    '0',
                     null,
                     '0',
                     1,
@@ -207,14 +216,13 @@ class TransferGoodsProducts:
             );
             '''
 
-        for size in item['size']:
+        for i, size in enumerate(item['size']):
             with self.mysql.cursor() as cur:
                 cur.execute(sql, (
-                    item['stock'],
                     item['now_price'].lstrip('£'),
                     item['now_price'].lstrip('£'),
                     item['now_price'].lstrip('£'),
-                    json.dumps([{'size': size}]),
+                    json.dumps([{"id": i, "value": size.split('-')[0]}]),
                     goods_id,
                     item['now_price'].lstrip('£'),
                     item['url'],
