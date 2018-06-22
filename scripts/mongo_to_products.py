@@ -36,10 +36,10 @@ class TransferGoodsProducts:
         goods_image = []
 
         for item in self.collection.find():
-            goods_id, image, url = self.insert_to_goods(item)
+            goods_id, images, url = self.insert_to_goods(item)
             self.insert_to_product(item, goods_id)
 
-            goods_image.append([goods_id, image, url])
+            goods_image.append([goods_id, images, url])
 
         self.convert_image_url(goods_image)
 
@@ -54,30 +54,58 @@ class TransferGoodsProducts:
         ) as res:
             for goods_id, dst in res:
                 with self.mysql.cursor() as cur:
-                    cur.execute('update xx_goods set image = %s where id = %s;',
-                                (dst + '?x-oss-process=image/resize,m_lfit,w_400,h_400', goods_id))
-                    cur.execute('update xx_goods set product_images = %s where id = %s;', (json.dumps([{"title": "null",
-                                                                                                        "source": dst,
-                                                                                                        "large": dst + '?x-oss-process=image/resize,m_lfit,w_800,h_800',
-                                                                                                        "medium": dst + '?x-oss-process=image/resize,m_lfit,w_400,h_400',
-                                                                                                        "thumbnail": dst + '?x-oss-process=image/resize,m_lfit,w_200,h_200',
-                                                                                                        "order": "null"}]),
-                                                                                           goods_id))
-                    print(f'更新商品图片成功: {goods_id} {dst}')
+                    image = dst[0] + '?x-oss-process=image/resize,m_lfit,w_400,h_400'
+                    product_images = [
+                        {
+                            "title": None, "order": None, "source": url,
+                            "large": url + '?x-oss-process=image/resize,m_lfit,w_800,h_800',
+                            "medium": url + '?x-oss-process=image/resize,m_lfit,w_400,h_400',
+                            "thumbnail": url + '?x-oss-process=image/resize,m_lfit,w_200,h_200',
+                        }
+                        for url in dst
+                    ]
 
-    def image_download_and_update(self, goods_id, image, url):
+                    cur.execute(
+                        'update xx_goods set image = %s, product_images = %s where id = %s',
+                        (image, json.dumps(product_images), goods_id)
+                    )
+
+                    print(f'更新商品图片成功: {goods_id}')
+
+    def image_download_and_update(self, goods_id, images, url):
         headers = {
             'Referer': url,
             'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) '
                           'Chrome/67.0.3396.79 Safari/537.36'
         }
 
-        data = requests.get(url=image, headers=headers).content
-        path = f'{hashlib.sha1(data).hexdigest()}.jpg'
+        dst = []
+        for image in images:
+            path, data = self.download_image(url=image, headers=headers)
+            self.upload_image(path=path, data=data)
+            dst.append(f'{self.base_url}/{path}')
 
-        self.bucket.put_object(key=path, data=data)
+        print(f'下载-上传商品{len(dst)}张图片成功: {goods_id}')
 
-        return goods_id, f'{self.base_url}/{path}'
+        return goods_id, dst
+
+    def download_image(self, url, headers):
+        while True:
+            try:
+                data = requests.get(url=url, headers=headers).content
+            except Exception as e:
+                print(f'retry after {e}')
+            else:
+                return f'{hashlib.sha1(data).hexdigest()}.jpg', data
+
+    def upload_image(self, path, data):
+        while True:
+            try:
+                self.bucket.put_object(key=path, data=data)
+            except Exception as e:
+                print(f'retry after {e}')
+            else:
+                break
 
     def insert_to_goods(self, item):
         # 将数据导入xx_goods表中
@@ -164,19 +192,17 @@ class TransferGoodsProducts:
             );
         '''
 
-        image = item['images'][0]
-
         with self.mysql.cursor() as cur:
             cur.execute(sql, (
                 item['brand'],
                 item['name'],
-                item['images'][0],
+                '',
                 item['description'],
                 item['description'],
                 item['now_price'].lstrip('£'),
                 item['categories'][1][0],
                 item['now_price'].lstrip('£'),
-                image,
+                '',
                 item['url'],
             ))
 
@@ -186,7 +212,7 @@ class TransferGoodsProducts:
             cur.execute('SELECT LAST_INSERT_ID();')
             goods_id = cur.fetchone()[0]
 
-        return goods_id, image, item['url']
+        return goods_id, item['images'], item['url']
 
     def insert_to_product(self, item, goods_id):
         # 将数据导入xx_product表中
