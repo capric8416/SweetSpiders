@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # !/usr/bin/env python
+import json
 
 import pymongo
 import pymysql
@@ -12,7 +13,7 @@ def start_mysql():
         port=3306,
         user='root',
         passwd='mysql',
-        db='sw',
+        db='sweet',
         charset='utf8mb4')
     cur = conn.cursor()
     myConn_list = [conn, cur]
@@ -38,7 +39,7 @@ if __name__ == "__main__":
     conn = myConn_list[0]
 
     sql = '''
-        insert into sw.xx_goods values(
+        insert into sweet.xx_goods values(
             '0',
             now(),
             now(),
@@ -63,16 +64,16 @@ if __name__ == "__main__":
             null,
             null,
             null,
-            null,
+            %s,
             '0',
             %s,
             %s,
             %s,
-            '\0',
-            '',
-            '',
-            '',
-            '\0',
+            1,
+            1,
+            1,
+            1,
+            0,
             null,
             %s,
             null,
@@ -109,13 +110,14 @@ if __name__ == "__main__":
             %s,
             null,
             null,
-            '',
+            0,
             null,
             null,
             '0',
             '3225',
             '36',
-            '0.000000'
+            '0.000000',
+            '36'
         );
     '''
 
@@ -123,13 +125,22 @@ if __name__ == "__main__":
         try:
             cur.execute(sql, (
                 item['brand'],
+                item['name'],
                 item['images'][0],
                 item['description'],
                 item['description'],
                 item['now_price'].lstrip('£'),
                 item['categories'][1][0],
                 item['now_price'].lstrip('£'),
-                item['images'][0],
+                json.dumps([{"title": "null", "source": item['images'][0],
+                             "large": item['images'][0] + '?x-oss-process=image/resize,m_lfit,w_800,h_800',
+                             "medium": item['images'][0] + '?x-oss-process=image/resize,m_lfit,w_400,h_400',
+                             "thumbnail": item['images'][0] + '?x-oss-process=image/resize,m_lfit,w_200,h_200',
+                             "order": "null"}, {"title": "null", "source": item['images'][1],
+                                                "large": item['images'][1] + '?x-oss-process=image/resize,m_lfit,w_800,h_800',
+                                                "medium": item['images'][1] + '?x-oss-process=image/resize,m_lfit,w_400,h_400',
+                                                "thumbnail": item['images'][1] + '?x-oss-process=image/resize,m_lfit,w_200,h_200',
+                                                "order": "null"}]),
                 item['url'],
             ))
 
