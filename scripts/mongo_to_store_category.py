@@ -48,7 +48,15 @@ class TransferGoodsProducts:
         with self.mysql.cursor() as cur:
             cur.execute(sql, (
                 json.dumps([{"id": None, "uuid": item['uuid'], "name": item['name'], "url": item['url'],
-                             "children": item['children']}]),
+                             "children": [
+                                 {"id": None, "uuid": item['children'][0]['uuid'], "name": item['children'][0]['name'],
+                                  "url": item['children'][0]['url'], "children": None},
+                                 {"id": None, "uuid": item['children'][1]['uuid'], "name": item['children'][1]['name'],
+                                  "url": item['children'][1]['url'], "children": None},
+                                 {"id": None, "uuid": item['children'][2]['uuid'], "name": item['children'][2]['name'],
+                                  "url": item['children'][2]['url'], "children": None},
+                                 {"id": None, "uuid": item['children'][3]['uuid'], "name": item['children'][3]['name'],
+                                  "url": item['children'][3]['url'], "children": None}]}]),
             ))
 
             print('spider_store_category保存成功!')
@@ -62,11 +70,11 @@ class TransferGoodsProducts:
                 now(),
                 '5',
                 null,
-                '1',
+                '0',
                 %s,
-                ',796,795,',
-                '795',
-                '442',
+                ',',
+                null,
+                '923',
                 %s,
                 %s,
                 %s
@@ -80,7 +88,33 @@ class TransferGoodsProducts:
                 item['uuid'],
             ))
 
-            print('store_category保存成功!')
+        sql = '''
+            insert into sweet.xx_store_product_category values(
+                '0',
+                now(),
+                now(),
+                '5',
+                null,
+                '1',
+                %s,
+                ',2011,',
+                '2011',
+                '923',
+                %s,
+                %s,
+                %s
+            );
+        '''
+        for name_item in item['children']:
+            with self.mysql.cursor() as cur:
+                cur.execute(sql, (
+                    name_item['name'],
+                    name_item['name'],
+                    name_item['url'],
+                    name_item['uuid'],
+                ))
+
+                print('store_category保存成功!')
 
 
 if __name__ == "__main__":
