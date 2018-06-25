@@ -31,7 +31,7 @@ def close_pymysql(cur, conn):
 
 if __name__ == "__main__":
     client = pymongo.MongoClient('localhost', 27017)
-    db = client['LasciviousCrawler']
+    db = client['AlexandermcqueenCrawler']
     collection = db['products']
 
     myConn_list = start_mysql()

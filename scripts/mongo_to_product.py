@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 # !/usr/bin/env python
 
+import json
+
 import pymongo
 import pymysql
-import json
 
 
 # --------------------------数据库启动函数------------------------------
@@ -31,7 +32,7 @@ def close_pymysql(cur, conn):
 
 if __name__ == "__main__":
     client = pymongo.MongoClient('localhost', 27017)
-    db = client['LasciviousCrawler']
+    db = client['AlexandermcqueenCrawler']
     collection = db['products']
 
     myConn_list = start_mysql()
@@ -55,21 +56,24 @@ if __name__ == "__main__":
             %s,
             %s,
             null,
-            '923',
+            '313',
             %s,
             null,
             '1',
             null,
-            '442'
+            '441'
         );
     '''
 
-    for item in collection.find():
+    for item in collection.find({"categories": [
+        ["Womenswear", "https://www.alexandermcqueen.com/gb/alexandermcqueen"],
+        ["All Ready-To-Wear", "https://www.alexandermcqueen.com/gb/alexandermcqueen/online/women/ready-to-wear"],
+        ["Dresses", "https://www.alexandermcqueen.com/gb/alexandermcqueen/online/women/dresses"]]}):
         try:
             cur.execute(sql, (
                 item['product_id'],
-                item['categories'][0][0],
-                '<p>'+item['description']+'</p>',
+                item['categories'][2][0],
+                '<p>' + item['introduction'] + '</p>',
                 json.dumps(item['images']),
                 item['name'],
                 item['brand'],

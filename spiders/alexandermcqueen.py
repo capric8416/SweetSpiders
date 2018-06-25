@@ -185,7 +185,7 @@ class AlexandermcqueenCrawler(IndexListDetailCrawler):
         p = urlparse(url)
         q = dict(parse_qsl(p.query))
 
-        if not q.get('siteCode', '').endswith('_GB'):
+        if 'siteCode' in q and not q['siteCode'].endswith('_GB'):
             q['siteCode'] = q['siteCode'][:-2] + 'GB'
         else:
             return url
