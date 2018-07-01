@@ -22,3 +22,6 @@ from .grenson import *
 from .tedbaker import *
 from .harrods import *
 from .astleyclarke import *
+from .brownsfashion import *
+from .cathkidston import *
+from .youmustcreate import *

@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 # !/usr/bin/env python
-from SweetSpiders.common import IndexListDetailCrawler
-from pyquery import PyQuery
 import copy
 from urllib.parse import urlparse
+
+from SweetSpiders.common import IndexListDetailCrawler
+from pyquery import PyQuery
 
 
 class HarrodsCrawler(IndexListDetailCrawler):
@@ -43,7 +44,7 @@ class HarrodsCrawler(IndexListDetailCrawler):
         top = pq('.nav .nav_container .nav_item')
         for cat1_node in top.items():
             cat1_name = cat1_node('.nav_link .nav_item-title').text().strip()
-            if cat1_name == 'Designers':
+            if cat1_name in ('Designers', 'Sale'):
                 continue
             if cat1_name == 'Gifts':
                 break
@@ -113,7 +114,8 @@ class HarrodsCrawler(IndexListDetailCrawler):
 
             text = pq('.control_viewtypes .control_paging-list a.control_paging-item:last span').text().strip()
             if text == 'Next':
-                next_page = self._full_url(url_from=resp.url, path=pq('.control_viewtypes .control_paging-list a.control_paging-item:last').attr('href'))
+                next_page = self._full_url(url_from=resp.url, path=pq(
+                    '.control_viewtypes .control_paging-list a.control_paging-item:last').attr('href'))
 
             else:
                 break
@@ -128,7 +130,8 @@ class HarrodsCrawler(IndexListDetailCrawler):
 
         node = pq('.grid .product-grid .product-grid_list .product-grid_item')
         for detail in node.items():
-            url = self._full_url(url_from=resp.url, path=detail('.product-card .product-card_info a.product-card_link').attr('href'))
+            url = self._full_url(url_from=resp.url,
+                                 path=detail('.product-card .product-card_info a.product-card_link').attr('href'))
             meta['product_id'] = urlparse(url).path.split('/')[-1]
             yield url, headers, resp.cookies.get_dict(), meta
 
@@ -146,31 +149,39 @@ class HarrodsCrawler(IndexListDetailCrawler):
         images = list(set(images))
 
         # 商品标题
-        title = pq('.pdp_buying-controls .buying-controls .js-pdp-add-to-bag .buying-controls_details .buying-controls_brand span').text().strip()
+        title = pq(
+            '.pdp_buying-controls .buying-controls .js-pdp-add-to-bag .buying-controls_details .buying-controls_brand span').text().strip()
 
         # 商品名称
-        name = pq('.pdp_buying-controls .buying-controls .js-pdp-add-to-bag .buying-controls_details .buying-controls_name').text().strip()
+        name = pq(
+            '.pdp_buying-controls .buying-controls .js-pdp-add-to-bag .buying-controls_details .buying-controls_name').text().strip()
 
         # 商品价格
-        was_price = pq('.pdp_main .pdp_buying-controls .js-pdp-add-to-bag .buying-controls_price .price_group--was .price').text().strip()
+        was_price = pq(
+            '.pdp_main .pdp_buying-controls .js-pdp-add-to-bag .buying-controls_price .price_group--was .price').text().strip()
 
-        now_price = pq('.pdp_main .pdp_buying-controls .js-pdp-add-to-bag .buying-controls_price .price_group--now .price').text().strip()
+        now_price = pq(
+            '.pdp_main .pdp_buying-controls .js-pdp-add-to-bag .buying-controls_price .price_group--now .price').text().strip()
 
         if not (was_price and now_price):
-            now_price = pq('.pdp_main .pdp_buying-controls .js-pdp-add-to-bag .buying-controls_price .price').text().strip()
+            now_price = pq(
+                '.pdp_main .pdp_buying-controls .js-pdp-add-to-bag .buying-controls_price .price').text().strip()
 
         # 商品颜色
         colors = []
         if pq('.js-pdp-add-to-bag .buying-controls_details .buying-controls_option .buying-controls_value'):
-            color = pq('.js-pdp-add-to-bag .buying-controls_details .buying-controls_option .buying-controls_value').text().strip()
+            color = pq(
+                '.js-pdp-add-to-bag .buying-controls_details .buying-controls_option .buying-controls_value').text().strip()
             colors.append(color)
         else:
-            for color_node in pq('.js-pdp-add-to-bag .buying-controls_details .buying-controls_option .hrd_dropdown-list .hrd_dropdown-item').items():
+            for color_node in pq(
+                    '.js-pdp-add-to-bag .buying-controls_details .buying-controls_option .hrd_dropdown-list .hrd_dropdown-item').items():
                 color = color_node('.hrd_dropdown-item-label').text().strip()
                 colors.append(color)
 
         # 商品介绍
-        details = [li.text().strip() for li in pq('.pdp_details .product-info .product-info_section-1 .product-info_list li.product-info_item').items()]
+        details = [li.text().strip() for li in pq(
+            '.pdp_details .product-info .product-info_section-1 .product-info_list li.product-info_item').items()]
         details = 'Details' + ':' + ''.join(details)
         overview = pq('.pdp_details .product-info_section-2 .product-info_content p').text().strip()
         overview = 'Overview' + ':' + overview
@@ -178,7 +189,8 @@ class HarrodsCrawler(IndexListDetailCrawler):
 
         # 商品尺码
         sizes = []
-        for size_node in pq('.js-pdp-add-to-bag .buying-controls_details .buying-controls_option--size .buying-controls_select--size option').items():
+        for size_node in pq(
+                '.js-pdp-add-to-bag .buying-controls_details .buying-controls_option--size .buying-controls_select--size option').items():
             size = size_node.text().strip()
             sizes.append(size)
 
@@ -194,4 +206,3 @@ class HarrodsCrawler(IndexListDetailCrawler):
             'introduction': introduction, 'sizes': sizes, 'stock': stock, 'store': self.store, 'brand': self.brand,
             'store_id': self.store_id, 'brand_id': self.brand_id, 'coin_id': self.coin_id
         }
-

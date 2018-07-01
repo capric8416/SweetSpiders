@@ -172,7 +172,10 @@ class AstleyclarkeCrawler(IndexListDetailCrawler):
         details = pq('.product-bottom #product-attribute-specs-table tbody').text().strip()
 
         # 尺寸指导
-        size_guide = ''
+        size_guide = []
+        for each_size in pq('#size-conversion-table tbody tr').items():
+            size_each = each_size.text().strip()
+            size_guide.append(size_each)
 
         return {
             'url': url, 'product_id': meta['product_id'], 'categories': meta['categories'], 'images': images,

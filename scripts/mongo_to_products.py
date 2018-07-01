@@ -8,6 +8,7 @@ import pymongo
 import pymysql
 import requests
 from SweetSpiders.common import ThreadPoolSubmit
+from scripts.google_translate import GoogleTranslate
 
 
 class TransferGoodsProducts:
@@ -36,12 +37,13 @@ class TransferGoodsProducts:
         goods_image = []
 
         for item in self.collection.find():
-            goods_id, images, url = self.insert_to_goods(item)
+            goods_id, images, url, categories = self.insert_to_goods(item)
+            self.read_categories(categories=categories)
             self.insert_to_product(item, goods_id)
 
             goods_image.append([goods_id, images, url])
 
-        self.convert_image_url(goods_image)
+        # self.convert_image_url(goods_image)
 
         self.mysql.commit()
         self.mysql.close()
@@ -106,6 +108,12 @@ class TransferGoodsProducts:
                 print(f'retry after {e}')
             else:
                 break
+
+    def read_categories(self, categories):
+        source = ','.join([c[0] for c in categories])
+        g = GoogleTranslate()
+        target = g.query(source=source)
+        return target
 
     def insert_to_goods(self, item):
         # 将数据导入xx_goods表中
@@ -212,7 +220,7 @@ class TransferGoodsProducts:
             cur.execute('SELECT LAST_INSERT_ID();')
             goods_id = cur.fetchone()[0]
 
-        return goods_id, item['images'], item['url']
+        return goods_id, item['images'], item['url'], item['categories']
 
     def insert_to_product(self, item, goods_id):
         # 将数据导入xx_product表中

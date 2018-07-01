@@ -8,6 +8,7 @@ import pymongo
 import pymysql
 import requests
 from SweetSpiders.common import ThreadPoolSubmit
+from SweetSpiders.scripts.categoires_mapper import CategoriesMapper
 
 
 class TransferGoodsProducts:
@@ -25,6 +26,8 @@ class TransferGoodsProducts:
         self.db = self.mongo[db]
         self.collection = self.db[collection]
 
+        self.mapper = CategoriesMapper(db=db)
+
         auth = oss2.Auth('pHrZGmZxcbOqvnod', 'dXzTR9DeVPZ5DeMShrNUIqKTKF7Eg5')
         host = 'oss-cn-beijing.aliyuncs.com'
         bucket = 'new-dana'
@@ -35,13 +38,11 @@ class TransferGoodsProducts:
     def run(self):
         goods_image = []
 
-        for item in self.collection.find({"categories": [
-            ["Womenswear", "https://www.alexandermcqueen.com/gb/alexandermcqueen"],
-            ["All Ready-To-Wear", "https://www.alexandermcqueen.com/gb/alexandermcqueen/online/women/ready-to-wear"],
-            ["Dresses", "https://www.alexandermcqueen.com/gb/alexandermcqueen/online/women/dresses"]]}):
-
+        for item in self.collection.find():
+            item['category'] = self.mapper.get_value_by_categories(item['categories'])
             goods_id, images, url = self.insert_to_goods(item)
             self.insert_to_product(item, goods_id)
+            self.insert_to_spider_product(item)
 
             goods_image.append([goods_id, images, url])
 
@@ -190,9 +191,9 @@ class TransferGoodsProducts:
                 null,
                 '0',
                 '3225',
-                '27',
+                '39',
                 '0.000000',
-                '15'
+                %s
             );
         '''
 
@@ -208,6 +209,7 @@ class TransferGoodsProducts:
                 item['price'].replace(',', ''),
                 '',
                 item['url'],
+                item['category'],
             ))
 
             print('商品保存成功!')
@@ -217,6 +219,45 @@ class TransferGoodsProducts:
             goods_id = cur.fetchone()[0]
 
         return goods_id, item['images'], item['url']
+
+    def insert_to_spider_product(self, item):
+        # 将数据导入xx_spider_product表中
+
+        sql = '''
+            insert into sweet.xx_spider_product values(
+                '0',
+                now(),
+                now(),
+                '5',
+                %s,
+                %s,
+                '1',
+                %s,
+                %s,
+                null,
+                %s,
+                %s,
+                null,
+                '313',
+                %s,
+                null,
+                '1',
+                null,
+                '441'
+            );
+        '''
+
+        with self.mysql.cursor() as cur:
+                cur.execute(sql, (
+                    item['product_id'],
+                    item['categories'][2][0],
+                    '<p>' + item['introduction'] + '</p>',
+                    json.dumps(item['images']),
+                    item['name'],
+                    item['brand'],
+                    item['url'],
+                ))
+                print('spider_product保存成功!')
 
     def insert_to_product(self, item, goods_id):
         # 将数据导入xx_product表中

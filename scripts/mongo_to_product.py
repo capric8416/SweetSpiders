@@ -65,10 +65,7 @@ if __name__ == "__main__":
         );
     '''
 
-    for item in collection.find({"categories": [
-        ["Womenswear", "https://www.alexandermcqueen.com/gb/alexandermcqueen"],
-        ["All Ready-To-Wear", "https://www.alexandermcqueen.com/gb/alexandermcqueen/online/women/ready-to-wear"],
-        ["Dresses", "https://www.alexandermcqueen.com/gb/alexandermcqueen/online/women/dresses"]]}):
+    for item in collection.find():
         try:
             cur.execute(sql, (
                 item['product_id'],
