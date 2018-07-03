@@ -49,57 +49,68 @@ class TedbakerCrawler(IndexListDetailCrawler):
             cat1_url = self._full_url(url_from=resp.url, path=cat1_node('.categories_main').attr('href'))
             cat1 = {'name': cat1_name, 'url': cat1_url, 'children': [], 'uuid': self.cu.get_or_create(cat1_name)}
 
-            child = cat1_node('.nav .nav_inner .nav_column')
+            child = cat1_node('.nav .nav_inner .nav_column .nav_header .js-menu-state')
             for child_node in child.items():
-                for name_node in child_node('.nav_header .js-menu-state').items():
-                    cat2_name = name_node.text().strip()
-                    if cat2_name == 'Home & Gifts':
-                        break
-                    if cat2_name == 'New Arrivals':
-                        cat2_url = self._full_url(url_from=resp.url,
-                                                  path=child_node('.nav_header .js-menu-state').attr('href'))
+                cat2_name = child_node.text().strip()
+                if cat2_name == 'New Arrivals':
+                    continue
+                if cat2_name == 'Gift Cards':
+                    break
+                if cat2_name == 'Home & Gifts':
+                    cat2_url = self._full_url(url_from=resp.url,
+                                              path=child_node.attr('href'))
+                    cat2 = {
+                        'name': cat2_name, 'url': cat2_url, 'children': [],
+                        'uuid': self.cu.get_or_create(cat1_name, cat2_name)
+                    }
+                    resp = self._request(url=cat2_url, headers=self.headers)
+                    pq = PyQuery(resp.text)
+                    for cat3_node in pq('div.html_component:eq(2) .landing .inner .copy-pnl > div').items():
+                        cat3_name = cat3_node('a.ul-cta').text().strip()
+                        cat3_url = self._full_url(url_from=resp.url, path=cat3_node('a.ul-cta').attr('href'))
 
                         headers = copy.copy(self.headers)
                         headers['Referer'] = resp.url
 
-                        cat1['children'].append({
-                            'name': cat2_name, 'url': cat2_url,
-                            'uuid': self.cu.get_or_create(cat1_name, cat2_name)
+                        cat2['children'].append({
+                            'name': cat3_name, 'url': cat3_url,
+                            'uuid': self.cu.get_or_create(cat1_name, cat2_name, cat3_name)
                         })
 
                         results.append([
-                            cat2_url, headers, resp.cookies.get_dict(),
-                            {'categories': [(cat1_name, cat1_url), (cat2_name, cat2_url)]}
+                            cat3_url, headers, resp.cookies.get_dict(),
+                            {'categories': [(cat1_name, cat1_url), (cat2_name, cat2_url), (cat3_name, cat3_url)]}
                         ])
 
-                        categories.append(cat1)
-                    else:
-                        cat2_url = self._full_url(url_from=resp.url, path=child_node('.js-menu-state').attr('href'))
-                        cat2 = {
-                            'name': cat2_name, 'url': cat2_url, 'children': [],
-                            'uuid': self.cu.get_or_create(cat1_name, cat2_name)
-                        }
-                        cat3_nodes = child_node('.nav_list .nav_item')
-                        for cat3_node in cat3_nodes.items():
-                            cat3_name = cat3_node('.nav_link').text().strip()
-                            if ('All' in cat3_name) or ('Home' in cat3_name):
-                                continue
-                            cat3_url = self._full_url(url_from=resp.url, path=cat3_node('.nav_link').attr('href'))
+                    cat1['children'].append(cat2)
 
-                            headers = copy.copy(self.headers)
-                            headers['Referer'] = resp.url
+                else:
+                    cat2_url = self._full_url(url_from=resp.url, path=child_node.attr('href'))
 
-                            cat2['children'].append({
-                                'name': cat3_name, 'url': cat3_url,
-                                'uuid': self.cu.get_or_create(cat1_name, cat2_name, cat3_name)
-                            })
+                    cat2 = {
+                        'name': cat2_name, 'url': cat2_url, 'children': [],
+                        'uuid': self.cu.get_or_create(cat1_name, cat2_name)
+                    }
+                    for cat3_node in cat1_node('.nav .nav_inner .nav_column > ul.nav_list > li.nav_item').items():
+                        cat3_name = cat3_node('a.nav_link').text().strip()
+                        if ('All' in cat3_name) or ('Home' in cat3_name):
+                            continue
+                        cat3_url = self._full_url(url_from=resp.url, path=cat3_node('a.nav_link').attr('href'))
 
-                            results.append([
-                                cat3_url, headers, resp.cookies.get_dict(),
-                                {'categories': [(cat1_name, cat1_url), (cat2_name, cat2_url), (cat3_name, cat3_url)]}
-                            ])
+                        headers = copy.copy(self.headers)
+                        headers['Referer'] = resp.url
 
-                        cat1['children'].append(cat2)
+                        cat2['children'].append({
+                            'name': cat3_name, 'url': cat3_url,
+                            'uuid': self.cu.get_or_create(cat1_name, cat2_name, cat3_name)
+                        })
+
+                        results.append([
+                            cat3_url, headers, resp.cookies.get_dict(),
+                            {'categories': [(cat1_name, cat1_url), (cat2_name, cat2_url), (cat3_name, cat3_url)]}
+                        ])
+
+                    cat1['children'].append(cat2)
 
             categories.append(cat1)
         return categories, results
@@ -172,6 +183,7 @@ class TedbakerCrawler(IndexListDetailCrawler):
         sizes = []
         if pq('.product_attr_selection .size .value #product_select_size option'):
             for size_node in pq('.product_attr_selection .size .value #product_select_size option').items():
+                size = size_node.text().strip()
                 sizes.append(size)
                 sizes = sizes[1:]
         else:
@@ -189,6 +201,3 @@ class TedbakerCrawler(IndexListDetailCrawler):
             'introduction': introduction, 'details': details, 'store': self.store, 'brand': self.brand,
             'store_id': self.store_id, 'brand_id': self.brand_id, 'coin_id': self.coin_id
         }
-
-
-

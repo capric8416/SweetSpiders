@@ -22,7 +22,7 @@ class TransferGoodsProducts:
         self.collection = self.db[collection]
 
     def run(self):
-        for item in self.collection.find():
+        for item in self.collection.find({'name':'手部护理'}):
             self.insert_to_store_category(item)
             self.insert_to_store_product_category(item)
 
@@ -36,40 +36,34 @@ class TransferGoodsProducts:
                 '0',
                 now(),
                 now(),
-                '5',
+                '6',
                 null,
                 %s,
-                'Alexandermcqueen',
-                '313',
+                'Lascivious',
+                '541',
                 '1'
             );
         '''
         with self.mysql.cursor() as cur:
             cur.execute(sql, (
-                json.dumps([{"id": None, "uuid": item['uuid'], "name": item['name'], "url": item['url'],
+                json.dumps([{"id": None, "uuid": item['uuid'], "name": item['name'],
+                             "url": item['url'],
                              "children": [
-                                 {"id": None, "uuid": item['children'][0]['uuid'], "name": item['children'][0]['name'],
-                                  "url": item['children'][0]['url'], "children": [
-                                     {"id": None, "uuid": item['children']['children'][0]['uuid'],
-                                      "name": item['children']['children'][0]['name'],
-                                      "url": item['children']['children'][0]['url'], "children": None},
-                                     {"id": None, "uuid": item['children'][1]['children']['uuid'],
-                                      "name": item['children']['children'][1]['name'],
-                                      "url": item['children']['children'][1]['url'], "children": None},
-                                     {"id": None, "uuid": item['children']['children'][2]['uuid'],
-                                      "name": item['children']['children'][2]['name'],
-                                      "url": item['children']['children'][2]['url'], "children": None}]},
-                                 {"id": None, "uuid": item['children'][1]['uuid'], "name": item['children'][1]['name'],
-                                  "url": item['children'][1]['url'], "children": [
-                                     {"id": None, "uuid": item['children']['children'][0]['uuid'],
-                                      "name": item['children']['children'][0]['name'],
-                                      "url": item['children']['children'][0]['url'], "children": None},
-                                     {"id": None, "uuid": item['children'][1]['children']['uuid'],
-                                      "name": item['children']['children'][1]['name'],
-                                      "url": item['children']['children'][1]['url'], "children": None},
-                                     {"id": None, "uuid": item['children']['children'][2]['uuid'],
-                                      "name": item['children']['children'][2]['name'],
-                                      "url": item['children']['children'][2]['url'], "children": None}]},
+                                 {"id": None, "uuid": item['children'][0]['uuid'],
+                                  "name": item['children'][0]['name'],
+                                  "url": item['children'][0]['url'], "children": None},
+                                 {"id": None, "uuid": item['children'][1]['uuid'],
+                                  "name": item['children'][0]['name'],
+                                  "url": item['children'][0]['url'], "children": None},
+                                 {"id": None, "uuid": item['children'][2]['uuid'],
+                                  "name": item['children'][0]['name'],
+                                  "url": item['children'][0]['url'], "children": None},
+                                 {"id": None, "uuid": item['children'][3]['uuid'],
+                                  "name": item['children'][0]['name'],
+                                  "url": item['children'][0]['url'], "children": None},
+                                 {"id": None, "uuid": item['children'][4]['uuid'],
+                                  "name": item['children'][0]['name'],
+                                  "url": item['children'][0]['url'], "children": None}
                              ]}]),
             ))
 
@@ -88,7 +82,7 @@ class TransferGoodsProducts:
                 %s,
                 ',',
                 null,
-                '313',
+                '541',
                 %s,
                 %s,
                 %s
@@ -111,9 +105,9 @@ class TransferGoodsProducts:
                 null,
                 '1',
                 %s,
-                ',一级分类id,',
-                '一级分类id',
-                '313',
+                ',2026,',
+                '2026',
+                '541',
                 %s,
                 %s,
                 %s
@@ -128,36 +122,36 @@ class TransferGoodsProducts:
                     name_item['uuid'],
                 ))
 
-        sql = '''
-            insert into sweet.xx_store_product_category values(
-                '0',
-                now(),
-                now(),
-                '5',
-                null,
-                '2',
-                %s,
-                ',一级分类id,二级分类id,',
-                '二级分类id',
-                '313',
-                %s,
-                %s,
-                %s
-            );
-        '''
+        # sql = '''
+        #     insert into sweet.xx_store_product_category values(
+        #         '0',
+        #         now(),
+        #         now(),
+        #         '5',
+        #         null,
+        #         '2',
+        #         %s,
+        #         ',一级分类id,二级分类id,',
+        #         '二级分类id',
+        #         '313',
+        #         %s,
+        #         %s,
+        #         %s
+        #     );
+        # '''
+        #
+        # for third_item in item['children']['children']:
+        #     with self.mysql.cursor() as cur:
+        #         cur.execute(sql, (
+        #             third_item['name'],
+        #             third_item['name'],
+        #             third_item['url'],
+        #             third_item['uuid'],
+        #         ))
 
-        for third_item in item['children']['children']:
-            with self.mysql.cursor() as cur:
-                cur.execute(sql, (
-                    third_item['name'],
-                    third_item['name'],
-                    third_item['url'],
-                    third_item['uuid'],
-                ))
-
-                print('store_category保存成功!')
+        print('store_category保存成功!')
 
 
 if __name__ == "__main__":
-    t = TransferGoodsProducts(db='AlexandermcqueenCrawler')
+    t = TransferGoodsProducts(db='CrabtreeCrawler')
     t.run()

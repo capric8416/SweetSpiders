@@ -138,7 +138,7 @@ class YoumustcreateCrawler(IndexListDetailCrawler):
         # 商品图片
         images = []
         for img_node in pq('.product-images-block .lazy-img-placeholder').items():
-            img_url = self._full_url(url_from=resp.url, path=img_node('img').attr('src'))
+            img_url = self._full_url(url_from=resp.url, path=img_node('img').attr('data-zoom-src'))
             images.append(img_url)
 
         # 商品名称

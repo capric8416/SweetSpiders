@@ -34,21 +34,39 @@ class LkbennettCrawler(IndexListDetailCrawler):
     def _parse_index(self, resp):
         """首页解析器"""
         pq = PyQuery(resp.text)
+        categories = []
+        results = []
         node = pq('.main-navigation .nav-pills li.has-sub')
         for top in node.items():
-            top_category = top('a:eq(0)').text().strip()
-            if top_category == 'Collections':
+            cat1_name = top.children('a').text().strip()
+            if cat1_name == 'NEW ARRIVALS':
+                continue
+            if cat1_name == 'Collections':
                 break
+            cat1_url = self._full_url(url_from=resp.url, path=top.children('a').attr('href'))
+            cat1 = {'name': cat1_name, 'url': cat1_url, 'children': [], 'uuid': self.cu.get_or_create(cat1_name)}
+
             for child in top('.nav-middle-container .links .sub-navigation-list li').items():
-                child_category = child('a').text().strip()
-                if child_category == 'VIEW ALL':
+                cat2_name = child('a').text().strip()
+                if cat2_name in ('View All', 'View all'):
                     continue
-                child_url = self._full_url(url_from=resp.url, path=child('a').attr('href'))
-                categories = (top_category, child_category)
+                cat2_url = self._full_url(url_from=resp.url, path=child('a').attr('href'))
 
                 headers = copy.copy(self.headers)
                 headers['Referer'] = resp.url
-                yield child_url, headers, resp.cookies.get_dict(), {'categories': categories}
+
+                cat1['children'].append({
+                    'name': cat2_name, 'url': cat2_url,
+                    'uuid': self.cu.get_or_create(cat1_name, cat2_name)
+                })
+
+                results.append([
+                    cat2_url, headers, resp.cookies.get_dict(),
+                    {'categories': [(cat1_name, cat1_url), (cat2_name, cat2_url)]}
+                ])
+
+            categories.append(cat1)
+        return categories, results
 
     def _get_product_list(self, url, headers, cookies, meta):
         """列表页面爬虫，实现翻页请求"""

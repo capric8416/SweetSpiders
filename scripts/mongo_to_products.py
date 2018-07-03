@@ -8,6 +8,7 @@ import pymongo
 import pymysql
 import requests
 from SweetSpiders.common import ThreadPoolSubmit
+
 from scripts.google_translate import GoogleTranslate
 
 
@@ -36,14 +37,21 @@ class TransferGoodsProducts:
     def run(self):
         goods_image = []
 
-        for item in self.collection.find():
+        for item in self.collection.find({"categories": [
+            ["手部护理", "http://www.crabtree-evelyn.com/uk/en/shop-by-category/hand-care/"],
+            ["磨砂", "http://www.crabtree-evelyn.com/uk/en/hand-care/exfoliators/"]]}):
             goods_id, images, url, categories = self.insert_to_goods(item)
-            self.read_categories(categories=categories)
+
+            # translated = self.read_categories(categories=categories)
+            # products_id = item['_id']
+            # self.db['products'].update({'_id': products_id}, {'$set': {'categories_cn': translated}})
+            # print('mongo更新完毕!')
+
             self.insert_to_product(item, goods_id)
 
             goods_image.append([goods_id, images, url])
 
-        # self.convert_image_url(goods_image)
+        self.convert_image_url(goods_image)
 
         self.mysql.commit()
         self.mysql.close()
@@ -110,10 +118,9 @@ class TransferGoodsProducts:
                 break
 
     def read_categories(self, categories):
-        source = ','.join([c[0] for c in categories])
+        source = [c[0] for c in categories]
         g = GoogleTranslate()
-        target = g.query(source=source)
-        return target
+        return list(g.batch_query(source))
 
     def insert_to_goods(self, item):
         # 将数据导入xx_goods表中
@@ -170,7 +177,7 @@ class TransferGoodsProducts:
                 null,
                 null,
                 null,
-                '2018061012041',
+                '2018070312041',
                 '[]',
                 '0',
                 '0',
@@ -180,9 +187,9 @@ class TransferGoodsProducts:
                 '0',
                 now(),
                 null,
-                '442',
-                '302',
-                '923',
+                '270',
+                '310',
+                '541',
                 null,
                 null,
                 null,
@@ -194,9 +201,9 @@ class TransferGoodsProducts:
                 null,
                 '0',
                 '3225',
-                '27',
+                '2027',
                 '0.000000',
-                '27'
+                '52'
             );
         '''
 
@@ -207,9 +214,9 @@ class TransferGoodsProducts:
                 '',
                 item['description'],
                 item['description'],
-                item['now_price'].lstrip('£'),
+                item['now_price'][0].lstrip('£'),
                 item['categories'][1][0],
-                item['now_price'].lstrip('£'),
+                item['now_price'][0].lstrip('£'),
                 '',
                 item['url'],
             ))
@@ -253,12 +260,12 @@ class TransferGoodsProducts:
         for i, size in enumerate(item['size']):
             with self.mysql.cursor() as cur:
                 cur.execute(sql, (
-                    item['now_price'].lstrip('£'),
-                    item['now_price'].lstrip('£'),
-                    item['now_price'].lstrip('£'),
-                    json.dumps([{"id": i, "value": size.split('-')[0]}]),
+                    item['now_price'][0].lstrip('£'),
+                    item['now_price'][0].lstrip('£'),
+                    item['now_price'][0].lstrip('£'),
+                    json.dumps([{"id": i, "value": size}]),
                     goods_id,
-                    item['now_price'].lstrip('£'),
+                    item['now_price'][0].lstrip('£'),
                     item['url'],
                 ))
 
@@ -266,5 +273,5 @@ class TransferGoodsProducts:
 
 
 if __name__ == "__main__":
-    t = TransferGoodsProducts(db='LasciviousCrawler')
+    t = TransferGoodsProducts(db='CrabtreeCrawler')
     t.run()

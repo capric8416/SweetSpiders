@@ -36,6 +36,9 @@ class CathkidstonCrawler(IndexListDetailCrawler):
 
     def _parse_index(self, resp):
         """首页解析器"""
+
+        size_guide = self.get_size_guide()
+
         pq = PyQuery(resp.text)
         results = []
         categories = []
@@ -69,10 +72,12 @@ class CathkidstonCrawler(IndexListDetailCrawler):
 
                     results.append([
                         cat2_url, headers, resp.cookies.get_dict(),
-                        {'categories': [(cat1_name, cat1_url), (cat2_name, cat2_url)]}
+                        {
+                            'categories': [(cat1_name, cat1_url), (cat2_name, cat2_url)],
+                            'size_guide': size_guide
+                        }
                     ])
 
-                    categories.append(cat1)
                 else:
                     cat2 = {
                         'name': cat2_name, 'url': cat2_url, 'children': [],
@@ -94,13 +99,74 @@ class CathkidstonCrawler(IndexListDetailCrawler):
 
                         results.append([
                             cat3_url, headers, resp.cookies.get_dict(),
-                            {'categories': [(cat1_name, cat1_url), (cat2_name, cat2_url), (cat3_name, cat3_url)]}
+                            {
+                                'categories': [(cat1_name, cat1_url), (cat2_name, cat2_url), (cat3_name, cat3_url)],
+                                'size_guide': size_guide
+                            }
                         ])
 
                     cat1['children'].append(cat2)
 
-                categories.append(cat1)
+            categories.append(cat1)
         return categories, results
+
+    # 尺寸指导
+    def get_size_guide(self):
+        size_guide = self.INDEX_URL + '/sizing-guide/content/fcp-content'
+        resp = self._request(url=size_guide, headers=self.headers)
+        pq = PyQuery(resp.text)
+
+        areas, women_clothings = [], []
+        size_guide_url = self._full_url(url_from=resp.url, path=pq('.pm_aside a.link').attr('href'))
+        for women_clothing in pq('table.ck-size-guide-table:eq(0) thead > tr th').items():
+            each_area = women_clothing.text().strip()
+
+            areas.append(each_area)
+        for each_size in pq('table.ck-size-guide-table:eq(0) tbody > tr').items():
+            size_each = [each.text().strip() for each in each_size('td').items()]
+        women_clothings.extend([areas, size_each])
+
+        second_clothing = []
+        areas = [area.text().strip() for area in pq('table.ck-size-guide-table:eq(1) thead > th').items()]
+        for size_node in pq('table.ck-size-guide-table:eq(1) tr').items():
+            size_each = [each.text().strip() for each in size_node('td').items()]
+        second_clothing.extend([areas, size_each])
+
+        women_shoes = []
+        areas = [area.text().strip() for area in pq('table.ck-size-guide-table:eq(2) thead > tr th').items()]
+        for each_size in pq('table.ck-size-guide-table:eq(2) > tr').items():
+            size_each = [each.text().strip() for each in size_each('td').items()]
+        women_shoes.extend([areas, size_each])
+
+        baby_clothing = []
+        areas = [area.text().strip() for area in pq('table.ck-size-guide-table:eq(3) thead > tr th').items()]
+        for each_size in pq('table.ck-size-guide-table:eq(3) > tr').items():
+            size_each = [each.text().strip() for each in each_size('td').items()]
+        baby_clothing.extend([areas, size_each])
+
+        baby_shoes = []
+        areas = [area.text().strip() for area in pq('table.ck-size-guide-table:eq(4) thead > tr th').items()]
+        for each_size in pq('table.ck-size-guide-table:eq(4) > tr').items():
+            size_each = [each.text().strip() for each in each_size('td').items()]
+        baby_shoes.extend([areas, size_each])
+
+        kids_clothing = []
+        areas = [area.text().strip() for area in pq('table.ck-size-guide-table:eq(5) thead > tr th').items()]
+        for each_size in pq('table.ck-size-guide-table:eq(5) > tr').items():
+            size_each = [each.text().strip() for each in each_size('td').items()]
+        kids_clothing.extend([areas, size_each])
+
+        kids_shoes = []
+        areas = [area.text().strip() for area in pq('table.ck-size-guide-table:eq(6) thead > tr th').items()]
+        for each_size in pq('table.ck-size-guide-table:eq(6) > tr').items():
+            size_each = [each.text().strip() for each in each_size('td').items()]
+        kids_shoes.extend([areas, size_each])
+
+        return {
+            'women_clothins': women_clothings, 'second_clothing': second_clothing,
+            'women_shoes': women_shoes, 'baby_clothing': baby_clothing, 'baby_shoes': baby_shoes,
+            'kids_clothing': kids_clothing, 'kids_shoes': kids_shoes
+        }
 
     def _get_product_list(self, url, headers, cookies, meta):
         """列表页面爬虫，实现翻页请求"""
@@ -115,7 +181,8 @@ class CathkidstonCrawler(IndexListDetailCrawler):
             for info in self._parse_product_list(pq=pq, resp=resp, headers=headers, meta=meta):
                 self.push_product_info(info)
 
-            next_page = self._full_url(url_from=resp.url, path=pq('#results .summary_and_sort .pagination:eq(0) .page-next').attr('href'))
+            next_page = self._full_url(url_from=resp.url,
+                                       path=pq('#results .summary_and_sort .pagination:eq(0) .page-next').attr('href'))
             if not next_page:
                 break
             url = next_page
@@ -141,26 +208,40 @@ class CathkidstonCrawler(IndexListDetailCrawler):
 
         # 商品图片
         images = []
-        for img_node in pq('#images .flexslider .flex-viewport .alternatives li').items():
-            img_url = self._full_url(url_from=resp.url, path=img_node('img').attr('src').replace('xsmall', 'zoom'))
-            images.append(img_url)
+        headers = copy.copy(extra['headers'])
+        headers['Referer'] = resp.url
+        img_url = self._full_url(url_from=resp.url,
+                                 path=pq('#main_image_container #main_image').attr('src').replace('xlarge', 'zoom'))
+        images.append(img_url)
+        count = 1
+        while True:
+            new_img = img_url.replace('.jpg', '_%s.jpg') % count
+            resp = self._request(method='head', url=new_img, headers=headers, cookies=resp.cookies.get_dict())
+            if resp.status_code == 403:
+                break
+            count += 1
+
+            images.append(new_img)
 
         # 商品名称
         name = pq('#info > h1').text().strip()
 
         # 商品价格
-        was_price = pq('#info p meta:eq(1)').text().strip().split()[-1]
+        was_price = pq('#info p[itemprop="offerDetails"]').text()
+        if 'Was' in was_price:
+            now_price = was_price.partition('Now')[-1].strip()
+            was_price = was_price.partition('Was')[-1].partition('Now')[0].strip()
 
-        now_price = pq('#info p span.mark').text().strip().split()[-1]
-
-        if not (was_price and now_price):
-            now_price = pq('#info p span').text().strip()
+        else:
+            now_price = was_price
+            was_price = ''
 
         # 商品尺寸
         sizes = []
-        for size_node in pq('#add_to_bag .element select option').items():
+        for size_node in pq('.matrix_table tr th').items():
             size = size_node.text().strip()
-            sizes.append(size)
+            if size:
+                sizes.append(size)
 
         # 商品介绍
         introduction = pq('#product_info_tabs #tabs-1 p').text().strip()
@@ -169,17 +250,17 @@ class CathkidstonCrawler(IndexListDetailCrawler):
         details = pq('#tabs-2').text().strip()
 
         # 商品库存
-        stock_text = pq('#stock_status').text().strip()
-        if ('More than' in stock_text) or ('in stock' in stock_text):
-            stock = 999
-        else:
+        stock_text = pq('.stock-status-message').text().strip()
+        if stock_text == 'Sorry this item is out of stock':
             stock = 0
+        else:
+            stock = 999
 
         return {
             'url': url, 'catgories': meta['categories'], 'product_id': meta['product_id'], 'images': images,
             'name': name, 'was_price': was_price, 'now_price': now_price, 'sizes': sizes, 'introduction': introduction,
             'details': details, 'stock': stock, 'store': self.store, 'brand': self.brand, 'store_id': self.store_id,
-            'brand_id': self.brand_id, 'coin_id': self.coin_id
+            'brand_id': self.brand_id, 'coin_id': self.coin_id, 'women_clothing': women_clothings, 'second_clothing':
+                second_clothing, 'women_shoes': women_shoes, 'baby_clothing': baby_clothing, 'baby_shoes': baby_shoes,
+            'kids_cloting': kids_clothing, 'kids_shoes': kids_shoes
         }
-
-

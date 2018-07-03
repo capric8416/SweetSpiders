@@ -115,7 +115,10 @@ class GoogleTranslate:
 
         return c
 
+    def batch_query(self, categories_list):
+        for category in categories_list:
+            yield self.query(source=category)
+
 
 if __name__ == '__main__':
     g = GoogleTranslate()
-    g.query(source="'Womenswear', 'Stories', 'Tailoring'")

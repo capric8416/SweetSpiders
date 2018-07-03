@@ -3,6 +3,7 @@
 import copy
 import json
 from urllib.parse import urlparse
+from SweetSpiders.scripts.google_translate import GoogleTranslate
 
 from SweetSpiders.common import IndexListDetailCrawler
 from pyquery import PyQuery
@@ -41,6 +42,7 @@ class CrabtreeCrawler(IndexListDetailCrawler):
         pq = PyQuery(resp.text)
         results = []
         categories = []
+        g = GoogleTranslate()
 
         top = pq('.accordion-topmenu:eq(1) .sub-level .menu-vertical .accordion-submenus')
         for top_node in top.items():
@@ -51,8 +53,7 @@ class CrabtreeCrawler(IndexListDetailCrawler):
                 break
             elif cat1_name in ('Hair Care', "Men's", 'Gifts'):
                 cat1_url = top_node('a.accordion-submenu-toggle').attr('href').strip()
-
-                cat1 = {'name': cat1_name, 'url': cat1_url, 'uuid': self.cu.get_or_create(cat1_name)}
+                cat1 = {'name': g.query(source=cat1_name), 'url': cat1_url, 'uuid': self.cu.get_or_create(cat1_name)}
 
                 headers = copy.copy(self.headers)
                 headers['Referer'] = resp.url
@@ -60,14 +61,14 @@ class CrabtreeCrawler(IndexListDetailCrawler):
 
                 results.append([
                     cat1_url, headers, cookies,
-                    {'categories': [(cat1_name, cat1_url)]}
+                    {'categories': [(g.query(source=cat1_name), cat1_url)]}
                 ])
 
                 categories.append(cat1)
 
             else:
                 cat1_url = top_node('a.accordion-submenu-toggle').attr('href').strip()
-                cat1 = {'name': cat1_name, 'url': cat1_url, 'children': [], 'uuid': self.cu.get_or_create(cat1_name)}
+                cat1 = {'name': g.query(source=cat1_name), 'url': cat1_url, 'children': [], 'uuid': self.cu.get_or_create(cat1_name)}
                 child = top_node('ul.level-3 .accordion-childmenu-label')
                 for child_node in child.items():
                     cat2_name = child_node('a.sliding-u-click').text().strip()
@@ -78,18 +79,18 @@ class CrabtreeCrawler(IndexListDetailCrawler):
                     cookies = resp.cookies.get_dict()
 
                     cat1['children'].append({
-                        'name': cat2_name, 'url': cat2_url,
+                        'name': g.query(source=cat2_name), 'url': cat2_url,
                         'uuid': self.cu.get_or_create(cat1_name, cat2_name)
                     })
 
                     results.extend([
                         [
                             cat1_url, headers, cookies,
-                            {'categories': [(cat1_name, cat1_url)]}
+                            {'categories': [(g.query(source=cat1_name), cat1_url)]}
                         ],
                         [
                             cat2_url, headers, cookies,
-                            {'categories': [(cat1_name, cat1_url), (cat2_name, cat2_url)]}
+                            {'categories': [(g.query(source=cat1_name), cat1_url), (g.query(source=cat2_name), cat2_url)]}
                         ]
                     ])
 

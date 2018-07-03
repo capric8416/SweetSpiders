@@ -4,6 +4,7 @@ from SweetSpiders.common import IndexListDetailCrawler
 from pyquery import PyQuery
 import copy
 from urllib.parse import urlparse
+from SweetSpiders.scripts.google_translate import GoogleTranslate
 
 
 class LasciviousCrawler(IndexListDetailCrawler):
@@ -38,7 +39,7 @@ class LasciviousCrawler(IndexListDetailCrawler):
         pq = PyQuery(resp.text)
         results = []
         categories = []
-
+        g = GoogleTranslate()
         top_node = pq('#navWrap #nav li.nav-item')
         for top in top_node.items():
             cat1_name = top('.nav-item-link').text().strip()
@@ -46,10 +47,13 @@ class LasciviousCrawler(IndexListDetailCrawler):
                 continue
             cat1_url = self._full_url(url_from=resp.url, path=top('.nav-item-link').attr('href'))
 
+            cat1_name = g.query(source=cat1_name)
+
             cat1 = {'name': cat1_name, 'url': cat1_url, 'children': [], 'uuid': self.cu.get_or_create(cat1_name)}
 
             for cat2 in top('.sub-nav .sub-nav-item').items():
                 cat2_name = cat2('a').text().strip()
+                cat2_name = g.query(source=cat2_name)
                 cat2_url = self._full_url(url_from=resp.url, path=cat2('a').attr('href'))
 
                 headers = copy.copy(self.headers)
