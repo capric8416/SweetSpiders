@@ -5,6 +5,8 @@ import copy
 from SweetSpiders.common import IndexListDetailCrawler
 from pyquery import PyQuery
 
+from scripts.google_translate import GoogleTranslate
+
 
 class EttingerCrawler(IndexListDetailCrawler):
     """
@@ -13,7 +15,7 @@ class EttingerCrawler(IndexListDetailCrawler):
 
     INDEX_URL = 'https://www.ettinger.co.uk/'
 
-    WAIT = [1, 5]
+    WAIT = [1, 3]
 
     def __init__(self):
         super(EttingerCrawler, self).__init__()
@@ -35,7 +37,7 @@ class EttingerCrawler(IndexListDetailCrawler):
 
     def _parse_index(self, resp):
         """首页解析器"""
-
+        g = GoogleTranslate()
         pq = PyQuery(resp.text)
 
         results = []
@@ -46,7 +48,9 @@ class EttingerCrawler(IndexListDetailCrawler):
             if cat1_name in ('About Us', 'Journal'):
                 continue
 
-            cat1 = {'name': cat1_name, 'url': cat1_url, 'children': [], 'uuid': self.cu.get_or_create(cat1_name)}
+            cat1 = {'name': cat1_name, 'name_cn': g.query(source=cat1_name), 'url': cat1_url, 'children': [],
+                    'uuid': self.cu.get_or_create(cat1_name)}
+
             for cat2_node in cat1_item('.navmenu__submenu .container div.col-md-2').items():
                 cat2_name = cat2_node('.navmenu__submenu-heading a').text().strip()
                 cat2_url = self._full_url(url_from=resp.url, path=cat2_node('.navmenu__submenu-heading a').attr('href'))
@@ -54,11 +58,13 @@ class EttingerCrawler(IndexListDetailCrawler):
                     continue
 
                 cat2 = {
-                    'name': cat2_name, 'url': cat2_url, 'children': [],
+                    'name': cat2_name, 'name_cn': g.query(source=cat2_name), 'url': cat2_url, 'children': [],
                     'uuid': self.cu.get_or_create(cat1_name, cat2_name)
                 }
                 for cat3 in cat2_node('ul li a').items():
                     cat3_name = cat3.text().strip()
+                    if 'é' in cat3_name:
+                        cat3_name = cat3_name.replace('é','e')
                     if not cat3_name:
                         continue
 
@@ -69,13 +75,15 @@ class EttingerCrawler(IndexListDetailCrawler):
 
                     if cat3_name != 'View all':
                         cat2['children'].append({
-                            'name': cat3_name, 'url': cat3_url,
+                            'name': cat3_name, 'name_cn': g.query(source=cat3_name), 'url': cat3_url,
                             'uuid': self.cu.get_or_create(cat1_name, cat2_name, cat3_name)
                         })
 
                     results.append([
                         cat3_url, headers, resp.cookies.get_dict(),
-                        {'categories': [(cat1_name, cat1_url), (cat2_name, cat2_url), (cat3_name, cat3_url)]}
+                        {'categories': [(cat1_name, g.query(source=cat1_name), cat1_url),
+                                        (cat2_name, g.query(source=cat2_name), cat2_url),
+                                        (cat3_name, g.query(source=cat3_name), cat3_url)]}
                     ])
 
                 cat1['children'].append(cat2)
@@ -149,7 +157,8 @@ class EttingerCrawler(IndexListDetailCrawler):
             small_picture_link = small_picture('img').attr('src')
             thumbnails.append(small_picture_link)
 
-        features = [p.text().strip() for p in pq('.product-full__specification__content .ezxmltext-field .default p').items()]
+        features = [p.text().strip() for p in
+                    pq('.product-full__specification__content .ezxmltext-field .default p').items()]
 
         meterials = []
         node = pq('.product-full__leather-and-materials .ezxmltext-field > div')

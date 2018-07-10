@@ -45,7 +45,7 @@ class GoogleTranslate:
             ('dt', 'ss'),
         ]
 
-        resp = requests.get('http://translate.google.cn/translate_a/single', params=params)
+        resp = requests.get('http://translate.google.cn/translate_a/single', params=params, timeout=5)
         target = ''.join([a for a, b, *_ in resp.json()[0] if b])
 
         print('[source]  ', source)

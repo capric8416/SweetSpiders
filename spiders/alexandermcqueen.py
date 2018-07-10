@@ -7,6 +7,8 @@ from urllib.parse import urlparse, urlunparse, urlencode, parse_qsl
 from SweetSpiders.common import IndexListDetailCrawler
 from pyquery import PyQuery
 
+from scripts.google_translate import GoogleTranslate
+
 
 class AlexandermcqueenCrawler(IndexListDetailCrawler):
     """
@@ -39,7 +41,7 @@ class AlexandermcqueenCrawler(IndexListDetailCrawler):
         """首页解析器"""
 
         self.headers['Accept-Language'] = 'en-GB'
-
+        g = GoogleTranslate()
         pq = PyQuery(resp.text)
         results = []
         categories = []
@@ -56,7 +58,8 @@ class AlexandermcqueenCrawler(IndexListDetailCrawler):
             if cat1_name == 'GIFTS':
                 break
             cat1_url = cat1('a').attr('href')
-            cat1 = {'name': cat1_name, 'url': cat1_url, 'children': [], 'uuid': self.cu.get_or_create(cat1_name)}
+            cat1 = {'name': cat1_name, 'name_cn': g.query(source=cat1_name), 'url': cat1_url, 'children': [],
+                    'uuid': self.cu.get_or_create(cat1_name)}
 
             level_tmp = pq(f'[data-parent-id="{cat1_id}"] > .menuItem')
             for cat_tmp in level_tmp.items():
@@ -70,7 +73,7 @@ class AlexandermcqueenCrawler(IndexListDetailCrawler):
                         cat2_name = pq(f'[id="{cat2_id}"] > div .text').text().strip()
                     cat2_url = pq(f'[id="{cat2_id}"] > a').attr('href')
                     cat2 = {
-                        'name': cat2_name, 'url': cat2_url, 'children': [],
+                        'name': cat2_name, 'name_cn': g.query(source=cat2_name), 'url': cat2_url, 'children': [],
                         'uuid': self.cu.get_or_create(cat1_name, cat2_name)
                     }
 
@@ -84,7 +87,7 @@ class AlexandermcqueenCrawler(IndexListDetailCrawler):
                         headers['Referer'] = resp.url
 
                         cat2['children'].append({
-                            'name': cat3_name, 'url': cat3_url,
+                            'name': cat3_name, 'name_cn': g.query(source=cat3_name), 'url': cat3_url,
                             'uuid': self.cu.get_or_create(cat1_name, cat2_name, cat3_name)
                         })
 
@@ -92,7 +95,9 @@ class AlexandermcqueenCrawler(IndexListDetailCrawler):
                             cat3_url, headers, resp.cookies.get_dict(),
                             {
                                 'sitecode': sitecode,
-                                'categories': [(cat1_name, cat1_url), (cat2_name, cat2_url), (cat3_name, cat3_url)]
+                                'categories': [(cat1_name, g.query(source=cat1_name), cat1_url),
+                                               (cat2_name, g.query(source=cat2_name), cat2_url),
+                                               (cat3_name, g.query(source=cat3_name), cat3_url)]
                             }
                         ])
 

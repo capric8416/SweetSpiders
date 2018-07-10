@@ -32,7 +32,7 @@ def close_pymysql(cur, conn):
 
 if __name__ == "__main__":
     client = pymongo.MongoClient('localhost', 27017)
-    db = client['AlexandermcqueenCrawler']
+    db = client['CrabtreeCrawler']
     collection = db['products']
 
     myConn_list = start_mysql()
@@ -56,20 +56,22 @@ if __name__ == "__main__":
             %s,
             %s,
             null,
-            '313',
+            '541',
             %s,
             null,
             '1',
             null,
-            '441'
+            '270'
         );
     '''
 
-    for item in collection.find():
+    for item in collection.find({"categories": [
+            ["手部护理", "http://www.crabtree-evelyn.com/uk/en/shop-by-category/hand-care/"],
+            ["特产", "http://www.crabtree-evelyn.com/uk/en/hand-care/specialties/"]]}):
         try:
             cur.execute(sql, (
                 item['product_id'],
-                item['categories'][2][0],
+                item['categories'][0][0],
                 '<p>' + item['introduction'] + '</p>',
                 json.dumps(item['images']),
                 item['name'],

@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 # !/usr/bin/env python
-from SweetSpiders.common import IndexListDetailCrawler
-from pyquery import PyQuery
 import copy
 from urllib.parse import urlparse
+
+from SweetSpiders.common import IndexListDetailCrawler
 from SweetSpiders.scripts.google_translate import GoogleTranslate
+from pyquery import PyQuery
 
 
 class LasciviousCrawler(IndexListDetailCrawler):
@@ -47,26 +48,25 @@ class LasciviousCrawler(IndexListDetailCrawler):
                 continue
             cat1_url = self._full_url(url_from=resp.url, path=top('.nav-item-link').attr('href'))
 
-            cat1_name = g.query(source=cat1_name)
-
-            cat1 = {'name': cat1_name, 'url': cat1_url, 'children': [], 'uuid': self.cu.get_or_create(cat1_name)}
+            cat1 = {'name': cat1_name, 'name_cn': g.query(source=cat1_name), 'url': cat1_url, 'children': [],
+                    'uuid': self.cu.get_or_create(cat1_name)}
 
             for cat2 in top('.sub-nav .sub-nav-item').items():
                 cat2_name = cat2('a').text().strip()
-                cat2_name = g.query(source=cat2_name)
                 cat2_url = self._full_url(url_from=resp.url, path=cat2('a').attr('href'))
 
                 headers = copy.copy(self.headers)
                 headers['Referer'] = resp.url
 
                 cat1['children'].append({
-                    'name': cat2_name, 'url': cat2_url,
+                    'name': cat2_name, 'name_cn': g.query(source=cat2_name), 'url': cat2_url,
                     'uuid': self.cu.get_or_create(cat1_name, cat2_name)
                 })
 
                 results.append([
                     cat2_url, headers, resp.cookies.get_dict(),
-                    {'categories': [(cat1_name, cat1_url), (cat2_name, cat2_url)]}
+                    {'categories': [(cat1_name, g.query(source=cat1_name), cat1_url),
+                                    (cat2_name, g.query(source=cat2_name), cat2_url)]}
                 ])
 
             categories.append(cat1)

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # !/usr/bin/env python
 import copy
+import json
 from urllib.parse import urlparse
 
 from SweetSpiders.common import IndexListDetailCrawler
@@ -49,49 +50,25 @@ class TedbakerCrawler(IndexListDetailCrawler):
             cat1_url = self._full_url(url_from=resp.url, path=cat1_node('.categories_main').attr('href'))
             cat1 = {'name': cat1_name, 'url': cat1_url, 'children': [], 'uuid': self.cu.get_or_create(cat1_name)}
 
-            child = cat1_node('.nav .nav_inner .nav_column .nav_header .js-menu-state')
+            child = cat1_node('.nav .nav_inner .nav_column')
             for child_node in child.items():
-                cat2_name = child_node.text().strip()
-                if cat2_name == 'New Arrivals':
-                    continue
-                if cat2_name == 'Gift Cards':
-                    break
-                if cat2_name == 'Home & Gifts':
-                    cat2_url = self._full_url(url_from=resp.url,
-                                              path=child_node.attr('href'))
-                    cat2 = {
-                        'name': cat2_name, 'url': cat2_url, 'children': [],
-                        'uuid': self.cu.get_or_create(cat1_name, cat2_name)
-                    }
-                    resp = self._request(url=cat2_url, headers=self.headers)
-                    pq = PyQuery(resp.text)
-                    for cat3_node in pq('div.html_component:eq(2) .landing .inner .copy-pnl > div').items():
-                        cat3_name = cat3_node('a.ul-cta').text().strip()
-                        cat3_url = self._full_url(url_from=resp.url, path=cat3_node('a.ul-cta').attr('href'))
+                for cat2_node in child_node('span.nav_header').items():
+                    cat2_name = cat2_node('a').text().strip()
 
-                        headers = copy.copy(self.headers)
-                        headers['Referer'] = resp.url
+                    if cat2_name == 'New Arrivals':
+                        continue
+                    if cat2_name == 'Home & Gifts':
+                        break
+                    else:
+                        cat2_url = self._full_url(url_from=resp.url, path=cat2_node('a').attr('href'))
 
-                        cat2['children'].append({
-                            'name': cat3_name, 'url': cat3_url,
-                            'uuid': self.cu.get_or_create(cat1_name, cat2_name, cat3_name)
-                        })
+                        cat2 = {
+                            'name': cat2_name, 'url': cat2_url, 'children': [],
+                            'uuid': self.cu.get_or_create(cat1_name, cat2_name)
+                        }
 
-                        results.append([
-                            cat3_url, headers, resp.cookies.get_dict(),
-                            {'categories': [(cat1_name, cat1_url), (cat2_name, cat2_url), (cat3_name, cat3_url)]}
-                        ])
-
-                    cat1['children'].append(cat2)
-
-                else:
-                    cat2_url = self._full_url(url_from=resp.url, path=child_node.attr('href'))
-
-                    cat2 = {
-                        'name': cat2_name, 'url': cat2_url, 'children': [],
-                        'uuid': self.cu.get_or_create(cat1_name, cat2_name)
-                    }
-                    for cat3_node in cat1_node('.nav .nav_inner .nav_column > ul.nav_list > li.nav_item').items():
+                    cat3_nodes = cat2_node.next('ul.nav_list')
+                    for cat3_node in cat3_nodes('li.nav_item').items():
                         cat3_name = cat3_node('a.nav_link').text().strip()
                         if ('All' in cat3_name) or ('Home' in cat3_name):
                             continue
@@ -129,7 +106,7 @@ class TedbakerCrawler(IndexListDetailCrawler):
                 self.push_product_info(info)
 
             next_page = self._full_url(url_from=resp.url,
-                                       path=pq('.foot .pagination .page_select .next a').attr('href'))
+                                       path=pq('.foot .pagination .page_select li.next a').attr('href'))
             if not next_page:
                 break
             url = next_page
@@ -155,11 +132,11 @@ class TedbakerCrawler(IndexListDetailCrawler):
         pq = PyQuery(resp.text)
 
         # 商品图片
-        # 数量多了一倍
         images = []
         for img in pq('#product_images .carousel .viewport .slider div.image').items():
-            img_url = img('a.image img').attr('src')
-            images.append(img_url)
+            img_url = img('a.image img').attr('ng-src')
+            if img_url:
+                images.append(img_url.replace("{{imageFormat[view.imgSizes]['pdp_primary']}}", "w=564%26h=705%26q=85"))
 
         # 商品名称
         title = pq('#product_head hgroup .name').text().strip()
@@ -179,15 +156,16 @@ class TedbakerCrawler(IndexListDetailCrawler):
             colors.append(color)
 
         # 商品尺寸
-        # 没有获取到
+        # 格式如下——size:stock,每个尺寸及对应库存
         sizes = []
-        if pq('.product_attr_selection .size .value #product_select_size option'):
-            for size_node in pq('.product_attr_selection .size .value #product_select_size option').items():
-                size = size_node.text().strip()
+        text = pq('script:contains("var utag_data")').text().strip()
+        json_data = text[text.index('var utag_data = ') + len('var utag_data = '):text.index(
+            'utag_data.error_count')].strip().strip(';')
+        data = json.loads(json_data)
+        size_node = data['product_sizes_available'][0].split('|')
+        for size in size_node:
+            if size:
                 sizes.append(size)
-                sizes = sizes[1:]
-        else:
-            sizes = []
 
         # 商品介绍
         introduction = pq('#product_more .description').text().strip()
@@ -195,9 +173,171 @@ class TedbakerCrawler(IndexListDetailCrawler):
         # 商品描述
         details = pq('#product_details').text().strip()
 
+        # 尺寸指导
+        size_guide = {}
+        size_guide_node = pq('div.size_guide span.check_ted a').attr('ng-click')
+        if not size_guide_node:
+            size_guide = size_guide
+        else:
+            size_guide_url = 'https://www.tedbaker.com' + size_guide_node.split(',')[0].partition('(')[-1].strip("'")
+            if size_guide_url == 'https://www.tedbaker.com/uk/womens-size-guide':
+                resp = self._request(url=size_guide_url, headers=extra['headers'], cookies=extra['cookies'])
+                pq = PyQuery(resp.text)
+
+                guide_table_title = pq('div.info h3').text().strip()
+                how_to_see = pq('div.info p').text().strip()
+
+                table_name = pq('#international_conversion h4').text().strip()
+                table1 = []
+                table_1 = pq('#international_conversion div.chart table tr')
+                for tr in table_1.items():
+                    each_size = tr.text().strip()
+                    table1.append(each_size.replace('\n', ','))
+
+                cm_table = []
+                for tr in pq('#mens_measurements .chart .cm tr').items():
+                    each_size = tr.text().strip()
+                    cm_table.append(each_size.replace('\n', ','))
+                cm_unit = 'cm'
+
+                inches_table = []
+                for tr in pq('#mens_measurements .chart .inches tr').items():
+                    each_size = tr.text().strip()
+                    inches_table.append(each_size.replace('\n', ','))
+                inches_unit = 'inches'
+
+                size_guide = {'guide_table_title': guide_table_title, 'how_to_see': how_to_see,
+                              'table_name': table_name,
+                              'table1': table1, 'cm': {'cm_unit': cm_unit, 'cm_table': cm_table},
+                              'inches': {'inches_unit': inches_unit, 'inches_table': inches_table}}
+
+            if size_guide_url == 'https://www.tedbaker.com/uk/mens-shoe-size-guide':
+                resp = self._request(url=size_guide_url, headers=extra['headers'], cookies=extra['cookies'])
+                pq = PyQuery(resp.text)
+                guide_table_title = pq('div.info h3').text().strip()
+                how_to_see = pq('div.info p').text().strip()
+
+                table_name = pq('#international_conversion h4').text().strip()
+                table = []
+                for tr in pq('#international_conversion .chart div.html_component').prev('div table tr').items():
+                    each_size = tr.text().strip()
+                    table.append(each_size.replace('\n', ','))
+
+                size_guide = {'guide_table_title': guide_table_title, 'how_to_see': how_to_see,
+                              'table_name': table_name, 'table': table}
+
+            if size_guide_url == 'https://www.tedbaker.com/uk/mens-shirt-size-guide':
+                resp = self._request(url=size_guide_url, headers=extra['headers'], cookies=extra['cookies'])
+                pq = PyQuery(resp.text)
+                guide_table_title = pq('.info:first h3').text().strip()
+                how_to_see = pq('.info:first h3').next('p').text().strip()
+
+                table_1_name = pq('.info:first h3').next('p').next('p').text().strip()
+
+                cm_table_1 = []
+                for tr in pq('.info:first #shirt_measurement .chart .cm tr').items():
+                    each_size = tr.text().strip()
+                    if each_size:
+                        cm_table_1.append(each_size.replace('\n', ','))
+
+                inches_table_1 = []
+                for tr in pq('.info:first #shirt_measurement .chart .inches tr').items():
+                    each_size = tr.text().strip()
+                    if each_size:
+                        inches_table_1.append(each_size.replace('\n', ','))
+
+                table_2_name = pq('.info:first #international_conversion h4').text().strip()
+
+                cm_table_2 = []
+                for tr in pq('.info:first #international_conversion .chart .cm tr').items():
+                    each_size = tr.text().strip()
+                    cm_table_2.append(each_size.replace('\n', ','))
+
+                inches_table_2 = []
+                for tr in pq('.info:first #international_conversion .chart .inches tr').items():
+                    each_size = tr.text().strip()
+                    inches_table_2.append(each_size.replace('\n', ','))
+
+                table_3_name = pq('.info:last h3').text().strip()
+                cm_table_3 = []
+                for tr in pq('.info:last #shirt_measurement .chart .cm tr').items():
+                    each_size = tr.text().strip()
+                    cm_table_3.append(each_size.replace('\n', ','))
+                cm_unit = 'cm'
+
+                inches_table_3 = []
+                for tr in pq('.info:last #shirt_measurement .chart .inches tr').items():
+                    each_size = tr.text().strip()
+                    inches_table_3.append(each_size.replace('\n', ','))
+                inches_unit = 'inches'
+
+                size_guide = {'guide_table_title': guide_table_title, 'how_to_see': how_to_see,
+                              'table1': {'table_1_name': table_1_name, 'cm_table_1': cm_table_1, 'cm_unit': cm_unit,
+                                         'inches_table_1': inches_table_1, 'inches_unit': inches_unit},
+                              'table2': {'table_2_name': table_2_name, 'cm_table_2': cm_table_2, 'cm_unit': cm_unit,
+                                         'inches_table_2': inches_table_2, 'inches_unit': inches_unit},
+                              'table3': {'table_3_name': table_3_name, 'cm_table_3': cm_table_3, 'cm_unit': cm_unit,
+                                         'inches_table_3': inches_table_3, 'inches_unit': inches_unit}
+                              }
+
+            if size_guide_url == 'https://www.tedbaker.com/uk/mens-size-guide':
+                resp = self._request(url=size_guide_url, headers=extra['headers'], cookies=extra['cookies'])
+                pq = PyQuery(resp.text)
+                guide_table_title = pq('.info h3').text().strip()
+                how_to_see = pq('.info h3').next('p').text().strip()
+
+                table_1_name = pq('#international_conversion h4').text().strip()
+                table1 = []
+                for tr in pq('#international_conversion .chart tr').items():
+                    each_size = tr.text().strip()
+                    table1.append(each_size.replace('\n', ','))
+
+                table_2_name = pq('#mens_measurements h4').text().strip()
+                cm_table = []
+                for tr in pq('#mens_measurements .chart .cm tr').items():
+                    each_size = tr.text().strip()
+                    cm_table.append(each_size.replace('\n', ','))
+                cm_unit = 'cm'
+
+                inches_table = []
+                for tr in pq('#mens_measurements .chart .inches tr').items():
+                    each_size = tr.text().strip()
+                    inches_table.append(each_size.replace('\n', ','))
+                inches_unit = 'inches'
+
+                size_guide = {'guide_table_title': guide_table_title, 'how_to_see': how_to_see,
+                              'table_1': {'table_1_name': table_1_name, 'table1': table1}, 'table_2_name': table_2_name,
+                              'cm_table': {'cm_table': cm_table, 'cm_unit': cm_unit},
+                              'inches_table': {'inches_table': inches_table, 'inches_unit': inches_unit}
+                              }
+
+            if size_guide_url in (
+                    'https://www.tedbaker.com/uk/Kids/Baby_Size_Guide',
+                    'https://www.tedbaker.com/uk/Kids/Boys_Size_Guide',
+                    'https://www.tedbaker.com/uk/Kids/Girls_Size_Guide'):
+                resp = self._request(url=size_guide_url, headers=extra['headers'], cookies=extra['cookies'])
+                pq = PyQuery(resp.text)
+                guide_table_title = pq('.info h3').text().strip()
+                how_to_see = pq('.info p').text().strip()
+                cm_table = []
+                for tr in pq('#kids_measurements .chart .cm tr').items():
+                    each_size = tr.text().strip()
+                    cm_table.append(each_size.replace('\n', ','))
+                cm_unit = 'cm'
+
+                inches_table = []
+                for tr in pq('#kids_measurements .chart .inches tr').items():
+                    each_size = tr.text().strip()
+                    inches_table.append(each_size.replace('\n', ','))
+                inches_unit = 'inches'
+
+                size_guide = {'guide_table_title': guide_table_title, 'how_to_see': how_to_see,
+                              'cm': {'cm_table': cm_table, 'cm_unit': cm_unit},
+                              'inches': {'inches_table': inches_table, 'inches_unit': inches_unit}}
+
         return {
             'url': url, 'product_id': meta['product_id'], 'categories': meta['categories'], 'images': images,
             'name': name, 'was_price': was_price, 'now_price': now_price, 'colors': colors, 'sizes': sizes,
             'introduction': introduction, 'details': details, 'store': self.store, 'brand': self.brand,
-            'store_id': self.store_id, 'brand_id': self.brand_id, 'coin_id': self.coin_id
+            'store_id': self.store_id, 'brand_id': self.brand_id, 'coin_id': self.coin_id, 'size_guide': size_guide
         }

@@ -35,6 +35,7 @@ class AstleyclarkeCrawler(IndexListDetailCrawler):
 
     def _parse_index(self, resp):
         """首页解析器"""
+        self.headers['Accept-Language'] = 'en-GB'
 
         pq = PyQuery(resp.text)
         results = []

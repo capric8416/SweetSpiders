@@ -3,9 +3,9 @@
 import copy
 import json
 from urllib.parse import urlparse
-from SweetSpiders.scripts.google_translate import GoogleTranslate
 
 from SweetSpiders.common import IndexListDetailCrawler
+from SweetSpiders.scripts.google_translate import GoogleTranslate
 from pyquery import PyQuery
 
 
@@ -53,7 +53,8 @@ class CrabtreeCrawler(IndexListDetailCrawler):
                 break
             elif cat1_name in ('Hair Care', "Men's", 'Gifts'):
                 cat1_url = top_node('a.accordion-submenu-toggle').attr('href').strip()
-                cat1 = {'name': g.query(source=cat1_name), 'url': cat1_url, 'uuid': self.cu.get_or_create(cat1_name)}
+                cat1 = {'name': cat1_name, 'name_cn': g.query(source=cat1_name), 'url': cat1_url,
+                        'uuid': self.cu.get_or_create(cat1_name)}
 
                 headers = copy.copy(self.headers)
                 headers['Referer'] = resp.url
@@ -61,14 +62,15 @@ class CrabtreeCrawler(IndexListDetailCrawler):
 
                 results.append([
                     cat1_url, headers, cookies,
-                    {'categories': [(g.query(source=cat1_name), cat1_url)]}
+                    {'categories': [(cat1_name, g.query(source=cat1_name), cat1_url)]}
                 ])
 
                 categories.append(cat1)
 
             else:
                 cat1_url = top_node('a.accordion-submenu-toggle').attr('href').strip()
-                cat1 = {'name': g.query(source=cat1_name), 'url': cat1_url, 'children': [], 'uuid': self.cu.get_or_create(cat1_name)}
+                cat1 = {'name': cat1_name, 'name_cn': g.query(source=cat1_name), 'url': cat1_url, 'children': [],
+                        'uuid': self.cu.get_or_create(cat1_name)}
                 child = top_node('ul.level-3 .accordion-childmenu-label')
                 for child_node in child.items():
                     cat2_name = child_node('a.sliding-u-click').text().strip()
@@ -79,18 +81,19 @@ class CrabtreeCrawler(IndexListDetailCrawler):
                     cookies = resp.cookies.get_dict()
 
                     cat1['children'].append({
-                        'name': g.query(source=cat2_name), 'url': cat2_url,
+                        'name': cat2_name, 'name_cn': g.query(source=cat2_name), 'url': cat2_url,
                         'uuid': self.cu.get_or_create(cat1_name, cat2_name)
                     })
 
                     results.extend([
                         [
                             cat1_url, headers, cookies,
-                            {'categories': [(g.query(source=cat1_name), cat1_url)]}
+                            {'categories': [(cat1_name, g.query(source=cat1_name), cat1_url)]}
                         ],
                         [
                             cat2_url, headers, cookies,
-                            {'categories': [(g.query(source=cat1_name), cat1_url), (g.query(source=cat2_name), cat2_url)]}
+                            {'categories': [(cat1_name, g.query(source=cat1_name), cat1_url),
+                                            (cat2_name, g.query(source=cat2_name), cat2_url)]}
                         ]
                     ])
 
@@ -238,8 +241,9 @@ class CrabtreeCrawler(IndexListDetailCrawler):
 
 if __name__ == '__main__':
     import requests
+
     url = 'http://www.crabtree-evelyn.com/uk/en/product/citron-coriander-energising-hand-therapy/citron-coriander-energising-hand-therapy.html?cgid=hand-care'
     resp = requests.get(url)
     spider = CrabtreeCrawler()
-    spider._parse_product_detail(url=url, resp=resp, meta={'product_id': None, 'categories': None}, headers={}, cookies={})
-
+    spider._parse_product_detail(url=url, resp=resp, meta={'product_id': None, 'categories': None}, headers={},
+                                 cookies={})

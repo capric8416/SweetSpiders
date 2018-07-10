@@ -39,7 +39,7 @@ class TransferGoodsProducts:
 
         for item in self.collection.find({"categories": [
             ["手部护理", "http://www.crabtree-evelyn.com/uk/en/shop-by-category/hand-care/"],
-            ["磨砂", "http://www.crabtree-evelyn.com/uk/en/hand-care/exfoliators/"]]}):
+            ["特产", "http://www.crabtree-evelyn.com/uk/en/hand-care/specialties/"]]}):
             goods_id, images, url, categories = self.insert_to_goods(item)
 
             # translated = self.read_categories(categories=categories)

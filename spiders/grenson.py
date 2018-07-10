@@ -110,12 +110,12 @@ class GrensonCrawler(IndexListDetailCrawler):
 
         for detail in node.items():
             url = self._full_url(url_from=resp.url, path=detail('.product-spec .product-name a').attr('href'))
-            meta['product_id'] = urlparse(url).path.split('/')[-1][:-5]
-            yield url, headers, resp.cookies.get_dict(), meta
+            if url:
+                meta['product_id'] = urlparse(url).path.split('/')[-1][:-5]
+                yield url, headers, resp.cookies.get_dict(), meta
 
     def _parse_product_detail(self, url, resp, meta, **extra):
         """详情页解析器"""
-
         _ = self
         pq = PyQuery(resp.text)
         if "Something's gone missing" in pq('.std .not-found .page-title h1').text().strip():
@@ -131,23 +131,31 @@ class GrensonCrawler(IndexListDetailCrawler):
         name = pq('.product-section-right .product-right-inner .product-name h1').text().strip()
 
         # 商品价格
-        price = pq('.product-right-inner .price-box .regular-price').text().strip()
+        was_price = pq('.product-right-inner .price-box .old-price').text().strip()
+
+        now_price = pq('.product-right-inner .price-box .special-price').text().strip()
+        if not (was_price and now_price):
+            now_price = pq('.product-right-inner .product-section .price-box .regular-price').text().strip()
 
         # 商品介绍
         introduction = pq('.product-section .product-attr span').text().strip()
 
         # 商品尺码
+        sizes = []
         resp = self._request(url=url, method='post', headers=extra['headers'], cookies=extra['cookies'],
                              data={'amfpc_ajax_blocks': 'product.info.options.wrapper'})
 
-        if pq('#product-options-wrapper'):
-            size_text = pq('#product-options-wrapper .size-text').text().strip()
-            sizes = []
-            for size_node in pq('#product-options-wrapper .category-quickview-options li:[class!="no-stock"]').items():
-                size = size_node('.product-add-to-cart .size').text().strip()
+        text = resp.text
+        pq = PyQuery(text)
+        if pq('ul.category-quickview-options'):
+            for size_node in pq('ul.category-quickview-options li.no-stock').items():
+                size = size_node.text().strip() + '-' + 'no-stock'
+                sizes.append(size)
+            for size_node in pq('ul.category-quickview-options li[class!="no-stock"]').items():
+                size = size_node.text().strip()
                 sizes.append(size)
         else:
-            sizes = []
+            sizes = sizes
 
         # 商品描述
         p1 = pq('.product-tabs .tabs-content #details .std').text().strip()
@@ -155,6 +163,7 @@ class GrensonCrawler(IndexListDetailCrawler):
         p2 = pq('.tabs-content #care .std').text().strip()
         description2 = 'Care' + p2
         description = description1 + ';' + description2
+
         # 商品尺寸对应表
         if pq('.tabs-content #sizefit'):
             size_guide_title = pq('.tabs-content #sizefit .std .product-table h5:eq(0)').text().strip()
@@ -170,10 +179,23 @@ class GrensonCrawler(IndexListDetailCrawler):
                 fits = stands.text().strip()
                 size_guide_2.append(fits)
             guide_text = pq('.fitting-guide p').text().strip()
+            size_guide = {'size_guide_title': size_guide_title, 'size_guide_1': size_guide_1,
+                          'size_guide_title_2': size_guide_title_2,
+                          'size_guide_2': size_guide_2, 'guide_text': guide_text}
+        else:
+            size_guide = {}
+
+        # 商品库存
+        stock_text = pq('.out-of-stock p').text().strip()
+        if stock_text:
+            stock = 0
+        else:
+            stock = 999
 
         return {
             'url': url, 'product_id': meta['product_id'], 'categories': meta['categories'], 'images': images,
-            'name': name, 'price': price, 'introduction': introduction, 'sizes': sizes,
-            'description': description, 'store': self.store, 'brand': self.brand, 'store_id': self.store_id,
-            'brand_id': self.brand_id, 'coin_id': self.coin_id
+            'name': name, 'was_price': was_price, 'now_price': now_price, 'introduction': introduction,
+            'sizes': sizes, 'description': description, 'store': self.store, 'brand': self.brand,
+            'store_id': self.store_id, 'brand_id': self.brand_id, 'coin_id': self.coin_id, 'size_guide': size_guide,
+            'stock': stock
         }

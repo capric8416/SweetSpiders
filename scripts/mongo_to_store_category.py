@@ -22,8 +22,8 @@ class TransferGoodsProducts:
         self.collection = self.db[collection]
 
     def run(self):
-        for item in self.collection.find({'name':'手部护理'}):
-            self.insert_to_store_category(item)
+        for item in self.collection.find():
+            # self.insert_to_store_category(item)
             self.insert_to_store_product_category(item)
 
         self.mysql.commit()
@@ -39,7 +39,7 @@ class TransferGoodsProducts:
                 '6',
                 null,
                 %s,
-                'Lascivious',
+                'Crabtree & Evelyn',
                 '541',
                 '1'
             );
@@ -62,6 +62,9 @@ class TransferGoodsProducts:
                                   "name": item['children'][0]['name'],
                                   "url": item['children'][0]['url'], "children": None},
                                  {"id": None, "uuid": item['children'][4]['uuid'],
+                                  "name": item['children'][0]['name'],
+                                  "url": item['children'][0]['url'], "children": None},
+                                 {"id": None, "uuid": item['children'][5]['uuid'],
                                   "name": item['children'][0]['name'],
                                   "url": item['children'][0]['url'], "children": None}
                              ]}]),
@@ -90,66 +93,47 @@ class TransferGoodsProducts:
         '''
         with self.mysql.cursor() as cur:
             cur.execute(sql, (
-                item['name'],
+                item['name_cn'],
                 item['name'],
                 item['url'],
                 item['uuid'],
             ))
+        with self.mysql.cursor() as cur:
+            cur.execute('SELECT LAST_INSERT_ID();')
+            cat1_id = cur.fetchone()[0]
 
-        sql = '''
-            insert into sweet.xx_store_product_category values(
-                '0',
-                now(),
-                now(),
-                '5',
-                null,
-                '1',
-                %s,
-                ',2026,',
-                '2026',
-                '541',
-                %s,
-                %s,
-                %s
-            );
-        '''
-        for name_item in item['children']:
-            with self.mysql.cursor() as cur:
-                cur.execute(sql, (
-                    name_item['name'],
-                    name_item['name'],
-                    name_item['url'],
-                    name_item['uuid'],
-                ))
+            print('一级分类插入成功!')
 
-        # sql = '''
-        #     insert into sweet.xx_store_product_category values(
-        #         '0',
-        #         now(),
-        #         now(),
-        #         '5',
-        #         null,
-        #         '2',
-        #         %s,
-        #         ',一级分类id,二级分类id,',
-        #         '二级分类id',
-        #         '313',
-        #         %s,
-        #         %s,
-        #         %s
-        #     );
-        # '''
-        #
-        # for third_item in item['children']['children']:
-        #     with self.mysql.cursor() as cur:
-        #         cur.execute(sql, (
-        #             third_item['name'],
-        #             third_item['name'],
-        #             third_item['url'],
-        #             third_item['uuid'],
-        #         ))
+            if item.get('children'):
+                for cat2_data in item['children']:
+                    sql = '''
+                        insert into sweet.xx_store_product_category values(
+                            '0',
+                            now(),
+                            now(),
+                            '5',
+                            null,
+                            '1',
+                            %s,
+                            %s,
+                            %s,
+                            '541',
+                            %s,
+                            %s,
+                            %s
+                        );
+                    '''
+                    with self.mysql.cursor() as cur:
+                        cur.execute(sql, (
+                            cat2_data['name_cn'],
+                            ',' + str(cat1_id) + ',',
+                            str(cat1_id),
+                            cat2_data['name'],
+                            cat2_data['url'],
+                            cat2_data['uuid'],
+                        ))
 
-        print('store_category保存成功!')
+                    print('二级分类插入成功!')
 
 
 if __name__ == "__main__":
