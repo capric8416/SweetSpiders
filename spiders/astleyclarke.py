@@ -15,6 +15,8 @@ class AstleyclarkeCrawler(IndexListDetailCrawler):
 
     WAIT = [1, 3]  # 动态休眠区间
 
+    COOKIES = {'GlobalE_Data': '{"countryISO":"GB","currencyCode":"GBP","cultureCode":"zh-CHS"}'}
+
     def __init__(self):
         super(AstleyclarkeCrawler, self).__init__()
 
@@ -35,8 +37,6 @@ class AstleyclarkeCrawler(IndexListDetailCrawler):
 
     def _parse_index(self, resp):
         """首页解析器"""
-        self.headers['Accept-Language'] = 'en-GB'
-
         pq = PyQuery(resp.text)
         results = []
         categories = []
@@ -167,7 +167,8 @@ class AstleyclarkeCrawler(IndexListDetailCrawler):
         colors = []
         for color_node in pq('.product-right .product-swatches > li').items():
             color = color_node('a').text().strip()
-            colors.append(color)
+            if color:
+                colors.append(color)
 
         # 商品描述
         details = pq('.product-bottom #product-attribute-specs-table tbody').text().strip()

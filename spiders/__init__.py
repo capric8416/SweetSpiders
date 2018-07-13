@@ -25,3 +25,4 @@ from .astleyclarke import *
 from .brownsfashion import *
 from .cathkidston import *
 from .youmustcreate import *
+from .superdry import *

@@ -15,10 +15,10 @@ from scripts.google_translate import GoogleTranslate
 class TransferGoodsProducts:
     def __init__(self, db, collection='products'):
         self.mysql = pymysql.connect(
-            host='localhost',
+            host='59.110.155.75',
             port=3306,
             user='root',
-            passwd='mysql',
+            passwd='Dana1234!',
             db='sweet',
             charset='utf8mb4'
         )
@@ -38,8 +38,9 @@ class TransferGoodsProducts:
         goods_image = []
 
         for item in self.collection.find({"categories": [
-            ["手部护理", "http://www.crabtree-evelyn.com/uk/en/shop-by-category/hand-care/"],
-            ["特产", "http://www.crabtree-evelyn.com/uk/en/hand-care/specialties/"]]}):
+            ["Travel", "旅行", "http://www.crabtree-evelyn.com/uk/en/shop-by-category/travel/"],
+            ["Hair", "头发", "http://www.crabtree-evelyn.com/uk/en/travel/hair/"]]}
+        ):
             goods_id, images, url, categories = self.insert_to_goods(item)
 
             # translated = self.read_categories(categories=categories)
@@ -177,7 +178,7 @@ class TransferGoodsProducts:
                 null,
                 null,
                 null,
-                '2018070312041',
+                '2018071012041',
                 '[]',
                 '0',
                 '0',
@@ -190,7 +191,7 @@ class TransferGoodsProducts:
                 '270',
                 '310',
                 '541',
-                null,
+                '2996',
                 null,
                 null,
                 %s,
@@ -201,9 +202,11 @@ class TransferGoodsProducts:
                 null,
                 '0',
                 '3225',
-                '2027',
+                '2996',
                 '0.000000',
-                '52'
+                '26',
+                '270',
+                '541'
             );
         '''
 
@@ -215,7 +218,7 @@ class TransferGoodsProducts:
                 item['description'],
                 item['description'],
                 item['now_price'][0].lstrip('£'),
-                item['categories'][1][0],
+                item['name'],
                 item['now_price'][0].lstrip('£'),
                 '',
                 item['url'],
@@ -245,7 +248,7 @@ class TransferGoodsProducts:
                     %s,
                     %s,
                     %s,
-                    '2018062015334',
+                    '2018071015334',
                     %s,
                     '1000',
                     %s,
@@ -256,20 +259,35 @@ class TransferGoodsProducts:
                     null
             );
             '''
+        if item.get('size'):
+            for i, size in enumerate(item['size']):
+                with self.mysql.cursor() as cur:
+                    cur.execute(sql, (
+                        item['now_price'][0].lstrip('£'),
+                        item['now_price'][0].lstrip('£'),
+                        item['now_price'][0].lstrip('£'),
+                        json.dumps([{"id": i, "value": size}]),
+                        goods_id,
+                        item['now_price'][0].lstrip('£'),
+                        item['url'],
+                    ))
 
-        for i, size in enumerate(item['size']):
-            with self.mysql.cursor() as cur:
-                cur.execute(sql, (
-                    item['now_price'][0].lstrip('£'),
-                    item['now_price'][0].lstrip('£'),
-                    item['now_price'][0].lstrip('£'),
-                    json.dumps([{"id": i, "value": size}]),
-                    goods_id,
-                    item['now_price'][0].lstrip('£'),
-                    item['url'],
-                ))
+                    print('货品保存成功!')
 
-                print('货品保存成功!')
+        else:
+            for i, color in enumerate(item['color']):
+                with self.mysql.cursor() as cur:
+                    cur.execute(sql, (
+                        item['now_price'][0].lstrip('£'),
+                        item['now_price'][0].lstrip('£'),
+                        item['now_price'][0].lstrip('£'),
+                        json.dumps([{"id": i, "value": color}]),
+                        goods_id,
+                        item['now_price'][0].lstrip('£'),
+                        item['url'],
+                    ))
+
+                    print('货品保存成功!')
 
 
 if __name__ == "__main__":

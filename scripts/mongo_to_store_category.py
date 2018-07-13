@@ -9,10 +9,10 @@ import pymysql
 class TransferGoodsProducts:
     def __init__(self, db, collection='categories'):
         self.mysql = pymysql.connect(
-            host='localhost',
+            host='59.110.155.75',
             port=3306,
             user='root',
-            passwd='mysql',
+            passwd='Dana1234!',
             db='sweet',
             charset='utf8mb4'
         )

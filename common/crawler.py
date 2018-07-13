@@ -40,6 +40,8 @@ class IndexListDetailCrawler:
                       '(KHTML, like Gecko) Chrome/66.0.3359.139 Safari/537.36'
     }
 
+    COOKIES = {}
+
     # Redis url
     REDIS_URL = REDIS_URL
 
@@ -65,7 +67,7 @@ class IndexListDetailCrawler:
 
         # Headers
         self.headers = self.HEADERS
-
+        self.cookies = self.COOKIES
         self.timeout = self.TIMEOUT
 
         # redis客服端
@@ -98,7 +100,7 @@ class IndexListDetailCrawler:
 
         while True:
             try:
-                resp = self._request(url=self.index_url, headers=self.headers)
+                resp = self._request(url=self.index_url, headers=self.headers, cookies=self.cookies)
             except Exception as e:
                 _ = e
                 self.logger.warning(f'[RETRY] {e}, {self.index_url}')

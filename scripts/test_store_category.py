@@ -9,10 +9,10 @@ import pymysql
 class TransferGoodsProducts:
     def __init__(self, db, collection='categories'):
         self.mysql = pymysql.connect(
-            host='localhost',
+            host='59.110.155.75',
             port=3306,
             user='root',
-            passwd='mysql',
+            passwd='Dana1234!',
             db='sweet',
             charset='utf8mb4'
         )
@@ -201,7 +201,7 @@ class TransferGoodsProducts:
                 %s,
                 ',',
                 null,
-                '313',
+                '1922',
                 %s,
                 %s,
                 %s
@@ -234,7 +234,7 @@ class TransferGoodsProducts:
                             %s,
                             %s,
                             %s,
-                            '313',
+                            '1922',
                             %s,
                             %s,
                             %s
@@ -269,7 +269,7 @@ class TransferGoodsProducts:
                                         %s,
                                         %s,
                                         %s,
-                                        '313',
+                                        '1922',
                                         %s,
                                         %s,
                                         %s
@@ -278,13 +278,13 @@ class TransferGoodsProducts:
                                 with self.mysql.cursor() as cur:
                                     cur.execute(sql, (
                                         cat3_data['name_cn'],
-                                        ',' + str(cat1_id) + str(cat2_id) + ',',
+                                        ',' + str(cat1_id) + ',' + str(cat2_id) + ',',
                                         str(cat2_id),
                                         cat3_data['name'],
                                         cat3_data['url'],
                                         cat3_data['uuid'],
                                     ))
-        
+
                                 print('三级分类插入成功!')
 
 

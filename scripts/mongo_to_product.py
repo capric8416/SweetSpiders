@@ -10,10 +10,10 @@ import pymysql
 # --------------------------数据库启动函数------------------------------
 def start_mysql():
     conn = pymysql.connect(
-        host='localhost',
+        host='59.110.155.75',
         port=3306,
         user='root',
-        passwd='mysql',
+        passwd='Dana1234!',
         db='sweet',
         charset='utf8mb4')
     cur = conn.cursor()
@@ -66,8 +66,9 @@ if __name__ == "__main__":
     '''
 
     for item in collection.find({"categories": [
-            ["手部护理", "http://www.crabtree-evelyn.com/uk/en/shop-by-category/hand-care/"],
-            ["特产", "http://www.crabtree-evelyn.com/uk/en/hand-care/specialties/"]]}):
+        ["Travel", "旅行", "http://www.crabtree-evelyn.com/uk/en/shop-by-category/travel/"],
+        ["Hair", "头发", "http://www.crabtree-evelyn.com/uk/en/travel/hair/"]]}
+    ):
         try:
             cur.execute(sql, (
                 item['product_id'],

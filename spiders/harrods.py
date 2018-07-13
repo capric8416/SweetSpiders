@@ -16,6 +16,8 @@ class HarrodsCrawler(IndexListDetailCrawler):
 
     WAIT = [1, 3]  # 动态休眠区间
 
+    COOKIES = {'ctry': 'GB', 'curr': 'GBP'}
+
     def __init__(self):
         super(HarrodsCrawler, self).__init__()
 
@@ -198,11 +200,50 @@ class HarrodsCrawler(IndexListDetailCrawler):
         stock = 999
 
         # 尺寸指导
-        # size_guide
+        table1_name = pq('#international-sizing h2.tab_title').text().strip()
+        areas, each_size = [], []
+
+        for area_tr in pq('#international-sizing .tab_content .sliding-table_header table tr').items():
+            area = area_tr.text().strip()
+            areas.append(area)
+        for size_tr in pq(
+                '#international-sizing .tab_content .sliding-table_content .sliding-table_scrollable-area table tr').items():
+            size_each = size_tr.text().strip()
+            each_size.append(size_each)
+
+        table2_name = pq('#uk-sizing h2.tab_title').text().strip()
+        inches_unit = 'Inches'
+        inches_areas, inches_size = [], []
+
+        for inches_tr in pq('#uk-sizing .tab_element:eq(0) .sliding-table_header table tr').items():
+            inches_area = inches_tr.text().strip()
+            inches_areas.append(inches_area)
+        for size_tr in pq(
+                '#uk-sizing .tab_element:eq(0) .sliding-table_content .sliding-table_scrollable-area table tr').items():
+            size_each = size_tr.text().strip()
+            inches_size.append(size_each)
+
+        cm_unit = 'Centimetres'
+        cm_areas, cm_size = [], []
+
+        for cm_tr in pq('#uk-sizing .tab_element:eq(1) .sliding-table_header table tr').items():
+            cm_area = cm_tr.text().strip()
+            cm_areas.append(cm_area)
+        for size_tr in pq(
+                '#uk-sizing .tab_element:eq(1) .sliding-table_content .sliding-table_scrollable-area table tr').items():
+            size_each = size_tr.text().strip()
+            cm_size.append(size_each)
+
+        size_guide = {
+            'table1': {'table1_name': table1_name, 'areas': areas, 'each_size': each_size},
+            'table2': {'table2_name': table2_name, 'inches_unit': inches_unit, 'inches_areas': inches_areas,
+                       'inches_size': inches_size,
+                       'cm_unit': cm_unit, 'cm_areas': cm_areas, 'cm_size': cm_size}
+        }
 
         return {
             'url': url, 'product_id': meta['product_id'], 'categories': meta['categories'], 'images': images,
             'title': title, 'name': name, 'was_price': was_price, 'now_price': now_price, 'colors': colors,
             'introduction': introduction, 'sizes': sizes, 'stock': stock, 'store': self.store, 'brand': self.brand,
-            'store_id': self.store_id, 'brand_id': self.brand_id, 'coin_id': self.coin_id
+            'store_id': self.store_id, 'brand_id': self.brand_id, 'coin_id': self.coin_id, 'size_guide': size_guide
         }
