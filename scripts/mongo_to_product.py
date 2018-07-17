@@ -14,7 +14,7 @@ def start_mysql():
         port=3306,
         user='root',
         passwd='Dana1234!',
-        db='sweet',
+        db='b2b2c',
         charset='utf8mb4')
     cur = conn.cursor()
     myConn_list = [conn, cur]
@@ -32,7 +32,7 @@ def close_pymysql(cur, conn):
 
 if __name__ == "__main__":
     client = pymongo.MongoClient('localhost', 27017)
-    db = client['CrabtreeCrawler']
+    db = client['AlexandermcqueenCrawler']
     collection = db['products']
 
     myConn_list = start_mysql()
@@ -42,7 +42,7 @@ if __name__ == "__main__":
     # 将数据导入xx_spider_product表中
 
     sql = '''
-        insert into sweet.xx_spider_product values(
+        insert into b2b2c.xx_spider_product values(
             '0',
             now(),
             now(),
@@ -56,24 +56,21 @@ if __name__ == "__main__":
             %s,
             %s,
             null,
-            '541',
+            '313',
             %s,
             null,
             '1',
             null,
-            '270'
+            '441'
         );
     '''
 
-    for item in collection.find({"categories": [
-        ["Travel", "旅行", "http://www.crabtree-evelyn.com/uk/en/shop-by-category/travel/"],
-        ["Hair", "头发", "http://www.crabtree-evelyn.com/uk/en/travel/hair/"]]}
-    ):
+    for item in collection.find():
         try:
             cur.execute(sql, (
                 item['product_id'],
                 item['categories'][0][0],
-                '<p>' + item['introduction'] + '</p>',
+                '<p>' + item['introduction'] + item['description'] + '</p>',
                 json.dumps(item['images']),
                 item['name'],
                 item['brand'],

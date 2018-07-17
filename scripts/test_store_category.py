@@ -13,7 +13,7 @@ class TransferGoodsProducts:
             port=3306,
             user='root',
             passwd='Dana1234!',
-            db='sweet',
+            db='b2b2c',
             charset='utf8mb4'
         )
 
@@ -191,7 +191,7 @@ class TransferGoodsProducts:
     def insert_to_store_product_category(self, item):
         # 将数据导入xx_store_product_category表中
         sql = '''
-            insert into sweet.xx_store_product_category values(
+            insert into b2b2c.xx_store_product_category values(
                 '0',
                 now(),
                 now(),
@@ -224,7 +224,7 @@ class TransferGoodsProducts:
             if item.get('children'):
                 for cat2_data in item['children']:
                     sql = '''
-                        insert into sweet.xx_store_product_category values(
+                        insert into b2b2c.xx_store_product_category values(
                             '0',
                             now(),
                             now(),
@@ -259,7 +259,7 @@ class TransferGoodsProducts:
                         if cat2_data.get('children'):
                             for cat3_data in cat2_data['children']:
                                 sql = '''
-                                    insert into sweet.xx_store_product_category values(
+                                    insert into b2b2c.xx_store_product_category values(
                                         '0',
                                         now(),
                                         now(),

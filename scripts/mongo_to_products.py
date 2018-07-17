@@ -19,7 +19,7 @@ class TransferGoodsProducts:
             port=3306,
             user='root',
             passwd='Dana1234!',
-            db='sweet',
+            db='b2b2c',
             charset='utf8mb4'
         )
 
@@ -128,7 +128,7 @@ class TransferGoodsProducts:
     def insert_to_goods(self, item):
         # 将数据导入xx_goods表中
         sql = '''
-            insert into sweet.xx_goods values(
+            insert into b2b2c.xx_goods values(
                 '0',
                 now(),
                 now(),
@@ -215,15 +215,15 @@ class TransferGoodsProducts:
         specification_color = {"id": "1", "name": "颜色", "nameEn": None, "entries": []}
         length = len(item['color'])
         for i, color in enumerate(item['color']):
-            selected = i == 0
-            entries_color = {"id": i, "value": color, "valueEn": None, "isSelected": selected}
+            # selected = i == 0
+            entries_color = {"id": i, "value": color, "valueEn": None, "isSelected": True}
             specification_color['entries'].append(entries_color)
         specification_list.append(specification_color)
 
         specification_size = {"id": "2", "name": "尺寸", "nameEn": None, "entries": []}
         for j, size in enumerate(item['sizes']):
-            selected = j == 0
-            entries_size = {"id": j + length, "value": size, "valueEn": None, "isSelected": selected}
+            # selected = j == 0
+            entries_size = {"id": j + length, "value": size, "valueEn": None, "isSelected": True}
             specification_size['entries'].append(entries_size)
         specification_list.append(specification_size)
 
@@ -254,7 +254,7 @@ class TransferGoodsProducts:
         # 将数据导入xx_product表中
 
         sql = '''
-                insert into sweet.xx_product values (
+                insert into b2b2c.xx_product values (
                     '0',
                     now(),
                     now(),

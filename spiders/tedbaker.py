@@ -7,6 +7,8 @@ from urllib.parse import urlparse
 from SweetSpiders.common import IndexListDetailCrawler
 from pyquery import PyQuery
 
+from scripts.google_translate import GoogleTranslate
+
 
 class TedbakerCrawler(IndexListDetailCrawler):
     """
@@ -37,7 +39,7 @@ class TedbakerCrawler(IndexListDetailCrawler):
 
     def _parse_index(self, resp):
         """首页解析器"""
-
+        g = GoogleTranslate()
         pq = PyQuery(resp.text)
         results = []
         categories = []
@@ -48,7 +50,8 @@ class TedbakerCrawler(IndexListDetailCrawler):
             if cat1_name == 'Sale':
                 continue
             cat1_url = self._full_url(url_from=resp.url, path=cat1_node('.categories_main').attr('href'))
-            cat1 = {'name': cat1_name, 'url': cat1_url, 'children': [], 'uuid': self.cu.get_or_create(cat1_name)}
+            cat1 = {'name': cat1_name, 'name_cn': g.query(source=cat1_name), 'url': cat1_url, 'children': [],
+                    'uuid': self.cu.get_or_create(cat1_name)}
 
             child = cat1_node('.nav .nav_inner .nav_column')
             for child_node in child.items():
@@ -57,13 +60,13 @@ class TedbakerCrawler(IndexListDetailCrawler):
 
                     if cat2_name == 'New Arrivals':
                         continue
-                    if cat2_name == 'Home & Gifts':
+                    if cat2_name in ('Home & Gifts', 'Edited: Baker by Ted Baker'):
                         break
                     else:
                         cat2_url = self._full_url(url_from=resp.url, path=cat2_node('a').attr('href'))
 
                         cat2 = {
-                            'name': cat2_name, 'url': cat2_url, 'children': [],
+                            'name': cat2_name, 'name_cn': g.query(source=cat2_name), 'url': cat2_url, 'children': [],
                             'uuid': self.cu.get_or_create(cat1_name, cat2_name)
                         }
 
@@ -78,13 +81,15 @@ class TedbakerCrawler(IndexListDetailCrawler):
                         headers['Referer'] = resp.url
 
                         cat2['children'].append({
-                            'name': cat3_name, 'url': cat3_url,
+                            'name': cat3_name, 'name_cn': g.query(source=cat3_name), 'url': cat3_url,
                             'uuid': self.cu.get_or_create(cat1_name, cat2_name, cat3_name)
                         })
 
                         results.append([
                             cat3_url, headers, resp.cookies.get_dict(),
-                            {'categories': [(cat1_name, cat1_url), (cat2_name, cat2_url), (cat3_name, cat3_url)]}
+                            {'categories': [(cat1_name, g.query(source=cat1_name), cat1_url),
+                                            (cat2_name, g.query(source=cat2_name), cat2_url),
+                                            (cat3_name, g.query(source=cat3_name), cat3_url)]}
                         ])
 
                     cat1['children'].append(cat2)

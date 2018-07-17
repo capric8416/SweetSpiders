@@ -47,7 +47,7 @@ class BelstaffCrawler(IndexListDetailCrawler):
             if cat1_name == 'Pure Motorcycle':
                 break
             elif cat1_name == 'Kids':
-                cat1_url = top('a.level-1-link').attr('href')
+                cat1_url = self._full_url(url_from=resp.url, path=top('a.level-1-link').attr('href'))
                 cat1 = {'name': cat1_name, 'url': cat1_url, 'children': [], 'uuid': self.cu.get_or_create(cat1_name)}
                 cat2_name = 'clothing'
                 cat2_url = cat1_url
@@ -75,40 +75,43 @@ class BelstaffCrawler(IndexListDetailCrawler):
 
                 categories.append(cat1)
             else:
-                cat1_url = top('a.level-1-link').attr('href')
+                cat1_url = self._full_url(url_from=resp.url, path=top('a.level-1-link').attr('href'))
                 cat1 = {'name': cat1_name, 'url': cat1_url, 'children': [], 'uuid': self.cu.get_or_create(cat1_name)}
 
-                cat2_node = top('.level-2-wrapper .level-2-list > li.level-2-item:gt(1)')
-                for cat_2 in cat2_node.children('.level-2-link').items():
+                cat2_node = top('.level-2-wrapper .level-2-list > li.level-2-item:gt(1) .level-2-link')
+                for cat_2 in cat2_node.items():
                     cat2_name = cat_2.text().strip()
                     if cat2_name in ('Bestsellers', 'New Arrivals'):
                         break
-                    cat2_url = cat_2.attr('href')
+                    cat2_url = self._full_url(url_from=resp.url, path=cat_2.attr('href'))
 
                     cat2 = {
                         'name': cat2_name, 'url': cat2_url, 'children': [],
                         'uuid': self.cu.get_or_create(cat1_name, cat2_name)
                     }
 
-                    cat3_node = top('.level-2-wrapper .level-2-list .level-3-wrapper .level-3-list')
-                    for cat_3 in cat3_node('.level-3-item:gt(1) .level-3-link').items():
-                        cat3_name = cat_3.text().strip()
-                        if cat3_name == 'View All':
-                            break
-                        cat3_url = cat_3.children('.level-3-link').attr('href')
+                    cat3_node = cat_2.next('.level-3-wrapper .level-3-list .level-3-item:gt(1)')
+                    if not cat3_node:
+                        continue
+                    else:
+                        for cat_3 in cat3_node.items():
+                            cat3_name = cat_3.children('a').text().strip()
+                            if 'View All' in cat3_name:
+                                break
+                            cat3_url = self._full_url(url_from=resp.url, path=cat_3.children('a').attr('href'))
 
-                        headers = copy.copy(self.headers)
-                        headers['Referer'] = resp.url
+                            headers = copy.copy(self.headers)
+                            headers['Referer'] = resp.url
 
-                        cat2['children'].append({
-                            'name': cat3_name, 'url': cat3_url,
-                            'uuid': self.cu.get_or_create(cat1_name, cat2_name, cat3_name)
-                        })
+                            cat2['children'].append({
+                                'name': cat3_name, 'url': cat3_url,
+                                'uuid': self.cu.get_or_create(cat1_name, cat2_name, cat3_name)
+                            })
 
-                        results.append([
-                            cat3_url, headers, resp.cookies.get_dict(),
-                            {'categories': [(cat1_name, cat1_url), (cat2_name, cat2_url), (cat3_name, cat3_url)]}
-                        ])
+                            results.append([
+                                cat3_url, headers, resp.cookies.get_dict(),
+                                {'categories': [(cat1_name, cat1_url), (cat2_name, cat2_url), (cat3_name, cat3_url)]}
+                            ])
 
                         cat1['children'].append(cat2)
 
@@ -134,7 +137,7 @@ class BelstaffCrawler(IndexListDetailCrawler):
 
             next_page = pq('li.infinite-scroll-placeholder').attr('data-grid-url').split('?')[0]
             count += 24
-            params.update({'psortd1': '1', 'amp;psortb1': 'bestMatch', 'amp;sz': 24, 'amp;start': count,
+            params.update({'psortd1': 1, 'amp;psortb1': 'bestMatch', 'amp;sz': 24, 'amp;start': count,
                            'amp;format': 'page-element'})
             if not next_page:
                 break
@@ -152,15 +155,17 @@ class BelstaffCrawler(IndexListDetailCrawler):
             for detail in node.items():
                 url = self._full_url(url_from=resp.url,
                                      path=detail('.js-product-image .js-producttile_link').attr('href'))
-                meta['product_id'] = urlparse(url).path.split('/')[-1][:-5]
-                yield url, headers, resp.cookies.get_dict(), meta
+                if url:
+                    meta['product_id'] = urlparse(url).path.split('/')[-1][:-5]
+                    yield url, headers, resp.cookies.get_dict(), meta
         else:
             node = pq('.slick-list .slick-track .slick-slide')
             for detail in node.items():
                 url = self._full_url(url_from=resp.url,
                                      path=detail('.js-product-image .js-producttile_link').attr('href'))
-                meta['product_id'] = urlparse(url).path.split('/')[-1][:-5]
-                yield url, headers, resp.cookies.get_dict(), meta
+                if url:
+                    meta['product_id'] = urlparse(url).path.split('/')[-1][:-5]
+                    yield url, headers, resp.cookies.get_dict(), meta
 
     def _parse_product_detail(self, url, resp, meta, **extra):
         """详情页解析器"""
