@@ -38,8 +38,10 @@ class TransferGoodsProducts:
         goods_image = []
 
         for item in self.collection.find({"categories": [
-            ["Travel", "旅行", "http://www.crabtree-evelyn.com/uk/en/shop-by-category/travel/"],
-            ["Hair", "头发", "http://www.crabtree-evelyn.com/uk/en/travel/hair/"]]}
+            ["Womenswear", "女装", "https://www.alexandermcqueen.com/gb/alexandermcqueen"],
+            ["Shop by", "购物", "https://www.alexandermcqueen.com/experience/en/womens-pre-autumnwinter-shop/"],
+            ["NEW AW18 SNEAKERS", "全新AW18运动鞋",
+             "https://www.alexandermcqueen.com/gb/alexandermcqueen/online/women/sneakers"]]}
         ):
             goods_id, images, url, categories = self.insert_to_goods(item)
 
@@ -154,7 +156,7 @@ class TransferGoodsProducts:
                 %s,
                 '0',
                 %s,
-                %s,
+                null,
                 %s,
                 1,
                 1,
@@ -179,7 +181,7 @@ class TransferGoodsProducts:
                 null,
                 null,
                 '2018071012041',
-                '[]',
+                %s,
                 '0',
                 '0',
                 null,
@@ -188,12 +190,12 @@ class TransferGoodsProducts:
                 '0',
                 now(),
                 null,
-                '270',
-                '310',
-                '541',
-                '2996',
+                '441',
+                '304',
+                '313',
+                '2382',
                 null,
-                null,
+                %s,
                 %s,
                 null,
                 null,
@@ -202,29 +204,45 @@ class TransferGoodsProducts:
                 null,
                 '0',
                 '3225',
-                '2996',
+                '2382',
                 '0.000000',
-                '26',
-                '270',
-                '541'
+                '23',
+                '441',
+                '313'
             );
         '''
+        specification_list = []
+        specification_color = {"id": "1", "name": "颜色", "nameEn": None, "entries": []}
+        length = len(item['color'])
+        for i, color in enumerate(item['color']):
+            selected = i == 0
+            entries_color = {"id": i, "value": color, "valueEn": None, "isSelected": selected}
+            specification_color['entries'].append(entries_color)
+        specification_list.append(specification_color)
+
+        specification_size = {"id": "2", "name": "尺寸", "nameEn": None, "entries": []}
+        for j, size in enumerate(item['sizes']):
+            selected = j == 0
+            entries_size = {"id": j + length, "value": size, "valueEn": None, "isSelected": selected}
+            specification_size['entries'].append(entries_size)
+        specification_list.append(specification_size)
 
         with self.mysql.cursor() as cur:
             cur.execute(sql, (
                 item['brand'],
                 item['name'],
                 '',
-                item['description'],
-                item['description'],
-                item['now_price'][0].lstrip('£'),
+                item['introduction'],
+                item['price'].split()[0].replace(',', ''),
                 item['name'],
-                item['now_price'][0].lstrip('£'),
+                item['price'].split()[0].replace(',', ''),
                 '',
+                json.dumps(specification_list),
+                item['name'],
                 item['url'],
             ))
 
-            print('商品保存成功!')
+        print('商品保存成功!')
 
         with self.mysql.cursor() as cur:
             cur.execute('SELECT LAST_INSERT_ID();')
@@ -259,31 +277,17 @@ class TransferGoodsProducts:
                     null
             );
             '''
-        if item.get('size'):
-            for i, size in enumerate(item['size']):
+        length = len(item['color'])
+        for i, color in enumerate(item['color']):
+            for j, size in enumerate(item['sizes']):
                 with self.mysql.cursor() as cur:
                     cur.execute(sql, (
-                        item['now_price'][0].lstrip('£'),
-                        item['now_price'][0].lstrip('£'),
-                        item['now_price'][0].lstrip('£'),
-                        json.dumps([{"id": i, "value": size}]),
+                        item['price'].split()[0].replace(',', ''),
+                        item['price'].split()[0].replace(',', ''),
+                        item['price'].split()[0].replace(',', ''),
+                        json.dumps([{"id": i, "value": color}, {"id": j + length, "value": size}]),
                         goods_id,
-                        item['now_price'][0].lstrip('£'),
-                        item['url'],
-                    ))
-
-                    print('货品保存成功!')
-
-        else:
-            for i, color in enumerate(item['color']):
-                with self.mysql.cursor() as cur:
-                    cur.execute(sql, (
-                        item['now_price'][0].lstrip('£'),
-                        item['now_price'][0].lstrip('£'),
-                        item['now_price'][0].lstrip('£'),
-                        json.dumps([{"id": i, "value": color}]),
-                        goods_id,
-                        item['now_price'][0].lstrip('£'),
+                        item['price'].split()[0].replace(',', ''),
                         item['url'],
                     ))
 
@@ -291,5 +295,5 @@ class TransferGoodsProducts:
 
 
 if __name__ == "__main__":
-    t = TransferGoodsProducts(db='CrabtreeCrawler')
+    t = TransferGoodsProducts(db='AlexandermcqueenCrawler')
     t.run()

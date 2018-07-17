@@ -2,7 +2,7 @@
 # !/usr/bin/env python
 import copy
 from urllib.parse import urlparse
-
+import time
 from SweetSpiders.common import IndexListDetailCrawler
 from pyquery import PyQuery
 
@@ -88,8 +88,10 @@ class HarrodsCrawler(IndexListDetailCrawler):
                         'uuid': self.cu.get_or_create(cat1_name, cat2_name, cat3_name)
                     })
 
+                    cookies = resp.cookies.get_dict()
+                    cookies.update(self.cookies)
                     results.append([
-                        cat3_url, headers, resp.cookies.get_dict(),
+                        cat3_url, headers, cookies,
                         {'categories': [(cat1_name, cat1_url), (cat2_name, cat2_url), (cat3_name, cat3_url)]}
                     ])
 
@@ -100,7 +102,6 @@ class HarrodsCrawler(IndexListDetailCrawler):
 
     def _get_product_list(self, url, headers, cookies, meta):
         """列表页面爬虫，实现翻页请求"""
-
         while True:
             resp = self._request(
                 url=url, headers=headers, cookies=cookies,
@@ -135,7 +136,9 @@ class HarrodsCrawler(IndexListDetailCrawler):
             url = self._full_url(url_from=resp.url,
                                  path=detail('.product-card .product-card_info a.product-card_link').attr('href'))
             meta['product_id'] = urlparse(url).path.split('/')[-1]
-            yield url, headers, resp.cookies.get_dict(), meta
+            cookies = resp.cookies.get_dict()
+            cookies.update(self.cookies)
+            yield url, headers, cookies, meta
 
     def _parse_product_detail(self, url, resp, meta, **extra):
         """详情页解析器"""
@@ -189,57 +192,53 @@ class HarrodsCrawler(IndexListDetailCrawler):
         overview = 'Overview' + ':' + overview
         introduction = details + ';' + overview
 
-        # 商品尺码
-        sizes = []
-        for size_node in pq(
-                '.js-pdp-add-to-bag .buying-controls_details .buying-controls_option--size .buying-controls_select--size option').items():
-            size = size_node.text().strip()
-            sizes.append(size)
-
         # 商品库存
         stock = 999
 
         # 尺寸指导
         table1_name = pq('#international-sizing h2.tab_title').text().strip()
-        areas, each_size = [], []
+        table1 = []
 
-        for area_tr in pq('#international-sizing .tab_content .sliding-table_header table tr').items():
-            area = area_tr.text().strip()
-            areas.append(area)
-        for size_tr in pq(
-                '#international-sizing .tab_content .sliding-table_content .sliding-table_scrollable-area table tr').items():
+        for size_tr in pq('#international-sizing .tab_content tr').items():
             size_each = size_tr.text().strip()
-            each_size.append(size_each)
+            table1.append(size_each)
 
-        table2_name = pq('#uk-sizing h2.tab_title').text().strip()
+
+        table2_name = pq('#uk-sizing').children('h2.tab_title').text().strip()
         inches_unit = 'Inches'
-        inches_areas, inches_size = [], []
+        inches_sizes = []
 
-        for inches_tr in pq('#uk-sizing .tab_element:eq(0) .sliding-table_header table tr').items():
-            inches_area = inches_tr.text().strip()
-            inches_areas.append(inches_area)
-        for size_tr in pq(
-                '#uk-sizing .tab_element:eq(0) .sliding-table_content .sliding-table_scrollable-area table tr').items():
-            size_each = size_tr.text().strip()
-            inches_size.append(size_each)
+        for inches_tr in pq('#uk-sizing .tab_element:eq(0) tr').items():
+            inches_size = inches_tr.text().strip()
+            inches_sizes.append(inches_size)
 
         cm_unit = 'Centimetres'
-        cm_areas, cm_size = [], []
+        cm_sizes = []
 
-        for cm_tr in pq('#uk-sizing .tab_element:eq(1) .sliding-table_header table tr').items():
-            cm_area = cm_tr.text().strip()
-            cm_areas.append(cm_area)
-        for size_tr in pq(
-                '#uk-sizing .tab_element:eq(1) .sliding-table_content .sliding-table_scrollable-area table tr').items():
-            size_each = size_tr.text().strip()
-            cm_size.append(size_each)
+        for size_tr in pq('#uk-sizing .tab_element:eq(1) tr').items():
+            cm_size = size_tr.text().strip()
+            cm_sizes.append(cm_size)
 
         size_guide = {
-            'table1': {'table1_name': table1_name, 'areas': areas, 'each_size': each_size},
-            'table2': {'table2_name': table2_name, 'inches_unit': inches_unit, 'inches_areas': inches_areas,
-                       'inches_size': inches_size,
-                       'cm_unit': cm_unit, 'cm_areas': cm_areas, 'cm_size': cm_size}
+            'table1': {'table1_name': table1_name, 'table1': table1},
+            'table2': {'table2_name': table2_name, 'inches_unit': inches_unit, 'inches_sizes': inches_sizes,
+                       'cm_unit': cm_unit, 'cm_sizes': cm_sizes}
         }
+
+        # 商品尺码
+        sizes = []
+        unique_code = urlparse(url).path.split('/')[-1].split('-')[-1]
+        query = urlparse(url).query
+        if query and ('colour' in query):
+            size_url = 'https://www.harrods.com/en-gb/product/buyingcontrols/' + unique_code + '&' + query
+        else:
+            size_url = 'https://www.harrods.com/en-gb/product/buyingcontrols/' + unique_code
+        params = {'_': int(time.time() * 1000)}
+        resp = self._request(url=size_url, headers=extra['headers'], cookies=extra['cookies'], params=params)
+        pq = PyQuery(resp.text)
+        for size_node in pq('select.buying-controls_select option').items():
+            size = size_node.text().strip()
+            sizes.append(size)
 
         return {
             'url': url, 'product_id': meta['product_id'], 'categories': meta['categories'], 'images': images,

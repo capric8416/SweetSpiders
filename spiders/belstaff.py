@@ -2,6 +2,7 @@
 # !/usr/bin/env python
 import copy
 from urllib.parse import urlparse
+
 from SweetSpiders.common import IndexListDetailCrawler
 from pyquery import PyQuery
 
@@ -43,9 +44,7 @@ class BelstaffCrawler(IndexListDetailCrawler):
         cat1_node = pq('.navigation-wrapper .level-1-list li.level-1-item')
         for top in cat1_node.items():
             cat1_name = top('a.level-1-link').text().strip()
-            if cat1_name == 'New In':
-                continue
-            elif cat1_name == 'Pure Motorcycle':
+            if cat1_name == 'Pure Motorcycle':
                 break
             elif cat1_name == 'Kids':
                 cat1_url = top('a.level-1-link').attr('href')
@@ -80,23 +79,23 @@ class BelstaffCrawler(IndexListDetailCrawler):
                 cat1 = {'name': cat1_name, 'url': cat1_url, 'children': [], 'uuid': self.cu.get_or_create(cat1_name)}
 
                 cat2_node = top('.level-2-wrapper .level-2-list > li.level-2-item:gt(1)')
-                for cat_2 in cat2_node.items():
-                    cat2_name = cat_2('.level-2-link').text().strip()
-                    if cat2_name == 'Bestsellers':
+                for cat_2 in cat2_node.children('.level-2-link').items():
+                    cat2_name = cat_2.text().strip()
+                    if cat2_name in ('Bestsellers', 'New Arrivals'):
                         break
-                    cat2_url = cat_2('.level-2-link').attr('href')
+                    cat2_url = cat_2.attr('href')
 
                     cat2 = {
                         'name': cat2_name, 'url': cat2_url, 'children': [],
                         'uuid': self.cu.get_or_create(cat1_name, cat2_name)
                     }
 
-                    cat3_node = cat_2('.level-3-wrapper .level-3-list > li.level-3-item:gt(1)')
-                    for cat_3 in cat3_node.items():
-                        cat3_name = cat_3('.level-3-link').text().strip().split('\n')[0]
+                    cat3_node = top('.level-2-wrapper .level-2-list .level-3-wrapper .level-3-list')
+                    for cat_3 in cat3_node('.level-3-item:gt(1) .level-3-link').items():
+                        cat3_name = cat_3.text().strip()
                         if cat3_name == 'View All':
                             break
-                        cat3_url = cat_3('.level-3-link').attr('href')
+                        cat3_url = cat_3.children('.level-3-link').attr('href')
 
                         headers = copy.copy(self.headers)
                         headers['Referer'] = resp.url
@@ -111,17 +110,18 @@ class BelstaffCrawler(IndexListDetailCrawler):
                             {'categories': [(cat1_name, cat1_url), (cat2_name, cat2_url), (cat3_name, cat3_url)]}
                         ])
 
-                    cat1['children'].append(cat2)
+                        cat1['children'].append(cat2)
 
-                categories.append(cat1)
+            categories.append(cat1)
         return categories, results
 
     def _get_product_list(self, url, headers, cookies, meta):
         """列表页面爬虫，实现翻页请求"""
-
+        params = {}
+        count = 24
         while True:
             resp = self._request(
-                url=url, headers=headers, cookies=cookies,
+                url=url, headers=headers, cookies=cookies, params=params,
                 rollback=self.push_category_info, meta=meta
             )
             if not resp:
@@ -132,7 +132,10 @@ class BelstaffCrawler(IndexListDetailCrawler):
             for info in self._parse_product_list(pq=pq, resp=resp, headers=headers, meta=meta):
                 self.push_product_info(info)
 
-            next_page = pq('.next').attr('href')
+            next_page = pq('li.infinite-scroll-placeholder').attr('data-grid-url').split('?')[0]
+            count += 24
+            params.update({'psortd1': '1', 'amp;psortb1': 'bestMatch', 'amp;sz': 24, 'amp;start': count,
+                           'amp;format': 'page-element'})
             if not next_page:
                 break
 
@@ -147,13 +150,15 @@ class BelstaffCrawler(IndexListDetailCrawler):
         node = pq('#product-search-result-items li.js-grid-tile')
         if node:
             for detail in node.items():
-                url = self._full_url(url_from=resp.url, path=detail('.js-product-image .js-producttile_link').attr('href'))
+                url = self._full_url(url_from=resp.url,
+                                     path=detail('.js-product-image .js-producttile_link').attr('href'))
                 meta['product_id'] = urlparse(url).path.split('/')[-1][:-5]
                 yield url, headers, resp.cookies.get_dict(), meta
         else:
             node = pq('.slick-list .slick-track .slick-slide')
             for detail in node.items():
-                url = self._full_url(url_from=resp.url, path=detail('.js-product-image .js-producttile_link').attr('href'))
+                url = self._full_url(url_from=resp.url,
+                                     path=detail('.js-product-image .js-producttile_link').attr('href'))
                 meta['product_id'] = urlparse(url).path.split('/')[-1][:-5]
                 yield url, headers, resp.cookies.get_dict(), meta
 

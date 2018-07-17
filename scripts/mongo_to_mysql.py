@@ -6,146 +6,242 @@ import pymongo
 import pymysql
 
 
-# --------------------------数据库启动函数------------------------------
-def start_mysql():
-    conn = pymysql.connect(
-        host='localhost',
-        port=3306,
-        user='root',
-        passwd='mysql',
-        db='sweet',
-        charset='utf8mb4')
-    cur = conn.cursor()
-    myConn_list = [conn, cur]
-    return myConn_list
+class TransferGoodsProducts:
+    def __init__(self, db, collection='products'):
+        self.mysql = pymysql.connect(
+            host='localhost',
+            port=3306,
+            user='root',
+            passwd='mysql',
+            db='sweet',
+            charset='utf8mb4'
+        )
 
+        self.mongo = pymongo.MongoClient('localhost', 27017)
+        self.db = self.mongo[db]
+        self.collection = self.db[collection]
 
-# --------------------------关闭数据库--------------------------------
+    def run(self):
+        count = 36494
+        for item in self.collection.find({"categories": [
+            ["Womenswear", "女装", "https://www.alexandermcqueen.com/gb/alexandermcqueen"],
+            ["All Bags", "所有包包", "https://www.alexandermcqueen.com/gb/alexandermcqueen/online/women/bags"],
+            ["Crossbody Bags", "斜挎包",
+             "https://www.alexandermcqueen.com/gb/alexandermcqueen/online/women/crossbody-bags"]]}
+        ):
+            self.insert_to_goods(item)
+            self.insert_to_spider_product(item)
+            self.insert_to_product(item, count)
+            count += 1
 
+        self.mysql.commit()
+        self.mysql.close()
 
-def close_pymysql(cur, conn):
-    cur.close()
-    conn.commit()
-    conn.close()
-
-
-if __name__ == "__main__":
-    client = pymongo.MongoClient('localhost', 27017)
-    db = client['AlexandermcqueenCrawler']
-    collection = db['products']
-
-    myConn_list = start_mysql()
-    cur = myConn_list[1]
-    conn = myConn_list[0]
-
-    sql = '''
-        insert into sweet.xx_goods values(
-            '0',
-            now(),
-            now(),
-            '42',
-            %s,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            %s,
-            '0',
-            %s,
-            %s,
-            %s,
-            1,
-            1,
-            1,
-            1,
-            0,
-            null,
-            %s,
-            null,
-            '0',
-            now(),
-            '0',
-            now(),
-            %s,
-            '[]',
-            %s,
-            %s,
-            '0',
-            '0',
-            '0',
-            null,
-            null,
-            null,
-            '2018061012041',
-            '[]',
-            '0',
-            '0',
-            null,
-            '0',
-            now(),
-            '0',
-            now(),
-            null,
-            '442',
-            '302',
-            '923',
-            null,
-            null,
-            null,
-            %s,
-            null,
-            null,
-            0,
-            null,
-            null,
-            '0',
-            '3225',
-            '36',
-            '0.000000',
-            '36'
-        );
-    '''
-
-    for item in collection.find():
+    def insert_to_goods(self, item):
+        # 将数据导入xx_goods表中
+        sql = '''
+            insert into sweet.xx_goods values(
+                '0',
+                now(),
+                now(),
+                '42',
+                %s,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                %s,
+                '0',
+                %s,
+                %s,
+                %s,
+                1,
+                1,
+                1,
+                1,
+                0,
+                null,
+                %s,
+                null,
+                '0',
+                now(),
+                '0',
+                now(),
+                %s,
+                '[]',
+                %s,
+                %s,
+                '0',
+                '0',
+                '0',
+                null,
+                null,
+                null,
+                '2018071012041',
+                '[]',
+                '0',
+                '0',
+                null,
+                '0',
+                now(),
+                '0',
+                now(),
+                null,
+                '441',
+                '307',
+                '313',
+                '2400',
+                null,
+                null,
+                %s,
+                null,
+                null,
+                0,
+                null,
+                null,
+                '0',
+                '3225',
+                '2400',
+                '0.000000',
+                '24'
+            );
+        '''
         try:
-            cur.execute(sql, (
-                item['brand'],
-                item['name'],
-                item['images'][0],
-                item['description'],
-                item['description'],
-                item['now_price'].lstrip('£'),
-                item['categories'][1][0],
-                item['now_price'].lstrip('£'),
-                json.dumps([{"title": "null", "source": item['images'][0],
-                             "large": item['images'][0] + '?x-oss-process=image/resize,m_lfit,w_800,h_800',
-                             "medium": item['images'][0] + '?x-oss-process=image/resize,m_lfit,w_400,h_400',
-                             "thumbnail": item['images'][0] + '?x-oss-process=image/resize,m_lfit,w_200,h_200',
-                             "order": "null"}, {"title": "null", "source": item['images'][1],
-                                                "large": item['images'][1] + '?x-oss-process=image/resize,m_lfit,w_800,h_800',
-                                                "medium": item['images'][1] + '?x-oss-process=image/resize,m_lfit,w_400,h_400',
-                                                "thumbnail": item['images'][1] + '?x-oss-process=image/resize,m_lfit,w_200,h_200',
-                                                "order": "null"}]),
-                item['url'],
-            ))
+            with self.mysql.cursor() as cur:
+                cur.execute(sql, (
+                    item['brand'],
+                    item['name'],
+                    item['images'][0],
+                    item['introduction'],
+                    item['introduction'],
+                    item['price'].split()[0].replace(',', ''),
+                    item['name'],
+                    item['price'].split()[0].replace(',', ''),
+                    json.dumps(item['images']),
+                    item['url'],
+                ))
 
-            print('保存成功!')
+                print('xx_goods商品保存成功!')
         except Exception as e:
             print(e)
 
-    close_pymysql(cur, conn)
+    def insert_to_spider_product(self, item):
+        # 将数据导入xx_spider_product表中
+
+        sql = '''
+                insert into sweet.xx_spider_product values(
+                    '0',
+                    now(),
+                    now(),
+                    '5',
+                    %s,
+                    %s,
+                    '1',
+                    %s,
+                    %s,
+                    null,
+                    %s,
+                    %s,
+                    null,
+                    '313',
+                    %s,
+                    null,
+                    '1',
+                    null,
+                    '441'
+                );
+            '''
+        with self.mysql.cursor() as cur:
+            cur.execute(sql, (
+                item['product_id'],
+                item['name'],
+                '<p>' + item['introduction'] + '</p>',
+                json.dumps(item['images']),
+                item['name'],
+                item['brand'],
+                item['url'],
+            ))
+            print('xx_spider_product保存成功!')
+
+    def insert_to_product(self, item, count):
+        # 将数据导入xx_product表中
+
+        sql = '''
+                insert into sweet.xx_product values (
+                    '0',
+                    now(),
+                    now(),
+                    '47',
+                    '0',
+                    null,
+                    '0',
+                    1,
+                    %s,
+                    %s,
+                    %s,
+                    '2018071015334',
+                    %s,
+                    '1000',
+                    %s,
+                    %s,
+                    '1',
+                    %s,
+                    null,
+                    null
+            );
+            '''
+        if item.get('sizes'):
+            for i, size in enumerate(item['sizes']):
+                try:
+                    with self.mysql.cursor() as cur:
+                        cur.execute(sql, (
+                            item['price'].split()[0].replace(',', ''),
+                            item['price'].split()[0].replace(',', ''),
+                            item['price'].split()[0].replace(',', ''),
+                            json.dumps([{"id": i, "value": size}]),
+                            int(count),
+                            item['price'].split()[0].replace(',', ''),
+                            item['url'],
+                        ))
+
+                        print('xx_product货品保存成功!')
+                except Exception as e:
+                    print(e)
+
+        else:
+            for i, color in enumerate(item['color']):
+                try:
+                    with self.mysql.cursor() as cur:
+                        cur.execute(sql, (
+                            item['price'].split()[0].replace(',', ''),
+                            item['price'].split()[0].replace(',', ''),
+                            item['price'].split()[0].replace(',', ''),
+                            json.dumps([{"id": i, "value": color}]),
+                            int(count),
+                            item['price'].split()[0].replace(',', ''),
+                            item['url'],
+                        ))
+
+                        print('xx_product货品保存成功!')
+                except Exception as e:
+                    print(e)
+
+
+if __name__ == "__main__":
+    t = TransferGoodsProducts(db='AlexandermcqueenCrawler')
+    t.run()
