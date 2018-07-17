@@ -9,10 +9,10 @@ import pymysql
 class TransferGoodsProducts:
     def __init__(self, db, collection='categories'):
         self.mysql = pymysql.connect(
-            host='59.110.155.75',
+            host='localhost',
             port=3306,
             user='root',
-            passwd='Dana1234!',
+            passwd='mysql',
             db='sweet',
             charset='utf8mb4'
         )
@@ -22,55 +22,44 @@ class TransferGoodsProducts:
         self.collection = self.db[collection]
 
     def run(self):
-        for item in self.collection.find():
-            # self.insert_to_store_category(item)
+        category_list = []
+        for i, item in enumerate(self.collection.find()):
             self.insert_to_store_product_category(item)
 
-        self.mysql.commit()
-        self.mysql.close()
+            first_category_item = {'id': i, 'uuid': item['uuid'], 'name': item['name'], 'url': item['url'],
+                                   'children': []}
+            if item.get('children'):
+                for j, second_category in enumerate(item['children']):
+                    second_category_item = {'id': j, 'uuid': second_category['uuid'],
+                                            'name': second_category['name'],
+                                            'url': second_category['url'], 'children': None}
+                    first_category_item['children'].append(second_category_item)
+            category_list.append(first_category_item)
 
-    def insert_to_store_category(self, item):
         # 将数据导入xx_spider_store_product_category表中
+
         sql = '''
-            insert into sweet.xx_spider_store_product_category values(
-                '0',
-                now(),
-                now(),
-                '6',
-                null,
-                %s,
-                'Crabtree & Evelyn',
-                '541',
-                '1'
-            );
-        '''
+                insert into sweet.xx_spider_store_product_category values(
+                    '0',
+                    now(),
+                    now(),
+                    '6',
+                    null,
+                    %s,
+                    'Crabtree & Evelyn',
+                    '541',
+                    '1'
+                );
+            '''
         with self.mysql.cursor() as cur:
             cur.execute(sql, (
-                json.dumps([{"id": None, "uuid": item['uuid'], "name": item['name'],
-                             "url": item['url'],
-                             "children": [
-                                 {"id": None, "uuid": item['children'][0]['uuid'],
-                                  "name": item['children'][0]['name'],
-                                  "url": item['children'][0]['url'], "children": None},
-                                 {"id": None, "uuid": item['children'][1]['uuid'],
-                                  "name": item['children'][0]['name'],
-                                  "url": item['children'][0]['url'], "children": None},
-                                 {"id": None, "uuid": item['children'][2]['uuid'],
-                                  "name": item['children'][0]['name'],
-                                  "url": item['children'][0]['url'], "children": None},
-                                 {"id": None, "uuid": item['children'][3]['uuid'],
-                                  "name": item['children'][0]['name'],
-                                  "url": item['children'][0]['url'], "children": None},
-                                 {"id": None, "uuid": item['children'][4]['uuid'],
-                                  "name": item['children'][0]['name'],
-                                  "url": item['children'][0]['url'], "children": None},
-                                 {"id": None, "uuid": item['children'][5]['uuid'],
-                                  "name": item['children'][0]['name'],
-                                  "url": item['children'][0]['url'], "children": None}
-                             ]}]),
+                json.dumps(category_list),
             ))
 
             print('spider_store_category保存成功!')
+
+        self.mysql.commit()
+        self.mysql.close()
 
     def insert_to_store_product_category(self, item):
         # 将数据导入xx_store_product_category表中
@@ -134,6 +123,41 @@ class TransferGoodsProducts:
                         ))
 
                     print('二级分类插入成功!')
+
+    # def get_category_list(self, i, item):
+    #     category_list = []
+    #     first_category_item = {'id': i, 'uuid': item['uuid'], 'name': item['name'], 'url': item['url'], 'children': []}
+    #     if item.get('children'):
+    #         for j, second_category in enumerate(item['children']):
+    #             second_category_item = {'id': i + j, 'uuid': second_category['uuid'], 'name': second_category['name'],
+    #                                     'url': second_category['url'], 'children': None}
+    #             first_category_item['children'].append(second_category_item)
+    #     category_list.append(first_category_item)
+    #
+    #     return category_list
+    #
+    # def insert_to_store_category(self, category_list):
+    #     # 将数据导入xx_spider_store_product_category表中
+    #
+    #     sql = '''
+    #         insert into sweet.xx_spider_store_product_category values(
+    #             '0',
+    #             now(),
+    #             now(),
+    #             '6',
+    #             null,
+    #             %s,
+    #             'Crabtree & Evelyn',
+    #             '541',
+    #             '1'
+    #         );
+    #     '''
+    #     with self.mysql.cursor() as cur:
+    #         cur.execute(sql, (
+    #             json.dumps(category_list),
+    #         ))
+    #
+    #         print('spider_store_category保存成功!')
 
 
 if __name__ == "__main__":
