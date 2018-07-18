@@ -38,10 +38,10 @@ class TransferGoodsProducts:
         goods_image = []
 
         for item in self.collection.find({"categories": [
-            ["Womenswear", "女装", "https://www.alexandermcqueen.com/gb/alexandermcqueen"],
-            ["Shop by", "购物", "https://www.alexandermcqueen.com/experience/en/womens-pre-autumnwinter-shop/"],
-            ["NEW AW18 SNEAKERS", "全新AW18运动鞋",
-             "https://www.alexandermcqueen.com/gb/alexandermcqueen/online/women/sneakers"]]}
+            ["Women", "妇女", "https://www.tedbaker.com/uk/Womens/c/category_womens"], ["Accessories", "饰品",
+                                                                                      "https://www.tedbaker.com/uk/Womens/Accessories/c/category_womens_accessories?int_cmpid=_mn_w_accessories"],
+            ["Phone and Tablet Cases", "手机和平板电脑包",
+             "https://www.tedbaker.com/uk/Womens/Accessories/Tech-Cases/c/womens_tech_cases?int_cmpid=_mn_w_phone_cases"]]}
         ):
             goods_id, images, url, categories = self.insert_to_goods(item)
 
@@ -180,7 +180,7 @@ class TransferGoodsProducts:
                 null,
                 null,
                 null,
-                '2018071012041',
+                '2018071812041',
                 %s,
                 '0',
                 '0',
@@ -190,10 +190,10 @@ class TransferGoodsProducts:
                 '0',
                 now(),
                 null,
-                '441',
-                '304',
-                '313',
-                '2382',
+                '405',
+                '308',
+                '514',
+                '360',
                 null,
                 %s,
                 %s,
@@ -204,17 +204,17 @@ class TransferGoodsProducts:
                 null,
                 '0',
                 '3225',
-                '2382',
+                '360',
                 '0.000000',
-                '23',
-                '441',
-                '313'
+                '124',
+                '405',
+                '514'
             );
         '''
         specification_list = []
         specification_color = {"id": "1", "name": "颜色", "nameEn": None, "entries": []}
-        length = len(item['color'])
-        for i, color in enumerate(item['color']):
+        length = len(item['colors'])
+        for i, color in enumerate(item['colors']):
             # selected = i == 0
             entries_color = {"id": i, "value": color, "valueEn": None, "isSelected": True}
             specification_color['entries'].append(entries_color)
@@ -230,12 +230,12 @@ class TransferGoodsProducts:
         with self.mysql.cursor() as cur:
             cur.execute(sql, (
                 item['brand'],
-                item['name'],
+                item['brand'],
                 '',
                 item['introduction'],
-                item['price'].split()[0].replace(',', ''),
+                item['now_price'].lstrip('£'),
                 item['name'],
-                item['price'].split()[0].replace(',', ''),
+                item['now_price'].lstrip('£'),
                 '',
                 json.dumps(specification_list),
                 item['name'],
@@ -277,17 +277,17 @@ class TransferGoodsProducts:
                     null
             );
             '''
-        length = len(item['color'])
-        for i, color in enumerate(item['color']):
+        length = len(item['colors'])
+        for i, color in enumerate(item['colors']):
             for j, size in enumerate(item['sizes']):
                 with self.mysql.cursor() as cur:
                     cur.execute(sql, (
-                        item['price'].split()[0].replace(',', ''),
-                        item['price'].split()[0].replace(',', ''),
-                        item['price'].split()[0].replace(',', ''),
+                        item['now_price'].lstrip('£'),
+                        item['now_price'].lstrip('£'),
+                        item['now_price'].lstrip('£'),
                         json.dumps([{"id": i, "value": color}, {"id": j + length, "value": size}]),
                         goods_id,
-                        item['price'].split()[0].replace(',', ''),
+                        item['now_price'].lstrip('£'),
                         item['url'],
                     ))
 
@@ -295,5 +295,5 @@ class TransferGoodsProducts:
 
 
 if __name__ == "__main__":
-    t = TransferGoodsProducts(db='AlexandermcqueenCrawler')
+    t = TransferGoodsProducts(db='TedbakerCrawler')
     t.run()

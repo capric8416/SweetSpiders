@@ -140,7 +140,7 @@ class TedbakerCrawler(IndexListDetailCrawler):
         images = []
         for img in pq('#product_images .carousel .viewport .slider div.image').items():
             img_url = img('a.image img').attr('ng-src')
-            if img_url:
+            if img_url.startswith('https://images'):
                 images.append(img_url.replace("{{imageFormat[view.imgSizes]['pdp_primary']}}", "w=564%26h=705%26q=85"))
 
         # 商品名称

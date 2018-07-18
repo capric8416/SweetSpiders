@@ -121,18 +121,30 @@ class TransferGoodsProducts:
                 '24'
             );
         '''
+
+        image = item['images'][0] + '?x-oss-process=image/resize,m_lfit,w_400,h_400'
+        with self.mysql.cursor() as cur:
+            product_images = [
+                {
+                    "title": None, "order": None, "source": img_url,
+                    "large": img_url + '?x-oss-process=image/resize,m_lfit,w_800,h_800',
+                    "medium": img_url + '?x-oss-process=image/resize,m_lfit,w_400,h_400',
+                    "thumbnail": img_url + '?x-oss-process=image/resize,m_lfit,w_200,h_200',
+                }
+                for img_url in item['images']
+            ]
         try:
             with self.mysql.cursor() as cur:
                 cur.execute(sql, (
                     item['brand'],
                     item['name'],
-                    item['images'][0],
+                    image,
                     item['introduction'],
                     item['introduction'],
                     item['price'].split()[0].replace(',', ''),
                     item['name'],
                     item['price'].split()[0].replace(',', ''),
-                    json.dumps(item['images']),
+                    json.dumps(product_images),
                     item['url'],
                 ))
 

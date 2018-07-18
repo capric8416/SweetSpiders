@@ -39,17 +39,17 @@ class TransferGoodsProducts:
         # 将数据导入xx_spider_store_product_category表中
 
         sql = '''
-                insert into sweet.xx_spider_store_product_category values(
-                    '0',
-                    now(),
-                    now(),
-                    '6',
-                    null,
-                    %s,
-                    'Crabtree & Evelyn',
-                    '541',
-                    '1'
-                );
+            insert into sweet.xx_spider_store_product_category values(
+                '0',
+                now(),
+                now(),
+                '6',
+                null,
+                %s,
+                'Crabtree & Evelyn',
+                '541',
+                '1'
+            );
             '''
         with self.mysql.cursor() as cur:
             cur.execute(sql, (
@@ -123,41 +123,6 @@ class TransferGoodsProducts:
                         ))
 
                     print('二级分类插入成功!')
-
-    # def get_category_list(self, i, item):
-    #     category_list = []
-    #     first_category_item = {'id': i, 'uuid': item['uuid'], 'name': item['name'], 'url': item['url'], 'children': []}
-    #     if item.get('children'):
-    #         for j, second_category in enumerate(item['children']):
-    #             second_category_item = {'id': i + j, 'uuid': second_category['uuid'], 'name': second_category['name'],
-    #                                     'url': second_category['url'], 'children': None}
-    #             first_category_item['children'].append(second_category_item)
-    #     category_list.append(first_category_item)
-    #
-    #     return category_list
-    #
-    # def insert_to_store_category(self, category_list):
-    #     # 将数据导入xx_spider_store_product_category表中
-    #
-    #     sql = '''
-    #         insert into sweet.xx_spider_store_product_category values(
-    #             '0',
-    #             now(),
-    #             now(),
-    #             '6',
-    #             null,
-    #             %s,
-    #             'Crabtree & Evelyn',
-    #             '541',
-    #             '1'
-    #         );
-    #     '''
-    #     with self.mysql.cursor() as cur:
-    #         cur.execute(sql, (
-    #             json.dumps(category_list),
-    #         ))
-    #
-    #         print('spider_store_category保存成功!')
 
 
 if __name__ == "__main__":

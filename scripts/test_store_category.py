@@ -9,11 +9,11 @@ import pymysql
 class TransferGoodsProducts:
     def __init__(self, db, collection='categories'):
         self.mysql = pymysql.connect(
-            host='59.110.155.75',
+            host='localhost',
             port=3306,
             user='root',
-            passwd='Dana1234!',
-            db='b2b2c',
+            passwd='mysql',
+            db='sweet',
             charset='utf8mb4'
         )
 
@@ -22,15 +22,26 @@ class TransferGoodsProducts:
         self.collection = self.db[collection]
 
     def run(self):
-        for item in self.collection.find():
-            # self.insert_to_store_category(item)
+        category_list = []
+        for i, item in enumerate(self.collection.find()):
             self.insert_to_store_product_category(item)
+            first_category_item = {'id': i, 'uuid': item['uuid'], 'name': item['name'], 'url': item['url'],
+                                   'children': []}
+            if item.get('children'):
+                for j, second_category in enumerate(item['children']):
+                    second_category_item = {'id': j, 'uuid': second_category['uuid'], 'name': second_category['name'],
+                                            'url': second_category['url'], 'children': []}
+                    if second_category.get('children'):
+                        for k, third_category in enumerate(second_category['children']):
+                            third_category_item = {'id': k, 'uuid': third_category['uuid'],
+                                                   'name': third_category['name'],
+                                                   'url': third_category['url'], 'children': None}
+                            second_category_item['children'].append(third_category_item)
+                    first_category_item['children'].append(second_category_item)
+            category_list.append(first_category_item)
 
-        self.mysql.commit()
-        self.mysql.close()
-
-    def insert_to_store_category(self, item):
         # 将数据导入xx_spider_store_product_category表中
+
         sql = '''
             insert into sweet.xx_spider_store_product_category values(
                 '0',
@@ -39,159 +50,25 @@ class TransferGoodsProducts:
                 '6',
                 null,
                 %s,
-                'Alexander McQueen',
-                '313',
+                'TED BAKER',
+                '514',
                 '1'
             );
         '''
         with self.mysql.cursor() as cur:
             cur.execute(sql, (
-                json.dumps([{"id": None, "uuid": item['uuid'], "name": item['name'],
-                             "url": item['url'],
-                             "children": [
-                                 {"id": None, "uuid": item['children'][0]['uuid'],
-                                  "name": item['children'][0]['name'],
-                                  "url": item['children'][0]['url'], "children": [
-                                     {"id": None, "uuid": item['children'][0]['children'][0]['uuid'],
-                                      "name": item['children'][0]['children'][0]['name'],
-                                      "url": item['children'][0]['children'][0]['url'], "children": None},
-                                     {"id": None, "uuid": item['children'][0]['children'][1]['uuid'],
-                                      "name": item['children'][0]['children'][1]['name'],
-                                      "url": item['children'][0]['children'][1]['url'], "children": None},
-                                     {"id": None, "uuid": item['children'][0]['children'][2]['uuid'],
-                                      "name": item['children'][0]['children'][2]['name'],
-                                      "url": item['children'][0]['children'][2]['url'], "children": None},
-                                     {"id": None, "uuid": item['children'][0]['children'][3]['uuid'],
-                                      "name": item['children'][0]['children'][3]['name'],
-                                      "url": item['children'][0]['children'][3]['url'], "children": None},
-                                     {"id": None, "uuid": item['children'][0]['children'][4]['uuid'],
-                                      "name": item['children'][0]['children'][4]['name'],
-                                      "url": item['children'][0]['children'][4]['url'], "children": None},
-                                 ]},
-                                 {"id": None, "uuid": item['children'][1]['uuid'],
-                                  "name": item['children'][1]['name'],
-                                  "url": item['children'][1]['url'], "children": [
-                                     {"id": None, "uuid": item['children'][1]['children'][0]['uuid'],
-                                      "name": item['children'][1]['children'][0]['name'],
-                                      "url": item['children'][1]['children'][0]['url'], "children": None},
-                                     {"id": None, "uuid": item['children'][1]['children'][1]['uuid'],
-                                      "name": item['children'][1]['children'][1]['name'],
-                                      "url": item['children'][1]['children'][1]['url'], "children": None},
-                                     {"id": None, "uuid": item['children'][1]['children'][2]['uuid'],
-                                      "name": item['children'][1]['children'][2]['name'],
-                                      "url": item['children'][1]['children'][2]['url'], "children": None}
-                                 ]},
-                                 {"id": None, "uuid": item['children'][2]['uuid'],
-                                  "name": item['children'][2]['name'],
-                                  "url": item['children'][1]['url'], "children": [
-                                     {"id": None, "uuid": item['children'][2]['children'][0]['uuid'],
-                                      "name": item['children'][2]['children'][0]['name'],
-                                      "url": item['children'][2]['children'][0]['url'], "children": None},
-                                 ]},
-                                 {"id": None, "uuid": item['children'][3]['uuid'],
-                                  "name": item['children'][3]['name'],
-                                  "url": item['children'][3]['url'], "children": [
-                                     {"id": None, "uuid": item['children'][3]['children'][0]['uuid'],
-                                      "name": item['children'][3]['children'][0]['name'],
-                                      "url": item['children'][3]['children'][0]['url'], "children": None},
-                                     {"id": None, "uuid": item['children'][3]['children'][1]['uuid'],
-                                      "name": item['children'][3]['children'][1]['name'],
-                                      "url": item['children'][3]['children'][1]['url'], "children": None},
-                                     {"id": None, "uuid": item['children'][3]['children'][2]['uuid'],
-                                      "name": item['children'][3]['children'][2]['name'],
-                                      "url": item['children'][3]['children'][2]['url'], "children": None},
-                                     {"id": None, "uuid": item['children'][3]['children'][3]['uuid'],
-                                      "name": item['children'][3]['children'][3]['name'],
-                                      "url": item['children'][3]['children'][3]['url'], "children": None},
-                                     {"id": None, "uuid": item['children'][3]['children'][4]['uuid'],
-                                      "name": item['children'][3]['children'][4]['name'],
-                                      "url": item['children'][3]['children'][4]['url'], "children": None},
-                                     {"id": None, "uuid": item['children'][3]['children'][5]['uuid'],
-                                      "name": item['children'][3]['children'][5]['name'],
-                                      "url": item['children'][3]['children'][5]['url'], "children": None},
-                                     {"id": None, "uuid": item['children'][3]['children'][6]['uuid'],
-                                      "name": item['children'][3]['children'][6]['name'],
-                                      "url": item['children'][3]['children'][6]['url'], "children": None},
-                                     {"id": None, "uuid": item['children'][3]['children'][7]['uuid'],
-                                      "name": item['children'][3]['children'][7]['name'],
-                                      "url": item['children'][3]['children'][7]['url'], "children": None},
-                                     {"id": None, "uuid": item['children'][3]['children'][8]['uuid'],
-                                      "name": item['children'][3]['children'][8]['name'],
-                                      "url": item['children'][3]['children'][8]['url'], "children": None}
-                                 ]},
-                                 {"id": None, "uuid": item['children'][4]['uuid'],
-                                  "name": item['children'][4]['name'],
-                                  "url": item['children'][4]['url'], "children": [
-                                     {"id": None, "uuid": item['children'][4]['children'][0]['uuid'],
-                                      "name": item['children'][4]['children'][0]['name'],
-                                      "url": item['children'][4]['children'][0]['url'], "children": None},
-                                     {"id": None, "uuid": item['children'][4]['children'][1]['uuid'],
-                                      "name": item['children'][4]['children'][1]['name'],
-                                      "url": item['children'][4]['children'][1]['url'], "children": None},
-                                     {"id": None, "uuid": item['children'][4]['children'][2]['uuid'],
-                                      "name": item['children'][4]['children'][2]['name'],
-                                      "url": item['children'][4]['children'][2]['url'], "children": None},
-                                     {"id": None, "uuid": item['children'][4]['children'][3]['uuid'],
-                                      "name": item['children'][4]['children'][3]['name'],
-                                      "url": item['children'][4]['children'][3]['url'], "children": None},
-                                     {"id": None, "uuid": item['children'][4]['children'][4]['uuid'],
-                                      "name": item['children'][4]['children'][4]['name'],
-                                      "url": item['children'][4]['children'][4]['url'], "children": None},
-                                     {"id": None, "uuid": item['children'][4]['children'][5]['uuid'],
-                                      "name": item['children'][4]['children'][5]['name'],
-                                      "url": item['children'][4]['children'][5]['url'], "children": None}
-                                 ]},
-                                 {"id": None, "uuid": item['children'][5]['uuid'],
-                                  "name": item['children'][5]['name'],
-                                  "url": item['children'][5]['url'], "children": [
-                                     {"id": None, "uuid": item['children'][5]['children'][0]['uuid'],
-                                      "name": item['children'][5]['children'][0]['name'],
-                                      "url": item['children'][5]['children'][0]['url'], "children": None},
-                                     {"id": None, "uuid": item['children'][5]['children'][1]['uuid'],
-                                      "name": item['children'][5]['children'][1]['name'],
-                                      "url": item['children'][5]['children'][1]['url'], "children": None},
-                                     {"id": None, "uuid": item['children'][5]['children'][2]['uuid'],
-                                      "name": item['children'][5]['children'][2]['name'],
-                                      "url": item['children'][5]['children'][2]['url'], "children": None},
-                                     {"id": None, "uuid": item['children'][5]['children'][3]['uuid'],
-                                      "name": item['children'][5]['children'][3]['name'],
-                                      "url": item['children'][5]['children'][3]['url'], "children": None}
-                                 ]},
-                                 {"id": None, "uuid": item['children'][6]['uuid'],
-                                  "name": item['children'][6]['name'],
-                                  "url": item['children'][6]['url'], "children": [
-                                     {"id": None, "uuid": item['children'][6]['children'][0]['uuid'],
-                                      "name": item['children'][6]['children'][0]['name'],
-                                      "url": item['children'][6]['children'][0]['url'], "children": None},
-                                     {"id": None, "uuid": item['children'][6]['children'][1]['uuid'],
-                                      "name": item['children'][6]['children'][1]['name'],
-                                      "url": item['children'][6]['children'][1]['url'], "children": None},
-                                     {"id": None, "uuid": item['children'][6]['children'][2]['uuid'],
-                                      "name": item['children'][6]['children'][2]['name'],
-                                      "url": item['children'][6]['children'][2]['url'], "children": None},
-                                     {"id": None, "uuid": item['children'][6]['children'][3]['uuid'],
-                                      "name": item['children'][6]['children'][3]['name'],
-                                      "url": item['children'][6]['children'][3]['url'], "children": None},
-                                     {"id": None, "uuid": item['children'][6]['children'][4]['uuid'],
-                                      "name": item['children'][6]['children'][4]['name'],
-                                      "url": item['children'][6]['children'][4]['url'], "children": None},
-                                     {"id": None, "uuid": item['children'][6]['children'][5]['uuid'],
-                                      "name": item['children'][6]['children'][5]['name'],
-                                      "url": item['children'][6]['children'][5]['url'], "children": None},
-                                     {"id": None, "uuid": item['children'][6]['children'][6]['uuid'],
-                                      "name": item['children'][6]['children'][6]['name'],
-                                      "url": item['children'][6]['children'][6]['url'], "children": None}
-                                 ]},
-
-                             ]}]),
+                json.dumps(category_list),
             ))
 
             print('spider_store_category保存成功!')
 
+        self.mysql.commit()
+        self.mysql.close()
+
     def insert_to_store_product_category(self, item):
         # 将数据导入xx_store_product_category表中
         sql = '''
-            insert into b2b2c.xx_store_product_category values(
+            insert into sweet.xx_store_product_category values(
                 '0',
                 now(),
                 now(),
@@ -201,7 +78,7 @@ class TransferGoodsProducts:
                 %s,
                 ',',
                 null,
-                '1922',
+                '514',
                 %s,
                 %s,
                 %s
@@ -224,7 +101,7 @@ class TransferGoodsProducts:
             if item.get('children'):
                 for cat2_data in item['children']:
                     sql = '''
-                        insert into b2b2c.xx_store_product_category values(
+                        insert into sweet.xx_store_product_category values(
                             '0',
                             now(),
                             now(),
@@ -234,7 +111,7 @@ class TransferGoodsProducts:
                             %s,
                             %s,
                             %s,
-                            '1922',
+                            '514',
                             %s,
                             %s,
                             %s
@@ -259,7 +136,7 @@ class TransferGoodsProducts:
                         if cat2_data.get('children'):
                             for cat3_data in cat2_data['children']:
                                 sql = '''
-                                    insert into b2b2c.xx_store_product_category values(
+                                    insert into sweet.xx_store_product_category values(
                                         '0',
                                         now(),
                                         now(),
@@ -269,7 +146,7 @@ class TransferGoodsProducts:
                                         %s,
                                         %s,
                                         %s,
-                                        '1922',
+                                        '514',
                                         %s,
                                         %s,
                                         %s
@@ -289,5 +166,5 @@ class TransferGoodsProducts:
 
 
 if __name__ == "__main__":
-    t = TransferGoodsProducts(db='AlexandermcqueenCrawler')
+    t = TransferGoodsProducts(db='TedbakerCrawler')
     t.run()
