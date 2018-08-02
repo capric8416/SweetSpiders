@@ -213,9 +213,12 @@ class AlexandermcqueenCrawler(IndexListDetailCrawler):
         name = pq('.productName .inner').text().strip()
 
         # 商品价格
-        price = pq('.itemPriceContainer .price .value').text().strip()
-        if price == 'Complimentary':
-            price = '999999999'  # 没有价格
+        was_price = pq('.itemPriceContainer .full .value').text().strip()
+        now_price = pq('.itemPriceContainer .discounted .value').text().strip()
+        if not (was_price and now_price):
+            now_price = pq('.itemPriceContainer .price .value').text().strip()
+            if now_price == 'Complimentary':
+                now_price = '999999999'  # 没有价格
 
         # 商品详细介绍
         introduction = pq('.descriptionsContainer .attributesUpdater .value').text().strip()
@@ -260,7 +263,7 @@ class AlexandermcqueenCrawler(IndexListDetailCrawler):
 
         return {
             'url': url, 'product_id': meta['product_id'], 'categories': meta['categories'], 'images': images,
-            'name': name, 'price': price, 'introduction': introduction, 'description': description, 'color': colors,
-            'sizes': sizes, 'stock': stock, 'store': self.store, 'brand': self.brand, 'store_id': self.store_id,
-            'brand_id': self.brand_id, 'coin_id': self.coin_id
+            'name': name, 'was_price': was_price, 'now_price': now_price, 'introduction': introduction,
+            'description': description, 'color': colors, 'sizes': sizes, 'stock': stock, 'store': self.store,
+            'brand': self.brand, 'store_id': self.store_id, 'brand_id': self.brand_id, 'coin_id': self.coin_id
         }

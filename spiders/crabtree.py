@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # !/usr/bin/env python
 import copy
-import json
 from urllib.parse import urlparse
 
 from SweetSpiders.common import IndexListDetailCrawler
@@ -148,16 +147,17 @@ class CrabtreeCrawler(IndexListDetailCrawler):
 
         # 商品图片
         imgs = []
-        if pq('.product-add-to-cart .product-variations .attribute .value .variation-select  option'):
-            for img in pq(
-                    '.product-add-to-cart .product-variations .attribute .value .variation-select  option').items():
-                img_url = json.loads(img.attr('data-lgimg'))['url']
+        # if pq('.product-add-to-cart .product-variations .attribute .value .variation-select  option'):
+        #     for img in pq(
+        #             '.product-add-to-cart .product-variations .attribute .value .variation-select  option').items():
+        #         img_url = json.loads(img.attr('data-lgimg'))['url']
+        #         imgs.append(img_url)
+        # else:
+        for img in pq('#pdpMain .product-image .primary-image').items():
+            img_url = img.attr('src')
+            if img_url.startswith('http://media'):
                 imgs.append(img_url)
-        else:
-            for img in pq('#pdpMain .product-image .primary-image').items():
-                img_url = img.attr('src')
-                imgs.append(img_url)
-                imgs = list(set(imgs))
+        imgs = list(set(imgs))
 
         # 商品名称
         name = pq('.cols .product-detail .product-name').text().strip()
@@ -216,6 +216,11 @@ class CrabtreeCrawler(IndexListDetailCrawler):
                     now_price_2 = pq('.purchase-area .product-content .product-price .price-sales').text().strip()
                 was_prices.append(was_price_2)
                 now_prices.append(now_price_2)
+                img_50ml = pq('.product-primary-image .pdp-image-slides .primary-image')
+                for img_2 in img_50ml.items():
+                    img_new = img_2.attr('src')
+                    if img_new.startswith('http://media') and img_new.endswith('$large$'):
+                        imgs.append(img_new)
         else:
             size = [s.text().strip() for s in
                     pq(

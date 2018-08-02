@@ -32,7 +32,7 @@ def close_pymysql(cur, conn):
 
 if __name__ == "__main__":
     client = pymongo.MongoClient('localhost', 27017)
-    db = client['TedbakerCrawler']
+    db = client['HarrodsCrawler']
     collection = db['products']
 
     myConn_list = start_mysql()
@@ -56,27 +56,28 @@ if __name__ == "__main__":
             %s,
             %s,
             null,
-            '514',
+            '1606',
             %s,
             null,
             '1',
             null,
-            '405'
+            '445'
         );
     '''
 
     for item in collection.find(
-            {"categories": [
-                ["Women", "妇女", "https://www.tedbaker.com/uk/Womens/c/category_womens"], ["Accessories", "饰品",
-                                                                                          "https://www.tedbaker.com/uk/Womens/Accessories/c/category_womens_accessories?int_cmpid=_mn_w_accessories"],
-                ["Wash and Make Up Bags", "洗涤和化妆袋",
-                 "https://www.tedbaker.com/uk/Womens/Accessories/Wash-and-Make-up-Bags/c/category_womens_accessories_wash-make-up-bags?int_cmpid=_mn_w_wash_bags"]]}
+            {'categories': [['Beauty', '美女', 'https://www.harrods.com/en-gb/beauty'],
+                            ['Make-Up', '化妆', 'https://www.harrods.com/en-gb/beauty'],
+                            ['Make-Up Removers', '化妆品去除剂',
+                             'https://www.harrods.com/en-gb/beauty/make-up/make-up-removers']]}
     ):
+        if not item['now_price']:
+            continue
         try:
             cur.execute(sql, (
                 item['product_id'],
                 item['categories'][0][0],
-                '<p>' + item['introduction'] + '</p>',
+                '<p>' + item['introduction'] + json.dumps(item['size_guide']) + '</p>',
                 json.dumps(item['images']),
                 item['name'],
                 item['brand'],

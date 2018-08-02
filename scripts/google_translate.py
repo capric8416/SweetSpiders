@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # !/usr/bin/env python
+import time
 
 import requests
 
@@ -13,7 +14,7 @@ class GoogleTranslate:
         }
         self.max_len = 5000
 
-    def query(self, source, sl='jap', tl='zh-CN', hl='zh-CN'):
+    def query(self, source, sl='en', tl='zh-CN', hl='zh-CN'):
         _len = len(source)
         assert _len <= self.max_len, f'翻译的长度({_len})超过限制({self.max_len})！！！'
 
@@ -45,11 +46,18 @@ class GoogleTranslate:
             ('dt', 'ss'),
         ]
 
-        resp = requests.get('http://translate.google.cn/translate_a/single', params=params, timeout=5)
-        target = ''.join([a for a, b, *_ in resp.json()[0] if b])
+        while True:
+            try:
+                resp = requests.get('http://translate.google.cn/translate_a/single', params=params, timeout=5)
+                target = ''.join([a for a, b, *_ in resp.json()[0] if b])
 
-        print('[source]  ', source)
-        print('[target]  ', target)
+                print('[source]  ', source)
+                print('[target]  ', target)
+            except Exception as e:
+                print(e)
+                time.sleep(0.5)
+            else:
+                break
 
         return target
 
@@ -122,3 +130,4 @@ class GoogleTranslate:
 
 if __name__ == '__main__':
     g = GoogleTranslate()
+    g.query(source='Pret-a-porter', sl='fr')

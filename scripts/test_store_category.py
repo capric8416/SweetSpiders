@@ -9,11 +9,11 @@ import pymysql
 class TransferGoodsProducts:
     def __init__(self, db, collection='categories'):
         self.mysql = pymysql.connect(
-            host='localhost',
+            host='59.110.155.75',
             port=3306,
             user='root',
-            passwd='mysql',
-            db='sweet',
+            passwd='Dana1234!',
+            db='b2b2c',
             charset='utf8mb4'
         )
 
@@ -43,15 +43,15 @@ class TransferGoodsProducts:
         # 将数据导入xx_spider_store_product_category表中
 
         sql = '''
-            insert into sweet.xx_spider_store_product_category values(
+            insert into b2b2c.xx_spider_store_product_category values(
                 '0',
                 now(),
                 now(),
                 '6',
                 null,
                 %s,
-                'TED BAKER',
-                '514',
+                'Harrods',
+                '1606',
                 '1'
             );
         '''
@@ -68,7 +68,7 @@ class TransferGoodsProducts:
     def insert_to_store_product_category(self, item):
         # 将数据导入xx_store_product_category表中
         sql = '''
-            insert into sweet.xx_store_product_category values(
+            insert into b2b2c.xx_store_product_category values(
                 '0',
                 now(),
                 now(),
@@ -78,7 +78,7 @@ class TransferGoodsProducts:
                 %s,
                 ',',
                 null,
-                '514',
+                '1606',
                 %s,
                 %s,
                 %s
@@ -101,7 +101,7 @@ class TransferGoodsProducts:
             if item.get('children'):
                 for cat2_data in item['children']:
                     sql = '''
-                        insert into sweet.xx_store_product_category values(
+                        insert into b2b2c.xx_store_product_category values(
                             '0',
                             now(),
                             now(),
@@ -111,7 +111,7 @@ class TransferGoodsProducts:
                             %s,
                             %s,
                             %s,
-                            '514',
+                            '1606',
                             %s,
                             %s,
                             %s
@@ -136,7 +136,7 @@ class TransferGoodsProducts:
                         if cat2_data.get('children'):
                             for cat3_data in cat2_data['children']:
                                 sql = '''
-                                    insert into sweet.xx_store_product_category values(
+                                    insert into b2b2c.xx_store_product_category values(
                                         '0',
                                         now(),
                                         now(),
@@ -146,7 +146,7 @@ class TransferGoodsProducts:
                                         %s,
                                         %s,
                                         %s,
-                                        '514',
+                                        '1606',
                                         %s,
                                         %s,
                                         %s
@@ -166,5 +166,5 @@ class TransferGoodsProducts:
 
 
 if __name__ == "__main__":
-    t = TransferGoodsProducts(db='TedbakerCrawler')
+    t = TransferGoodsProducts(db='HarrodsCrawler')
     t.run()

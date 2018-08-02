@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
 # !/usr/bin/env python
 import copy
-from urllib.parse import urlparse
 import time
+from urllib.parse import urlparse
+
 from SweetSpiders.common import IndexListDetailCrawler
 from pyquery import PyQuery
+
+from scripts.google_translate import GoogleTranslate
 
 
 class HarrodsCrawler(IndexListDetailCrawler):
@@ -38,7 +41,7 @@ class HarrodsCrawler(IndexListDetailCrawler):
 
     def _parse_index(self, resp):
         """首页解析器"""
-
+        g = GoogleTranslate()
         pq = PyQuery(resp.text)
         results = []
         categories = []
@@ -52,7 +55,8 @@ class HarrodsCrawler(IndexListDetailCrawler):
                 break
             cat1_url = cat1_node('.nav_link').attr('href')
 
-            cat1 = {'name': cat1_name, 'url': cat1_url, 'children': [], 'uuid': self.cu.get_or_create(cat1_name)}
+            cat1 = {'name': cat1_name, 'name_cn': g.query(source=cat1_name), 'url': cat1_url, 'children': [],
+                    'uuid': self.cu.get_or_create(cat1_name)}
 
             child = cat1_node('.nav_sub-menu-wrapper .nav_sub-menu-container ul.nav_sub-menu .nav_sub-menu-group')
             for cat2_node in child.items():
@@ -63,7 +67,7 @@ class HarrodsCrawler(IndexListDetailCrawler):
                     break
                 cat2_url = cat1_url
                 cat2 = {
-                    'name': cat2_name, 'url': cat2_url, 'children': [],
+                    'name': cat2_name, 'name_cn': g.query(source=cat2_name), 'url': cat2_url, 'children': [],
                     'uuid': self.cu.get_or_create(cat1_name, cat2_name)
                 }
                 for cat3_node in cat2_node('.nav_sub-menu-list .nav_sub-menu-item').items():
@@ -84,7 +88,7 @@ class HarrodsCrawler(IndexListDetailCrawler):
                     headers['Referer'] = resp.url
 
                     cat2['children'].append({
-                        'name': cat3_name, 'url': cat3_url,
+                        'name': cat3_name, 'name_cn': g.query(source=cat3_name), 'url': cat3_url,
                         'uuid': self.cu.get_or_create(cat1_name, cat2_name, cat3_name)
                     })
 
@@ -92,7 +96,9 @@ class HarrodsCrawler(IndexListDetailCrawler):
                     cookies.update(self.cookies)
                     results.append([
                         cat3_url, headers, cookies,
-                        {'categories': [(cat1_name, cat1_url), (cat2_name, cat2_url), (cat3_name, cat3_url)]}
+                        {'categories': [(cat1_name, g.query(source=cat1_name), cat1_url),
+                                        (cat2_name, g.query(source=cat2_name), cat2_url),
+                                        (cat3_name, g.query(source=cat3_name), cat3_url)]}
                     ])
 
                 cat1['children'].append(cat2)
@@ -172,17 +178,11 @@ class HarrodsCrawler(IndexListDetailCrawler):
             now_price = pq(
                 '.pdp_main .pdp_buying-controls .js-pdp-add-to-bag .buying-controls_price .price').text().strip()
 
-        # 商品颜色
+        # 商品默认颜色
         colors = []
-        if pq('.js-pdp-add-to-bag .buying-controls_details .buying-controls_option .buying-controls_value'):
-            color = pq(
-                '.js-pdp-add-to-bag .buying-controls_details .buying-controls_option .buying-controls_value').text().strip()
-            colors.append(color)
-        else:
-            for color_node in pq(
-                    '.js-pdp-add-to-bag .buying-controls_details .buying-controls_option .hrd_dropdown-list .hrd_dropdown-item').items():
-                color = color_node('.hrd_dropdown-item-label').text().strip()
-                colors.append(color)
+        default_color = pq('.js-default-colour').attr('value')
+        if default_color:
+            colors.append(default_color)
 
         # 商品介绍
         details = [li.text().strip() for li in pq(
@@ -202,7 +202,6 @@ class HarrodsCrawler(IndexListDetailCrawler):
         for size_tr in pq('#international-sizing .tab_content tr').items():
             size_each = size_tr.text().strip()
             table1.append(size_each)
-
 
         table2_name = pq('#uk-sizing').children('h2.tab_title').text().strip()
         inches_unit = 'Inches'
@@ -225,7 +224,7 @@ class HarrodsCrawler(IndexListDetailCrawler):
                        'cm_unit': cm_unit, 'cm_sizes': cm_sizes}
         }
 
-        # 商品尺码
+        # 商品颜色和尺码
         sizes = []
         unique_code = urlparse(url).path.split('/')[-1].split('-')[-1]
         query = urlparse(url).query
@@ -233,12 +232,27 @@ class HarrodsCrawler(IndexListDetailCrawler):
             size_url = 'https://www.harrods.com/en-gb/product/buyingcontrols/' + unique_code + '&' + query
         else:
             size_url = 'https://www.harrods.com/en-gb/product/buyingcontrols/' + unique_code
-        params = {'_': int(time.time() * 1000)}
+        params = {'_': int(time.time() * 1000), 'colour': default_color}
         resp = self._request(url=size_url, headers=extra['headers'], cookies=extra['cookies'], params=params)
         pq = PyQuery(resp.text)
-        for size_node in pq('select.buying-controls_select option').items():
-            size = size_node.text().strip()
+        if pq('select.buying-controls_select--size option'):
+            for size_node in pq('select.buying-controls_select--size option').items():
+                size = size_node.text().strip()
+                if size:
+                    sizes.append(size)
+        else:
+            size = pq('.js-buying-controls_value--size').text().strip()
             sizes.append(size)
+        if pq('select.buying-controls_select--colour option'):
+            colors = []
+            for color_node in pq('select.buying-controls_select--colour option').items():
+                color = color_node.text().strip()
+                if color:
+                    colors.append(color)
+        else:
+            colors = []
+            color = pq('.js-buying-controls_value--colour').text().strip()
+            colors.append(color)
 
         return {
             'url': url, 'product_id': meta['product_id'], 'categories': meta['categories'], 'images': images,

@@ -8,7 +8,7 @@ import pymongo
 import pymysql
 import requests
 from SweetSpiders.common import ThreadPoolSubmit
-from SweetSpiders.scripts.categoires_mapper import CategoriesMapper
+from SweetSpiders.scripts.categories_mapper import CategoriesMapper
 
 
 class TransferGoodsProducts:
