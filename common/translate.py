@@ -9,6 +9,11 @@ from pyquery import PyQuery
 
 class GoogleTranslate:
     def __init__(self, alive=1000):
+        """
+        Google翻译
+        :param alive: 每翻译多少条重置
+        """
+
         self.index = 'https://translate.google.cn/'
 
         self.url = 'http://translate.google.cn/translate_a/single'
@@ -29,6 +34,15 @@ class GoogleTranslate:
         self.get_context()
 
     def query(self, source, sl='en', tl='zh-CN', hl='zh-CN'):
+        """
+        单条翻译
+        :param source: str, 要翻译的文本
+        :param sl: str, 源语言
+        :param tl: str, 目标语言
+        :param hl: str, 目标语言
+        :return:
+        """
+
         self.check_alive()
 
         _len = len(source)
@@ -80,13 +94,30 @@ class GoogleTranslate:
         return target
 
     def batch_query(self, categories_list):
+        """
+        批量翻译
+        :param categories_list: list, 要翻译的文本列表
+        :return: query generator
+        """
+
         for category in categories_list:
             yield self.query(source=category)
 
     def get_tk(self, source):
+        """
+        获取tk参数
+        :param source: str, 要翻译的文本
+        :return: str
+        """
+
         return self.context.call('jr', source).lstrip('&tk=')
 
     def check_alive(self):
+        """
+        检查是否需要重置
+        :return:
+        """
+
         self.elapsed -= 1
         if not self.elapsed:
             print('** RESET **')
@@ -94,6 +125,11 @@ class GoogleTranslate:
             self.elapsed = self.alive
 
     def get_context(self):
+        """
+        初始化js上下文
+        :return:
+        """
+
         self.context = execjs.compile(
             f'ir = {self.get_ir()};'
             +
@@ -148,6 +184,8 @@ class GoogleTranslate:
         )
 
     def get_ir(self):
+        """获取ir"""
+
         resp = requests.get(self.index)
 
         self.cookies = resp.cookies.get_dict()
