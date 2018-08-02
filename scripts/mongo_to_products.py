@@ -9,7 +9,7 @@ import pymysql
 import requests
 from SweetSpiders.common import ThreadPoolSubmit
 
-from scripts.google_translate import GoogleTranslate
+from common.translate import GoogleTranslate
 
 
 class TransferGoodsProducts:

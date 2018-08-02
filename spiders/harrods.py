@@ -7,7 +7,7 @@ from urllib.parse import urlparse
 from SweetSpiders.common import IndexListDetailCrawler
 from pyquery import PyQuery
 
-from scripts.google_translate import GoogleTranslate
+from common.translate import GoogleTranslate
 
 
 class HarrodsCrawler(IndexListDetailCrawler):

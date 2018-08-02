@@ -2,54 +2,84 @@
 # !/usr/bin/env python
 import execjs
 import requests
+from pyquery import PyQuery
 
 
 class Py4Js:
 
     def __init__(self):
-        self.ctx = execjs.compile("""
-        function TL(a) {
-        var k = "";
-        var b = 406644;
-        var b1 = 3293161072;
+        ir, cookies = self.get_ir()
+        self.context = self.get_jr(ir=ir)
 
-        var jd = ".";
-        var $b = "+-a^+6";
-        var Zb = "+-3^+b+-f";
+    @staticmethod
+    def get_ir():
+        resp = requests.get('https://translate.google.cn/')
 
-        for (var e = [], f = 0, g = 0; g < a.length; g++) {
-            var m = a.charCodeAt(g);
-            128 > m ? e[f++] = m : (2048 > m ? e[f++] = m >> 6 | 192 : (55296 == (m & 64512) && g + 1 < a.length && 56320 == (a.charCodeAt(g + 1) & 64512) ? (m = 65536 + ((m & 1023) << 10) + (a.charCodeAt(++g) & 1023),
-            e[f++] = m >> 18 | 240,
-            e[f++] = m >> 12 & 63 | 128) : e[f++] = m >> 12 | 224,
-            e[f++] = m >> 6 & 63 | 128),
-            e[f++] = m & 63 | 128)
-        }
-        a = b;
-        for (f = 0; f < e.length; f++) a += e[f],
-        a = RL(a, $b);
-        a = RL(a, Zb);
-        a ^= b1 || 0;
-        0 > a && (a = (a & 2147483647) + 2147483648);
-        a %= 1E6;
-        return a.toString() + jd + (a ^ b)
-    };
+        cookies = resp.cookies.get_dict()
 
-    function RL(a, b) {
-        var t = "a";
-        var Yb = "+";
-        for (var c = 0; c < b.length - 2; c += 3) {
-            var d = b.charAt(c + 2),
-            d = d >= t ? d.charCodeAt(0) - 87 : Number(d),
-            d = b.charAt(c + 1) == Yb ? a >>> d: a << d;
-            a = b.charAt(c) == Yb ? a + d & 4294967295 : a ^ d
-        }
-        return a
-    }
-    """)
+        pq = PyQuery(resp.text)
+        script = pq('script:contains(TKK)').text()
+        ir = execjs.eval(f'''function () {{ {script}; return TKK; }}()''')
+
+        return ir, cookies
+
+    @staticmethod
+    def get_jr(ir):
+        return execjs.compile(
+            f'ir = {ir};'
+            +
+            '''
+            gr = function (a) {
+                return function () {
+                    return a
+                }
+            };
+            
+            jr = function (a) {
+                var b = ir;
+                var d = gr(String.fromCharCode(116));
+                c = gr(String.fromCharCode(107));
+                d = [d(), d()];
+                d[1] = c();
+                c = "&" + d.join("") + "=";
+                d = b.toString().split(".");
+                b = Number(d[0]) || 0;
+                for (var e = [], f = 0, g = 0; g < a.length; g++) {
+                    var l = a.charCodeAt(g);
+                    128 > l ? e[f++] = l : (2048 > l ? e[f++] = l >> 6 | 192 : 
+                    (55296 == (l & 64512) && g + 1 < a.length && 56320 == (a.charCodeAt(g + 1) & 64512) ? 
+                    (l = 65536 + ((l & 1023) << 10) + (a.charCodeAt(++g) & 1023),
+                        e[f++] = l >> 18 | 240,
+                        e[f++] = l >> 12 & 63 | 128) : e[f++] = l >> 12 | 224,
+                        e[f++] = l >> 6 & 63 | 128),
+                        e[f++] = l & 63 | 128)
+                }
+                a = b;
+                for (f = 0; f < e.length; f++)
+                    a += e[f],
+                        a = hr(a, "+-a^+6");
+                a = hr(a, "+-3^+b+-f");
+                a ^= Number(d[1]) || 0;
+                0 > a && (a = (a & 2147483647) + 2147483648);
+                a %= 1E6;
+                return c + (a.toString() + "." + (a ^ b))
+            };
+            
+            
+            hr = function (a, b) {
+                for (var c = 0; c < b.length - 2; c += 3) {
+                    var d = b.charAt(c + 2);
+                    d = "a" <= d ? d.charCodeAt(0) - 87 : Number(d);
+                    d = "+" == b.charAt(c + 1) ? a >>> d : a << d;
+                    a = "+" == b.charAt(c) ? a + d & 4294967295 : a ^ d
+                }
+                return a
+            };
+        '''
+        )
 
     def get_tk(self, text):
-        return self.ctx.call("TL", text)
+        return self.context.call('jr', text)
 
 
 def translate(tk, content):
@@ -57,7 +87,7 @@ def translate(tk, content):
         print("翻译的长度超过限制！！！")
         return
 
-    param = {'tk': tk, 'q': content}
+    param = {'tk': tk.lstrip('&tk='), 'q': content}
 
     result = requests.get("""http://translate.google.cn/translate_a/single?client=t&sl=en
         &tl=zh-CN&hl=zh-CN&dt=at&dt=bd&dt=ex&dt=ld&dt=md&dt=qca&dt=rw&dt=rm&dt=ss
@@ -71,7 +101,7 @@ def translate(tk, content):
 def main():
     js = Py4Js()
 
-    content = "'Womenswear', 'Stories', 'Tailoring'"
+    content = 'Prêt-à-porter'
 
     tk = js.get_tk(content)
     translate(tk, content)

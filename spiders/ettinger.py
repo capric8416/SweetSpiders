@@ -5,7 +5,7 @@ import copy
 from SweetSpiders.common import IndexListDetailCrawler
 from pyquery import PyQuery
 
-from scripts.google_translate import GoogleTranslate
+from common.translate import GoogleTranslate
 
 
 class EttingerCrawler(IndexListDetailCrawler):
