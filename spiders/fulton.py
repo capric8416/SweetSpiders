@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 # !/usr/bin/env python
-from SweetSpiders.common import IndexListDetailCrawler
-from pyquery import PyQuery
 import copy
 from urllib.parse import urlparse
+
+from SweetSpiders.common import IndexListDetailCrawler
+from pyquery import PyQuery
 
 
 class FultonCrawler(IndexListDetailCrawler):
@@ -74,7 +75,7 @@ class FultonCrawler(IndexListDetailCrawler):
         while True:
             resp = self._request(
                 url=url, headers=headers, cookies=cookies,
-                rollback=self.push_category_info, meta=meta
+                meta=meta
             )
             if not resp:
                 return
@@ -141,4 +142,3 @@ class FultonCrawler(IndexListDetailCrawler):
             'introduction': introduction, 'store': self.store, 'brand': self.brand, 'store_id': self.store_id,
             'brand_id': self.brand_id, 'coin_id': self.coin_id, 'stock': stock
         }
-

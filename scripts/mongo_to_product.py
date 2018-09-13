@@ -32,7 +32,7 @@ def close_pymysql(cur, conn):
 
 if __name__ == "__main__":
     client = pymongo.MongoClient('localhost', 27017)
-    db = client['HarrodsCrawler']
+    db = client['AlexandermcqueenCrawler']
     collection = db['products']
 
     myConn_list = start_mysql()
@@ -56,28 +56,28 @@ if __name__ == "__main__":
             %s,
             %s,
             null,
-            '1606',
+            '1',
             %s,
             null,
             '1',
             null,
-            '445'
+            '5'
         );
     '''
 
     for item in collection.find(
-            {'categories': [['Beauty', '美女', 'https://www.harrods.com/en-gb/beauty'],
-                            ['Make-Up', '化妆', 'https://www.harrods.com/en-gb/beauty'],
-                            ['Make-Up Removers', '化妆品去除剂',
-                             'https://www.harrods.com/en-gb/beauty/make-up/make-up-removers']]}
+            {'categories': [
+                ['Womenswear', '女装', 'https://www.alexandermcqueen.com/gb/alexandermcqueen'],
+                ['Shop by', '购物', 'https://www.alexandermcqueen.com/experience/en/womens-pre-autumnwinter-shop/'],
+                ['AW18 Collection', 'AW18系列', 'https://www.alexandermcqueen.com/experience/en/aw18-womens-main/']]}
     ):
-        if not item['now_price']:
+        if not item['price']:
             continue
         try:
             cur.execute(sql, (
                 item['product_id'],
                 item['categories'][0][0],
-                '<p>' + item['introduction'] + json.dumps(item['size_guide']) + '</p>',
+                '<p>' + item['introduction'] + item['description'] + '</p>',
                 json.dumps(item['images']),
                 item['name'],
                 item['brand'],

@@ -37,12 +37,12 @@ class TransferGoodsProducts:
     def run(self):
         goods_image = []
 
-        for item in self.collection.find({'categories': [['Beauty', '美女', 'https://www.harrods.com/en-gb/beauty'],
-                                                         ['Make-Up', '化妆', 'https://www.harrods.com/en-gb/beauty'],
-                                                         ['Make-Up Removers', '化妆品去除剂',
-                                                          'https://www.harrods.com/en-gb/beauty/make-up/make-up-removers']]}
-                                         ):
-            if not item['now_price']:
+        for item in self.collection.find({'categories': [
+            ['Menswear', '男装', 'https://www.alexandermcqueen.com/gb/alexandermcqueen'],
+            ['All Accessories', '所有配件', 'https://www.alexandermcqueen.com/gb/alexandermcqueen/online/men/accessories'],
+            ['Belts', '腰带', 'https://www.alexandermcqueen.com/gb/alexandermcqueen/online/men/belts']]}
+        ):
+            if not item['price']:
                 continue
             goods_id, images, url, categories = self.insert_to_goods(item)
 
@@ -106,7 +106,7 @@ class TransferGoodsProducts:
     def download_image(self, url, headers):
         while True:
             try:
-                data = requests.get(url=url, headers=headers).content
+                data = requests.get(url=url, headers=headers, timeout=5).content
             except Exception as e:
                 print(f'retry after {e}')
             else:
@@ -181,7 +181,7 @@ class TransferGoodsProducts:
                 null,
                 null,
                 null,
-                '2018080112041',
+                '2018090712041',
                 %s,
                 '0',
                 '0',
@@ -191,10 +191,10 @@ class TransferGoodsProducts:
                 '0',
                 now(),
                 null,
-                '445',
-                '309',
-                '1606',
-                '762',
+                '441',
+                '308',
+                '313',
+                '2115',
                 null,
                 %s,
                 %s,
@@ -205,40 +205,46 @@ class TransferGoodsProducts:
                 null,
                 '0',
                 '3226',
-                '762',
+                '2115',
                 '0.000000',
-                '128',
-                '445',
-                '1606'
+                '142',
+                '6',
+                '2'
             );
         '''
         specification_list = []
         specification_color = {"id": "1", "name": "颜色", "nameEn": None, "entries": []}
-        length = len(item['colors'])
-        for i, color in enumerate(item['colors']):
+        length = len(item['color'])
+        for i, color in enumerate(item['color']):
             # selected = i == 0
+            if not color:
+                continue
             entries_color = {"id": i, "value": color, "valueEn": None, "isSelected": True}
             specification_color['entries'].append(entries_color)
-        specification_list.append(specification_color)
+        if specification_color['entries']:
+            specification_list.append(specification_color)
 
         specification_size = {"id": "2", "name": "尺寸", "nameEn": None, "entries": []}
         for j, size in enumerate(item['sizes']):
+            if not size:
+                continue
             # selected = j == 0
             entries_size = {"id": j + length, "value": size, "valueEn": None, "isSelected": True}
             specification_size['entries'].append(entries_size)
-        specification_list.append(specification_size)
+        if specification_size['entries']:
+            specification_list.append(specification_size)
 
         with self.mysql.cursor() as cur:
             cur.execute(sql, (
                 item['brand'],
                 item['brand'],
                 '',
-                item['introduction'] + json.dumps(item['size_guide']),
-                item['now_price'].split()[0].lstrip('£').replace(',', ''),
+                item['introduction'] + item['description'],
+                item['price'].split()[0].replace(',', ''),
                 item['name'],
-                item['now_price'].split()[0].lstrip('£').replace(',', ''),
+                item['price'].split()[0].replace(',', ''),
                 '',
-                json.dumps(specification_list),
+                json.dumps(specification_list) if specification_list else None,
                 item['name'],
                 item['url'],
             ))
@@ -267,7 +273,7 @@ class TransferGoodsProducts:
                     %s,
                     %s,
                     %s,
-                    '2018080115334',
+                    '2018090715334',
                     %s,
                     '1000',
                     %s,
@@ -278,23 +284,67 @@ class TransferGoodsProducts:
                     null
             );
             '''
-        length = len(item['colors'])
-        for i, color in enumerate(item['colors'] or [None]):
-            for j, size in enumerate(item['sizes'] or [None]):
+        if item['color'] and item['sizes']:
+            length = len(item['color'])
+            # for i, color in enumerate(item['colors'] or [None]):
+            #     for j, size in enumerate(item['sizes'] or [None]):
+            for i, color in enumerate(item['color']):
+                for j, size in enumerate(item['sizes']):
+                    with self.mysql.cursor() as cur:
+                        cur.execute(sql, (
+                            item['price'].split()[0].replace(',', ''),
+                            item['price'].split()[0].replace(',', ''),
+                            item['price'].split()[0].replace(',', ''),
+                            json.dumps([{"id": i, "value": color}, {"id": j + length, "value": size}]),
+                            goods_id,
+                            item['price'].split()[0].replace(',', ''),
+                            item['url'],
+                        ))
+
+                        print('货品保存成功!')
+        elif item['color'] and (not item['sizes']):
+            for i, color in enumerate(item['color']):
                 with self.mysql.cursor() as cur:
                     cur.execute(sql, (
-                        item['now_price'].split()[0].lstrip('£').replace(',', ''),
-                        item['now_price'].split()[0].lstrip('£').replace(',', ''),
-                        item['now_price'].split()[0].lstrip('£').replace(',', ''),
-                        json.dumps([{"id": i, "value": color}, {"id": j + length, "value": size}]),
+                        item['price'].split()[0].replace(',', ''),
+                        item['price'].split()[0].replace(',', ''),
+                        item['price'].split()[0].replace(',', ''),
+                        json.dumps([{"id": i, "value": color}]),
                         goods_id,
-                        item['now_price'].split()[0].lstrip('£').replace(',', ''),
+                        item['price'].split()[0].replace(',', ''),
                         item['url'],
                     ))
 
                     print('货品保存成功!')
+        elif item['sizes'] and (not item['color']):
+            for i, size in enumerate(item['sizes']):
+                with self.mysql.cursor() as cur:
+                    cur.execute(sql, (
+                        item['price'].split()[0].replace(',', ''),
+                        item['price'].split()[0].replace(',', ''),
+                        item['price'].split()[0].replace(',', ''),
+                        json.dumps([{"id": i, "value": size}]),
+                        goods_id,
+                        item['price'].split()[0].replace(',', ''),
+                        item['url'],
+                    ))
+
+                    print('货品保存成功!')
+        else:
+            with self.mysql.cursor() as cur:
+                cur.execute(sql, (
+                    item['price'].split()[0].replace(',', ''),
+                    item['price'].split()[0].replace(',', ''),
+                    item['price'].split()[0].replace(',', ''),
+                    None,
+                    goods_id,
+                    item['price'].split()[0].replace(',', ''),
+                    item['url'],
+                ))
+
+            print('货品保存成功!')
 
 
 if __name__ == "__main__":
-    t = TransferGoodsProducts(db='HarrodsCrawler')
+    t = TransferGoodsProducts(db='AlexandermcqueenCrawler')
     t.run()

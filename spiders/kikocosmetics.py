@@ -120,7 +120,7 @@ class KikocosmeticsCrawler(IndexListDetailCrawler):
 
     def _get_product_list(self, url, headers, cookies, meta):
         while True:
-            resp = self._request(url=url, headers=headers, cookies=cookies, rollback=self.push_category_info, meta=meta)
+            resp = self._request(url=url, headers=headers, cookies=cookies,  meta=meta)
             if not resp:
                 return
 

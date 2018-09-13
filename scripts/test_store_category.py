@@ -50,8 +50,8 @@ class TransferGoodsProducts:
                 '6',
                 null,
                 %s,
-                'Harrods',
-                '1606',
+                'Alexander McQueen',
+                '313',
                 '1'
             );
         '''
@@ -78,7 +78,7 @@ class TransferGoodsProducts:
                 %s,
                 ',',
                 null,
-                '1606',
+                '313',
                 %s,
                 %s,
                 %s
@@ -111,7 +111,7 @@ class TransferGoodsProducts:
                             %s,
                             %s,
                             %s,
-                            '1606',
+                            '313',
                             %s,
                             %s,
                             %s
@@ -146,7 +146,7 @@ class TransferGoodsProducts:
                                         %s,
                                         %s,
                                         %s,
-                                        '1606',
+                                        '313',
                                         %s,
                                         %s,
                                         %s
@@ -166,5 +166,5 @@ class TransferGoodsProducts:
 
 
 if __name__ == "__main__":
-    t = TransferGoodsProducts(db='HarrodsCrawler')
+    t = TransferGoodsProducts(db='AlexandermcqueenCrawler')
     t.run()

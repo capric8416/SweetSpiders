@@ -23,5 +23,5 @@ class CategoryDumplicated:
 
 
 if __name__ == '__main__':
-    c = CategoryDumplicated(db='HarrodsCrawler')
+    c = CategoryDumplicated(db='EtamCrawler')
     c.run()

@@ -51,7 +51,7 @@ class KjslaundryCrawler(IndexListDetailCrawler):
     def _get_product_list(self, url, headers, cookies, meta):
         while True:
             resp = self._request(
-                url=url, headers=headers, cookies=cookies, rollback=self.push_category_info, meta=meta)
+                url=url, headers=headers, cookies=cookies,  meta=meta)
             pq = PyQuery(resp.text)
             next_url = pq('[rel="next"]').attr('href')
 

@@ -85,7 +85,7 @@ class MoltonbrownCrawler(IndexListDetailCrawler):
         while True:
             resp = self._request(
                 url=url, params=params, headers=headers, cookies=cookies,
-                rollback=self.push_category_info, meta=meta
+                 meta=meta
             )
             if not resp:
                 return

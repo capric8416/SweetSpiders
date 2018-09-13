@@ -113,8 +113,7 @@ class AlexandermcqueenCrawler(IndexListDetailCrawler):
 
         resp = self._request(
             url=url, params=params, headers=headers,
-            cookies=cookies, allow_redirects=False,
-            rollback=self.push_category_info, meta=meta
+            cookies=cookies, allow_redirects=False, meta=meta
         )
         if not resp:
             return

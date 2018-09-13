@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 # !/usr/bin/env python
-from SweetSpiders.common import IndexListDetailCrawler
-from pyquery import PyQuery
 import copy
 from urllib.parse import urlparse
+
+from SweetSpiders.common import IndexListDetailCrawler
+from pyquery import PyQuery
 
 
 class AstleyclarkeCrawler(IndexListDetailCrawler):
@@ -94,8 +95,7 @@ class AstleyclarkeCrawler(IndexListDetailCrawler):
 
         while True:
             resp = self._request(
-                url=url, headers=headers, cookies=cookies,
-                rollback=self.push_category_info, meta=meta)
+                url=url, headers=headers, cookies=cookies, meta=meta)
             if not resp:
                 return
             pq = PyQuery(resp.text)
@@ -146,7 +146,8 @@ class AstleyclarkeCrawler(IndexListDetailCrawler):
 
         # 商品介绍
         introduction1 = pq('.product-right .description .std').text().strip()
-        introduction2 = [li.text().strip() for li in pq('.product-right .description .std .prodcopy .bullets li').items()]
+        introduction2 = [li.text().strip() for li in
+                         pq('.product-right .description .std .prodcopy .bullets li').items()]
 
         introduction = introduction1 + ';' + ''.join(introduction2)
 
@@ -185,6 +186,3 @@ class AstleyclarkeCrawler(IndexListDetailCrawler):
             'sizes': sizes, 'colors': colors, 'details': details, 'size_guide': size_guide, 'store': self.store,
             'brand': self.brand, 'store_id': self.store_id, 'brand_id': self.brand_id, 'coin_id': self.coin_id
         }
-
-
-

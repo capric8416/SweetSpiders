@@ -34,7 +34,7 @@ class EtamCrawler(IndexListDetailCrawler):
         self.coin_id = 3
 
         # 品牌ID
-        self.brand_id = '品牌建立中'
+        self.brand_id = 542
 
     def _parse_index(self, resp):
         """首页解析器"""
@@ -48,6 +48,7 @@ class EtamCrawler(IndexListDetailCrawler):
             cat1_name = cat1_node.children('a').text().strip()
             if cat1_name == 'NEW':
                 continue
+
             cat1_url = cat1_node.children('a').attr('href')
 
             cat1 = {'name': cat1_name, 'name_cn': g.query(source=cat1_name, sl='fr'), 'url': cat1_url, 'children': [],
@@ -56,6 +57,7 @@ class EtamCrawler(IndexListDetailCrawler):
             cat2_nodes = cat1_node.children('.menu-wrapper .colMenu ul.wrapItemMenu li.titleCat')
             for cat2_node in cat2_nodes.items():
                 cat2_name = cat2_node.children('a.expandMenu').text().strip().partition(' ')[-1]
+
                 cat2_url = cat2_node.children('a.expandMenu').attr('href')
 
                 cat2 = {
@@ -97,7 +99,7 @@ class EtamCrawler(IndexListDetailCrawler):
         while True:
             resp = self._request(
                 url=url, headers=headers, cookies=cookies, params=params,
-                rollback=self.push_category_info, meta=meta)
+                meta=meta)
             if not resp:
                 return
             pq = PyQuery(resp.text)
@@ -164,15 +166,11 @@ class EtamCrawler(IndexListDetailCrawler):
 
         # 商品尺码
         sizes = []
-        for size_node in pq('ul.product-size li[class!="unselectable"] a').items():
-            in_stock_size = size_node.text().strip()
-            if in_stock_size:
-                sizes.append(in_stock_size)
-
-        for out_of_size in pq('ul.product-size li.unselectable a').items():
-            out_size = out_of_size.text().strip() + ' - out of stock'
-            if out_size:
-                sizes.append(out_size)
+        for size_node in pq('ul.size:eq(0) li.emptyswatch a').items():
+            size = size_node.text().strip()
+            if size_node.attr('title') == 'product.variationnotavailable':
+                size = size + ' - out of stock'
+            sizes.append(size)
 
         # 商品介绍
         introduction, details = None, None

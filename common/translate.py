@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # !/usr/bin/env python
+import functools
 import time
 
 import execjs
@@ -33,6 +34,7 @@ class GoogleTranslate:
 
         self.get_context()
 
+    @functools.lru_cache(maxsize=1000)
     def query(self, source, sl='en', tl='zh-CN', hl='zh-CN'):
         """
         单条翻译
@@ -200,4 +202,5 @@ class GoogleTranslate:
 if __name__ == '__main__':
     g = GoogleTranslate(alive=20)
     while True:
-        g.query(source='Prêt-à-porter', sl='fr')
+        x = g.query(source='Prêt-à-porter', sl='fr')
+        print(x)

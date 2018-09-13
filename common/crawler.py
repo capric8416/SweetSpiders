@@ -11,7 +11,7 @@ import random
 import signal
 import sys
 import time
-from urllib.parse import urlparse, parse_qsl
+from urllib.parse import urlparse, parse_qsl, quote_from_bytes
 
 import redis
 import requests
@@ -98,19 +98,11 @@ class IndexListDetailCrawler:
 
         self.logger.info(f'[RUN] {self.spider}.{inspect.currentframe().f_code.co_name}')
 
-        while True:
-            try:
-                resp = self._request(url=self.index_url, headers=self.headers, cookies=self.cookies)
-            except Exception as e:
-                _ = e
-                self.logger.warning(f'[RETRY] {e}, {self.index_url}')
-            else:
-                categories, results = self._parse_index(resp=resp)
-                self._push_category_detail(categories)
-                for info in results:
-                    self.push_category_info(info)
-
-                break
+        resp = self._request(url=self.index_url, headers=self.headers, cookies=self.cookies)
+        categories, results = self._parse_index(resp=resp)
+        self._push_category_detail(categories)
+        for info in results:
+            self.push_category_info(info)
 
     def _parse_index(self, resp):
         """
@@ -166,8 +158,7 @@ class IndexListDetailCrawler:
 
     def _get_product_detail(self, url, headers, cookies, meta):
         """详情页爬虫"""
-
-        resp = self._request(url=url, headers=headers, cookies=cookies, meta=meta, rollback=self.push_product_info)
+        resp = self._request(url=url, headers=headers, cookies=cookies)
         if not resp:
             return
 
@@ -185,34 +176,26 @@ class IndexListDetailCrawler:
 
         raise NotImplementedError
 
-    def _request(self, method='get', rollback=None, **kwargs):
+    def _request(self, method='get', **kwargs):
         self._sleep()
 
         kwargs = dict(kwargs)
         kwargs.update({'verify': False, 'timeout': self.timeout})
 
-        url = kwargs['url']
-        headers = kwargs['headers']
+        url = kwargs.pop('url')
 
-        # 附加信息
-        meta = kwargs.pop('meta', {})
-
-        try:
-            resp = requests.request(method=method, **kwargs)
-            self.logger.info(f'[{resp.status_code} {resp.reason}] {method.upper()}: {url}')
-            return resp
-        except Exception as e:
-            # 如果提供了异常回滚方法，则回滚，否则抛出异常
-            if not rollback:
-                raise e
-            self._rollback(func=rollback, url=url, headers=headers, cookies=kwargs.get('cookies', {}), meta=meta)
-            self.logger.warning(e)
-
-    def _rollback(self, func, url, headers, cookies, meta):
-        """异常爬取回滚"""
-
-        _ = self
-        func((url, headers, cookies, meta), force=True)
+        while True:
+            try:
+                resp = requests.request(method=method, url=url, **kwargs)
+                self.logger.info(f'[{resp.status_code} {resp.reason}] {method.upper()}: {url}')
+                return resp
+            except UnicodeDecodeError as e:
+                self.logger.warning('%s: %s', e, url)
+                p = e.object.rpartition(b'/')
+                url = ''.join([p[0].decode(), p[1].decode(), quote_from_bytes(p[2])])
+            except Exception as e:
+                self.logger.warning('%s: %s', e, url)
+                self._sleep()
 
     def _get_logger(self, name, level='INFO'):
         _ = self
