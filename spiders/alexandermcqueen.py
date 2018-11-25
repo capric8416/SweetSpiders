@@ -220,7 +220,7 @@ class AlexandermcqueenCrawler(IndexListDetailCrawler):
                 now_price = '999999999'  # 没有价格
 
         # 商品详细介绍
-        introduction = pq('.descriptionsContainer .attributesUpdater .value').text().strip()
+        introduction = pq('.descriptionsContainer > .attributesUpdater > .value').text().strip()
 
         #  商品简介
         p1 = pq('.moreDescriptionsContent .fittingWrapper span').text().strip()

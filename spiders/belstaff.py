@@ -125,7 +125,7 @@ class BelstaffCrawler(IndexListDetailCrawler):
         while True:
             resp = self._request(
                 url=url, headers=headers, cookies=cookies, params=params,
-                 meta=meta
+                meta=meta
             )
             if not resp:
                 return

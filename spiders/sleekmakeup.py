@@ -16,6 +16,17 @@ class SleekmakeupCrawler(IndexListDetailCrawler):
 
     WAIT = [1, 3]  # 动态休眠区间
 
+    COOKIES = {'visid_incap_1697827': 'qGIQlZRMRtWw5qBLq5zfC3vJmVsAAAAAQUIPAAAAAAAXMw88EsAxN77FwskGg+xo',
+               'incap_ses_434_1697827': 'QB7wDMLQ+EqrA+QITeEFBnzJmVsAAAAATp1NOfL496KfNoaIVVdjZw==',
+               '_ga': 'GA1.2.1689547161.1536805246',
+               '_gid': 'GA1.2.530294803.1536805247',
+               '_gat_UA-32594438-3': '1',
+               'BVBRANDID': '9f747e3f-4506-47b5-b512-731cb1344c8a',
+               'BVBRANDSID': '630c7999-c4ed-498d-bed0-57169eb02c35',
+               'sc.ASP.NET_SESSIONID': 'bvzaau53monnafmtp2skrxtj',
+               '__olapicU': '1536805248833',
+               'visits': '1'}
+
     def __init__(self):
         super(SleekmakeupCrawler, self).__init__()
 
@@ -37,7 +48,6 @@ class SleekmakeupCrawler(IndexListDetailCrawler):
     def _parse_index(self, resp):
         """首页解析器"""
 
-        self.headers['Accept-Language'] = 'en-GB'
         pq = PyQuery(resp.text)
         results = []
         categories = []
@@ -50,7 +60,7 @@ class SleekmakeupCrawler(IndexListDetailCrawler):
             if cat1_name == 'MY FACE. MY RULES.':
                 break
             if cat1_name == 'NEW IN':
-                cat1_url = 'https://www.sleekmakeup.com' + cat1_node.children('a').attr('href').replace('en', 'uk')
+                cat1_url = self._full_url(url_from=resp.url, path=cat1_node.children('a').attr('href'))
                 cat1 = {'name': cat1_name, 'url': cat1_url,
                         'uuid': self.cu.get_or_create(cat1_name)}
 
@@ -73,7 +83,7 @@ class SleekmakeupCrawler(IndexListDetailCrawler):
                     cat2_name = cat2_node.text().strip()
                     # if 'ALL' in cat2_name:
                     #     break
-                    cat2_url = 'https://www.sleekmakeup.com' + cat2_node.attr('href').replace('en', 'uk')
+                    cat2_url = self._full_url(url_from=resp.url, path=cat2_node.attr('href'))
 
                     headers = copy.copy(self.headers)
                     headers['Referer'] = resp.url
@@ -121,8 +131,7 @@ class SleekmakeupCrawler(IndexListDetailCrawler):
 
         node = pq('#block-views-block-plp-plp .container .row-flex div.col-md-4')
         for detail in node.items():
-            url = 'https://www.sleekmakeup.com' + detail.children('.product .product-title a').attr('href').replace(
-                'en', 'uk')
+            url = self._full_url(url_from=resp.url, path= detail.children('.product .product-title a').attr('href'))
             if url:
                 meta['product_id'] = urlparse(url).path.split('/')[-1]
                 yield url, headers, resp.cookies.get_dict(), meta
@@ -170,10 +179,10 @@ class SleekmakeupCrawler(IndexListDetailCrawler):
                 sizes.append(size)
 
         # 商品库存
-        stock = 999
-        stock_text = pq('.add-basket').text()
-        if 'ADD' not in stock_text:
-            stock = 0
+        stock = 0
+        stock_text = pq('.product-atc').text().strip()
+        if stock_text == 'Add to Bag':
+            stock = 999
 
         return {'url': url, 'categories': meta['categories'], 'product_id': meta['product_id'], 'images': images,
                 'name': name, 'now_price': now_price, 'introduction': introduction, 'details': details,

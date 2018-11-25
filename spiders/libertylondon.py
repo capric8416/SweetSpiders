@@ -41,7 +41,7 @@ class LibertylondonCrawler(IndexListDetailCrawler):
         results = []
         categories = []
 
-        tops = pq('.main-nav li.has-sub')
+        tops = pq('.main-nav .has-sub')
         for cat1_node in tops.items():
             cat1_name = cat1_node.children('a').text().strip()
             if (not cat1_name) or cat1_name in ('Department', 'Liberty Collections'):
@@ -52,7 +52,7 @@ class LibertylondonCrawler(IndexListDetailCrawler):
             cat1 = {'name': cat1_name, 'url': cat1_url, 'children': [],
                     'uuid': self.cu.get_or_create(cat1_name)}
 
-            cat2_nodes = cat1_node.children('.section-menu > .mega-nav > .depts-list > ul > li')
+            cat2_nodes = cat1_node.children('.has-banner > .mega-nav .depts-list > ul > li')
             for cat2_node in cat2_nodes.items():
                 cat2_name = cat2_node.children('a').text().strip()
                 cat2_url = self._full_url(url_from=resp.url, path=cat2_node.children('a').attr('href'))

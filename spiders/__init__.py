@@ -42,3 +42,9 @@ from .petitbateau import *
 from .kabiri import *
 from .libertylondon import *
 from .harveynichols import *
+from .toast import *
+from .argos import *
+from .cachecache import *
+from .warehouse import *
+from .daisyjewellery import *
+from .johnlewis import *
